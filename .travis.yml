@@ -1,0 +1,31 @@
+os: linux
+language: minimal
+env:
+  global:
+#    - SKIP_DOCKER_BUILD=true
+    - PROJECT_IMAGE_NAME=laboschqpa-client
+    - SHORT_COMMIT_HASH=${TRAVIS_COMMIT::10}
+    - IMAGE_NAME_COMMIT=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${SHORT_COMMIT_HASH}
+    - IMAGE_NAME_BRANCH=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${TRAVIS_BRANCH}
+
+install: skip
+script: skip
+
+jobs:
+  include:
+    - stage: DockerBuild
+      if: env(SKIP_DOCKER_BUILD) != "true"
+      services:
+        - docker
+      script: skip
+      before_install:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - IMAGE_NAME_LATEST=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}
+      install:
+        - docker pull ${IMAGE_NAME_LATEST} || true
+
+        - docker build -t ${IMAGE_NAME_LATEST} -t ${IMAGE_NAME_COMMIT} -t ${IMAGE_NAME_BRANCH} -f docker/Dockerfile-k8s_dev-travis_build .
+
+        - docker push ${IMAGE_NAME_LATEST}
+        - docker push ${IMAGE_NAME_COMMIT}
+        - docker push ${IMAGE_NAME_BRANCH}

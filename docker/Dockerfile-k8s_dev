@@ -2,6 +2,7 @@ FROM node:12.7-alpine
 MAINTAINER "János Gats <gatsjanos@gmail.com>"
 
 EXPOSE 3000
+EXPOSE 9229
 ENV APP_HOME=/app
 
 RUN mkdir -p ${APP_HOME}
@@ -9,7 +10,7 @@ WORKDIR ${APP_HOME}
 
 COPY ./package.json ${APP_HOME}/
 COPY ./package-lock.json ${APP_HOME}/
-RUN npm install
+RUN npm install && npx next telemetry disable
 
 COPY . ${APP_HOME}/.
 

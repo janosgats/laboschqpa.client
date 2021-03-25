@@ -1,0 +1,48 @@
+FROM node:12.7-alpine as builder
+
+ENV APP_HOME=/app
+
+RUN mkdir -p ${APP_HOME}
+WORKDIR ${APP_HOME}
+
+COPY ./package.json ${APP_HOME}/
+COPY ./package-lock.json ${APP_HOME}/
+
+RUN npm ci
+
+COPY . ${APP_HOME}/.
+
+RUN npm run build
+
+
+FROM node:12.7-alpine as release
+MAINTAINER "János Gats <gatsjanos@gmail.com>"
+
+EXPOSE 3000
+ENV BUILDER_APP_HOME=/app
+ENV APP_HOME=/home/npm-user/app
+ENV NODE_ENV=production
+
+RUN adduser --disabled-password --uid 10003 npm-user
+
+WORKDIR ${APP_HOME}
+
+HEALTHCHECK --interval=15s \
+            --retries=3 \
+            --start-period=1m \
+            --timeout=5s \
+            CMD curl --fail http://localhost:3000 || exit 1
+
+COPY --chown=npm-user:npm-user --from=builder ${BUILDER_APP_HOME}/package*.json ${APP_HOME}/
+COPY --chown=npm-user:npm-user --from=builder ${BUILDER_APP_HOME}/node_modules ${APP_HOME}/node_modules
+COPY --chown=npm-user:npm-user --from=builder ${BUILDER_APP_HOME}/next.config.js ${APP_HOME}/next.config.js
+COPY --chown=npm-user:npm-user --from=builder ${BUILDER_APP_HOME}/.next ${APP_HOME}/.next
+COPY --chown=npm-user:npm-user --from=builder ${BUILDER_APP_HOME}/public ${APP_HOME}/public
+
+# Remove all dev dependencies from node_modules and disable next telemetry
+RUN npm prune --json && npx next telemetry disable
+
+USER npm-user
+
+ENTRYPOINT ["sh"]
+CMD ["-c", "npm run start" ]
