@@ -1,0 +1,17 @@
+FROM node:12.7-alpine
+MAINTAINER "János Gats <gatsjanos@gmail.com>"
+
+EXPOSE 3000
+ENV APP_HOME=/app
+
+RUN mkdir -p ${APP_HOME}
+WORKDIR ${APP_HOME}
+
+COPY ./package.json ${APP_HOME}/
+COPY ./package-lock.json ${APP_HOME}/
+RUN npm install
+
+COPY . ${APP_HOME}/.
+
+ENTRYPOINT ["sh"]
+CMD ["-c", "npm run dev" ]
