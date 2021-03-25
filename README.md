@@ -1,5 +1,7 @@
 # laboschqpa.client 
 
+[![Build Status](https://travis-ci.com/janosgats/laboschqpa.client.svg?branch=master)](https://travis-ci.com/janosgats/laboschqpa.client)
+
 Frontend of Labosch QPA Web website based on k8s.
 
 
