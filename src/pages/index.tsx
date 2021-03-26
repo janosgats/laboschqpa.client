@@ -1,14 +1,17 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import axios from "axios";
 import {NextPage} from "next";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import EventBus from "~/utils/EventBus";
+import 'react-notifications/lib/notifications.css';
+import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+
 
 const Index: NextPage = () => {
     const [profileInfo, setProfileInfo] = useState(undefined);
 
     useEffect(() => {
-            axios.request({
+            callJsonEndpoint({
                 url: "/server/api/profileInfo/currentProfileInfo"
             }).then(res => setProfileInfo(res.data)
             ).catch(() => setProfileInfo("Couldn't load profile info"));
@@ -22,6 +25,16 @@ const Index: NextPage = () => {
                 <title>Create Next App</title>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
+
+            <button onClick={() =>
+                EventBus.notifyInfo("Was clicked", "Button", 10000, () => alert(23543254))
+            }>Test Button
+            </button>
+
+            <button onClick={() =>
+                EventBus.notifySuccess("Was clicked", "Button", 10000, () => alert(634), true)
+            }>Test Button Priority
+            </button>
 
             <main className={styles.main}>
                 <h1 className={styles.title}>

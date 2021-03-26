@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect=0.0.0.0:9229' next dev --port 3000",
+    "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start --port 3000"
   },
@@ -11,7 +11,8 @@
     "axios": "^0.21.1",
     "next": "10.0.9",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-notifications": "^1.7.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.35",
