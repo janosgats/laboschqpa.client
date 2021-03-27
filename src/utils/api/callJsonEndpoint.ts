@@ -6,7 +6,7 @@ import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallExcepti
 import FrontendApiCallException from "~/exception/FrontendApiCallException";
 import Exception from "~/exception/Exception";
 
-const extractErrorFromResponse = (
+const extractExceptionFromResponse = (
     wasResponseReceived: boolean,
     axiosResponse: AxiosResponse | null,
     axiosRequestConfig: AxiosRequestConfig | null,
@@ -49,9 +49,9 @@ const extractErrorFromResponse = (
     );
 };
 
+
 /**
  * Use this function for every call made by the client-side code. This takes care of the proper global error handling.
- * If you don't need to handle the call as a Promise, you can probably get away with using only the onSuccess/onError callbacks.
  * @param axiosRequestConfig
  * @param acceptedResponseCodes response codes counted as success
  * @param publishExceptionEvents set this to false to disable publishing errors onto the EventBus
@@ -81,24 +81,24 @@ const callJsonEndpoint = <ReturnType>(
     return axiosPromise
         .catch((err) => {
             //This catch clause is intentionally put before the then clause to not to catch exceptions thrown there (there = then clause)
-            const extractedError = extractErrorFromResponse(false, null, axiosRequestConfig, err);
+            const extractedException = extractExceptionFromResponse(false, null, axiosRequestConfig, err);
 
             if (publishExceptionEvents) {
-                EventBus.publishException(extractedError);
+                EventBus.publishException(extractedException);
             }
-            throw extractedError;
+            throw extractedException;
         })
         .then((response) => {
             if (acceptedResponseCodes.includes(response.status)) {
                 return response;
             }
 
-            const extractedError = extractErrorFromResponse(true, response, axiosRequestConfig, null);
+            const extractedException = extractExceptionFromResponse(true, response, axiosRequestConfig, null);
 
             if (publishExceptionEvents) {
-                EventBus.publishException(extractedError);
+                EventBus.publishException(extractedException);
             }
-            throw extractedError;
+            throw extractedException;
         });
 };
 
