@@ -5,6 +5,9 @@ import React, {useEffect, useState} from "react";
 import EventBus from "~/utils/EventBus";
 import 'react-notifications/lib/notifications.css';
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import RegisterForm from "~/components/join/RegisterForm";
+import LoginForm from "~/components/join/LoginForm";
+import LogoutForm from "~/components/join/LogoutForm";
 
 
 const Index: NextPage = () => {
@@ -25,6 +28,17 @@ const Index: NextPage = () => {
                 <title>Create Next App</title>
                 <link rel="icon" href="/favicon.ico"/>
             </Head>
+
+            <hr/>
+            <h4>RegisterForm</h4>
+            <RegisterForm/>
+            <hr/>
+            <h4>LoginForm</h4>
+            <LoginForm/>
+            <hr/>
+            <h4>LogoutForm</h4>
+            <LogoutForm/>
+            <hr/>
 
             <button onClick={() =>
                 EventBus.notifyInfo("Was clicked", "Button", 10000, () => alert(23543254))

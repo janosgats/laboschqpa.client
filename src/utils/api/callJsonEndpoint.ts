@@ -5,6 +5,15 @@ import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException
 import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallException";
 import FrontendApiCallException from "~/exception/FrontendApiCallException";
 import Exception from "~/exception/Exception";
+import * as CsrfService from "~/service/CsrfService";
+
+const CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
+
+export enum CsrfSendingCommand {
+    AUTO = 1,
+    SEND = 2,
+    DO_NOT_SEND = 3
+}
 
 const extractExceptionFromResponse = (
     wasResponseReceived: boolean,
@@ -49,20 +58,7 @@ const extractExceptionFromResponse = (
     );
 };
 
-
-/**
- * Use this function for every call made by the client-side code. This takes care of the proper global error handling.
- * @param axiosRequestConfig
- * @param acceptedResponseCodes response codes counted as success
- * @param publishExceptionEvents set this to false to disable publishing errors onto the EventBus
- *
- * @return If the API call succeeds AND the statusCode is contained by acceptedResponseCodes: Fulfilled promise with the response. Otherwise: rejected promise.
- */
-const callJsonEndpoint = <ReturnType>(
-    axiosRequestConfig: AxiosRequestConfig,
-    publishExceptionEvents: boolean = true,
-    acceptedResponseCodes: Array<number> = [200],
-): AxiosPromise<ReturnType> => {
+async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrfSendingCommand: CsrfSendingCommand) {
     if (axiosRequestConfig.headers) {
         axiosRequestConfig.headers["Content-type"] = "application/json";
         axiosRequestConfig.headers["accept"] = "application/json";
@@ -72,9 +68,50 @@ const callJsonEndpoint = <ReturnType>(
             accept: "application/json",
         };
     }
+
+    async function setCsrf() {
+        axiosRequestConfig.headers[CSRF_TOKEN_HEADER_NAME] = await CsrfService.getCsrfToken();
+    }
+
+    switch (csrfSendingCommand) {
+        case CsrfSendingCommand.AUTO:
+            let uppercaseHttpMethod = "GET";
+            if (axiosRequestConfig.method) {
+                uppercaseHttpMethod = axiosRequestConfig.method.toUpperCase();
+            }
+            if (!(["GET", "HEAD", "TRACE", "OPTIONS"].includes(uppercaseHttpMethod))) {
+                await setCsrf();
+            }
+            break;
+        case CsrfSendingCommand.SEND:
+            await setCsrf();
+            break;
+        case CsrfSendingCommand.DO_NOT_SEND:
+            //Not setting the csrf
+            break;
+    }
+
     axiosRequestConfig.validateStatus = (status: number) => {
         return true; // Always returning true to handle all HTTP response codes and be able to extract the bodies
     };
+}
+
+/**
+ * Use this function for every call made by the client-side code. This takes care of the proper global error handling.
+ * @param axiosRequestConfig
+ * @param acceptedResponseCodes response codes counted as success
+ * @param publishExceptionEvents set this to false to disable publishing errors onto the EventBus
+ * @param csrfSendingCommand
+ *
+ * @return If the API call succeeds AND the statusCode is contained by acceptedResponseCodes: Fulfilled promise with the response. Otherwise: rejected promise.
+ */
+const callJsonEndpoint = async <ReturnType>(
+    axiosRequestConfig: AxiosRequestConfig,
+    publishExceptionEvents: boolean = true,
+    acceptedResponseCodes: Array<number> = [200],
+    csrfSendingCommand: CsrfSendingCommand = CsrfSendingCommand.AUTO,
+): Promise<AxiosResponse<ReturnType>> => {
+    await prepareRequestConfig(axiosRequestConfig, csrfSendingCommand);
 
     const axiosPromise: AxiosPromise<ReturnType> = axios(axiosRequestConfig);
 

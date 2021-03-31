@@ -23,3 +23,5 @@ export default class ApiError {
 }
 
 export const fieldValidationFailed_FIELD_VALIDATION_FAILED = new ApiError("fieldValidationFailed", 1);
+export const registration_E_MAIL_ADDRESS_IS_ALREADY_IN_THE_SYSTEM = new ApiError("registration", 1);
+export const auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER = new ApiError("auth", 1);
