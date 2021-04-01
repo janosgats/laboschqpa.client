@@ -1,13 +1,15 @@
 import Head from 'next/head'
 import {NextPage} from "next";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import EventBus from "~/utils/EventBus";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import {useRouter} from "next/router";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
 
 
 const nextPage: NextPage = () => {
     const router = useRouter();
+    const currentUser = useContext(CurrentUserContext);
     const [isLoginInProgress, setLoginInProgress] = useState<boolean>(true);
     const [isLoginSucceeded, setLoginSucceeded] = useState<boolean>(false);
 
@@ -27,6 +29,7 @@ const nextPage: NextPage = () => {
             method: "GET",
             params: router.query
         }).then(res => {
+            currentUser.setLoggedInState(true);
             EventBus.notifySuccess("You just logged in", "Hello there");
             setLoginSucceeded(true);
             router.push("/");

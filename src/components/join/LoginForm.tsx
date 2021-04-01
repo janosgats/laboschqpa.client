@@ -13,7 +13,7 @@ type loginOauthProvider = "google" | "github";
 const LoginForm: FC = () => {
     const router = useRouter();
 
-    function doLogin(oauthProvider: loginOauthProvider) {
+    function doStartLogin(oauthProvider: loginOauthProvider) {
         callJsonEndpoint({
                 url: `/server/login/oauth2/${oauthProvider}`,
                 method: "GET",
@@ -47,8 +47,8 @@ const LoginForm: FC = () => {
     return (
         <div>
             <h3>Choose a login method</h3>
-            <button onClick={() => doLogin("google")}>Google</button>
-            <button onClick={() => doLogin("github")}>GitHub</button>
+            <button onClick={() => doStartLogin("google")}>Google</button>
+            <button onClick={() => doStartLogin("github")}>GitHub</button>
         </div>
     )
 };

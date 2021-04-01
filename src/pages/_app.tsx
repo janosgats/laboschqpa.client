@@ -1,12 +1,15 @@
 import '../styles/globals.css'
 import React from "react";
 import EventDisplayContainer from "~/components/eventDisplays/EventDisplayContainer";
+import CurrentUserProvider from "~/context/CurrentUserProvider";
 
 function MyApp({Component, pageProps}): JSX.Element {
     return (
         <>
             <EventDisplayContainer/>
-            <Component {...pageProps} />
+            <CurrentUserProvider>
+                <Component {...pageProps} />
+            </CurrentUserProvider>
         </>
     );
 }

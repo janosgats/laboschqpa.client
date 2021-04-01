@@ -59,6 +59,10 @@ const extractExceptionFromResponse = (
 };
 
 async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrfSendingCommand: CsrfSendingCommand) {
+    if (!axiosRequestConfig.method) {
+        axiosRequestConfig.method = "GET";
+    }
+
     if (axiosRequestConfig.headers) {
         axiosRequestConfig.headers["Content-type"] = "application/json";
         axiosRequestConfig.headers["accept"] = "application/json";
@@ -75,10 +79,7 @@ async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrf
 
     switch (csrfSendingCommand) {
         case CsrfSendingCommand.AUTO:
-            let uppercaseHttpMethod = "GET";
-            if (axiosRequestConfig.method) {
-                uppercaseHttpMethod = axiosRequestConfig.method.toUpperCase();
-            }
+            let uppercaseHttpMethod = axiosRequestConfig.method.toUpperCase();
             if (!(["GET", "HEAD", "TRACE", "OPTIONS"].includes(uppercaseHttpMethod))) {
                 await setCsrf();
             }

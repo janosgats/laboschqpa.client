@@ -1,11 +1,13 @@
-import React, {FC} from "react";
+import React, {FC, useContext} from "react";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import {useRouter} from "next/router";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
 
 //TODO: Replace with MUI
 const LogoutForm: FC = () => {
     const router = useRouter();
+    const loggedInUser = useContext(CurrentUserContext);
 
     function doLogout() {
         callJsonEndpoint({
@@ -13,6 +15,7 @@ const LogoutForm: FC = () => {
                 method: "POST"
             }
         ).then(res => {
+            loggedInUser.setLoggedInState(false);
             EventBus.notifyInfo("You just logged out", "See you soon")
             router.push("/");
         }).catch((reason) => {
