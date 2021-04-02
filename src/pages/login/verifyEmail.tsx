@@ -36,7 +36,7 @@ const nextPage: NextPage = () => {
         }
 
         callJsonEndpoint({
-                url: "/server/api/noAuthRequired/registerByEmail/verifyEmail",
+                url: "/api/up/server/api/noAuthRequired/registerByEmail/verifyEmail",
                 method: "POST",
                 params: {
                     id: registrationParams.id,

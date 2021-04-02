@@ -12,7 +12,7 @@ const RegisterForm: FC = () => {
 
     function submitRegistrationEmail() {
         callJsonEndpoint({
-                url: "/server/api/noAuthRequired/registerByEmail/submitEmail",
+                url: "/api/up/server/api/noAuthRequired/registerByEmail/submitEmail",
                 method: "POST",
                 params: {
                     "email": email

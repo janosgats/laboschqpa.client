@@ -36,7 +36,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         await callJsonEndpoint<UserInfo>({
-                url: "/server/api/currentUser/userInfo"
+                url: "/api/up/server/api/currentUser/userInfo"
             },
             true,
             [200, 403]

@@ -17,7 +17,7 @@ const Index: NextPage = () => {
 
     useEffect(() => {
             callJsonEndpoint({
-                url: "/server/api/profileInfo/currentProfileInfo"
+                url: "/api/up/server/api/profileInfo/currentProfileInfo"
             }).then(res => setProfileInfo(res.data)
             ).catch(() => setProfileInfo("Couldn't load profile info"));
 

@@ -11,7 +11,7 @@ const LogoutForm: FC = () => {
 
     function doLogout() {
         callJsonEndpoint({
-                url: "/server/logout",
+                url: "/api/up/server/logout",
                 method: "POST"
             }
         ).then(res => {

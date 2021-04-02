@@ -25,7 +25,7 @@ const nextPage: NextPage = () => {
 
     function doLogin() {
         callJsonEndpoint({
-            url: `/server/login/oauth2/code/${router.query.oauth2Provider}`,
+            url: `/api/up/server/login/oauth2/code/${router.query.oauth2Provider}`,
             method: "GET",
             params: router.query
         }).then(res => {

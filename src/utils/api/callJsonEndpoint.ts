@@ -98,7 +98,7 @@ async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrf
 }
 
 /**
- * Use this function for every call made by the client-side code. This takes care of the proper global error handling.
+ * Use this function for every call made by the client-side (browser) code. This takes care of the proper global error handling.
  * @param axiosRequestConfig
  * @param acceptedResponseCodes response codes counted as success
  * @param publishExceptionEvents set this to false to disable publishing errors onto the EventBus
