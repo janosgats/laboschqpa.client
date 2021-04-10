@@ -13,6 +13,9 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/currentUser/userInfo": ["GET"],
     "/api/currentUser/csrfToken": ["GET"],
     "/api/profileInfo/currentProfileInfo": ["GET"],
+    "/api/team/listActiveTeamsWithScores": ["GET"],
+    "/api/team/info": ["GET"],
+    "/api/team/listMembers": ["GET"],
 
 }
 

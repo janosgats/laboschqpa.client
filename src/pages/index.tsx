@@ -27,8 +27,7 @@ const Index: NextPage = () => {
     return (
         <div className={styles.container}>
             <Head>
-                <title>Create Next App</title>
-                <link rel="icon" href="/favicon.ico"/>
+                <title>Home</title>
             </Head>
 
             <hr/>
