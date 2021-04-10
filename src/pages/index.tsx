@@ -3,7 +3,6 @@ import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
 import React, {useContext, useEffect, useState} from "react";
 import EventBus from "~/utils/EventBus";
-import 'react-notifications/lib/notifications.css';
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";

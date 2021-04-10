@@ -16,6 +16,8 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/team/listActiveTeamsWithScores": ["GET"],
     "/api/team/info": ["GET"],
     "/api/team/listMembers": ["GET"],
+    "/api/user/info": ["GET"],
+    "/api/user/setInfo": ["POST"],
 
 }
 

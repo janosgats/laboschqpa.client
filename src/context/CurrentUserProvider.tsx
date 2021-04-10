@@ -3,21 +3,26 @@ import {isValidBoolean} from "~/utils/CommonValidators";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import LoginWall from "~/components/join/LoginWall";
 import {useRouter} from "next/router";
+import {UserNameContainer} from "~/utils/UserNameFormatter";
 
-export interface UserInfo {
+export interface UserInfo extends UserNameContainer {
     userId: number;
+
+    profilePicUrl: string;
 }
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
     isLoggedIn: () => boolean;
     setLoggedInState: (isLoggedIn: boolean) => void;
+    reload: () => Promise<void>;
 }
 
 export const CurrentUserContext = createContext<CurrentUser>({
     getUserInfo: null,
     isLoggedIn: null,
     setLoggedInState: null,
+    reload: null,
 });
 
 interface Props {
@@ -77,10 +82,15 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         setUserInfo(null);
     }
 
+    async function reload() {
+        await updateStateFromServer();
+    }
+
     const contextValue: CurrentUser = {
         getUserInfo: getUserInfo,
         isLoggedIn: isLoggedIn,
         setLoggedInState: setLoggedInState,
+        reload: reload
     };
 
     function getPageContent(): ReactNode {

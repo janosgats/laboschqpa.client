@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import {NextPage} from "next";
 import React from "react";
-import 'react-notifications/lib/notifications.css';
 import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
 
@@ -14,7 +13,7 @@ interface TeamWithScore {
 
 //TODO: Replace with MUi
 const Index: NextPage = () => {
-    const [teamWithScoreArray, error, pending] = useEndpoint<TeamWithScore[]>({
+    const usedEndpoint = useEndpoint<TeamWithScore[]>({
         config: {
             url: "/api/up/server/api/team/listActiveTeamsWithScores"
         }
@@ -27,20 +26,20 @@ const Index: NextPage = () => {
             </Head>
 
             {
-                pending && (
+                usedEndpoint.pending && (
                     <p>Pending...</p>
                 )
             }
             {
-                error && (
+                usedEndpoint.error && (
                     <p>Couldn't load teams :'(</p>
                 )
             }
             {
-                teamWithScoreArray &&
-                teamWithScoreArray.map((team, index) => {
+                usedEndpoint.data &&
+                usedEndpoint.data.map((team, index) => {
                     return (
-                        <div>
+                        <div key={team.id}>
                             <Link href={`/teams/team/${team.name}?id=${team.id}`}>
                                 <a key={team.id}>{index + 1}. {team.name} - score: {team.score}</a>
                             </Link>

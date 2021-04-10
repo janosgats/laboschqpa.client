@@ -1,12 +1,11 @@
 import Head from 'next/head'
 import {NextPage} from "next";
 import React from "react";
-import 'react-notifications/lib/notifications.css';
 import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
 import {useRouter} from "next/router";
-import {isValidNonEmptyString} from "~/utils/CommonValidators";
 import {TeamRole, teamRoleData} from "~/enums/TeamRole";
+import UserNameFormatter, {UserNameContainer} from "~/utils/UserNameFormatter";
 
 interface TeamInfo {
     id: number;
@@ -14,39 +13,17 @@ interface TeamInfo {
     archived: boolean;
 }
 
-interface TeamMember {
+interface TeamMember extends UserNameContainer {
     userId: number;
-    firstName: string;
-    lastName: string;
-    nickName: string;
     profilePicUrl: string;
     teamRole: number;
-}
-
-function getMemberDisplayName(member: TeamMember): string {
-    if (!member) {
-        return "N/A";
-    }
-
-    if (isValidNonEmptyString(member.nickName)
-        && (isValidNonEmptyString(member.firstName) || isValidNonEmptyString(member.lastName))) {
-        return member.nickName + " - " + member.firstName + " " + member.lastName;
-    }
-
-    if (isValidNonEmptyString(member.nickName)) {
-        return member.nickName;
-    }
-    if (isValidNonEmptyString(member.firstName) || isValidNonEmptyString(member.lastName)) {
-        return member.firstName + " " + member.lastName;
-    }
-    return "N/A";
 }
 
 //TODO: Replace with MUi
 const Index: NextPage = () => {
     const router = useRouter();
 
-    const [teamInfo, errorTeamInfo, pendingTeamInfo] = useEndpoint<TeamInfo>({
+    const usedTeamInfo = useEndpoint<TeamInfo>({
         config: {
             url: "/api/up/server/api/team/info",
             params: {
@@ -57,7 +34,7 @@ const Index: NextPage = () => {
         enableRequest: router.isReady
     });
 
-    const [teamMembers, errorTeamMembers, pendingTeamMembers] = useEndpoint<TeamMember[]>({
+    const usedTeamMembers = useEndpoint<TeamMember[]>({
         config: {
             url: "/api/up/server/api/team/listMembers",
             params: {
@@ -71,52 +48,53 @@ const Index: NextPage = () => {
     return (
         <div>
             <Head>
-                <title>{teamInfo ? teamInfo.name + ' ' : 'Qpa '} Team</title>
+                <title>{usedTeamInfo.data ? usedTeamInfo.data.name + ' ' : 'Qpa '} Team</title>
             </Head>
 
             {
-                pendingTeamInfo && (
+                usedTeamInfo.pending && (
                     <p>Pending...</p>
                 )
             }
 
             {
-                teamInfo && (
+                usedTeamInfo.data && (
                     <div>
-                        <h2>{teamInfo.name}</h2>
-                        {teamInfo.archived ? <h3>Archived</h3> : null}
+                        <h2>{usedTeamInfo.data.name}</h2>
+                        {usedTeamInfo.data.archived ? <h3>Archived</h3> : null}
                     </div>
                 )
             }
 
             {
-                pendingTeamMembers && (
+                usedTeamMembers.pending && (
                     <p>Pending...</p>
                 )
             }
 
             {
-                errorTeamMembers && (
+                usedTeamMembers.error && (
                     <p>Couldn't load members :'(</p>
                 )
             }
 
             {
-                teamMembers &&
-                teamMembers.map((member, index) => {
+                usedTeamMembers.data &&
+                usedTeamMembers.data.map((member, index) => {
+                    const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
                     return (
-                        <div>
-                            <Link key={member.userId}
-                                  href={`/users/user/${member.firstName}_${member.lastName}_${member.nickName}?id=${member.userId}`}>
+                        <div key={member.userId}>
+                            <Link
+                                href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
                                 <a>
                                     <span>{
-                                        getMemberDisplayName(member)
+                                        basicDisplayName
                                         + (member.teamRole === TeamRole.LEADER
                                             ? ` (${teamRoleData[member.teamRole].displayName})`
                                             : ' ')
                                     }
                                     </span>
-                                    <img src={member.profilePicUrl} alt={getMemberDisplayName(member)}/>
+                                    <img src={member.profilePicUrl} alt={basicDisplayName}/>
                                 </a>
                             </Link>
                         </div>

@@ -5,14 +5,20 @@ import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 export interface UseEndpointCommand<T, R = T> {
     config: AxiosRequestConfig;
     deps?: ReadonlyArray<any>;
-    reloadEndpointData?: number;
     customSuccessProcessor?: (axiosResponse: AxiosResponse<T>) => R;
     enableRequest?: boolean;
 }
 
+export interface UsedEndpoint<R> {
+    data: R;
+    error: boolean;
+    pending: boolean;
+    reloadEndpoint: () => void;
+}
+
 const useEndpoint = <T, R = T>(
-    {config, deps = [], reloadEndpointData, customSuccessProcessor, enableRequest = true}: UseEndpointCommand<T, R>
-): [R, boolean, boolean] => {
+    {config, deps = [], customSuccessProcessor, enableRequest = true}: UseEndpointCommand<T, R>
+): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
     const [pending, setPending] = React.useState(false);
@@ -20,6 +26,7 @@ const useEndpoint = <T, R = T>(
     const refreshOnChange = () => {
         setPending(true);
         setData(null);
+        setError(false);
         callJsonEndpoint<T>(config)
             .then((axiosResponse) => {
                 if (customSuccessProcessor) {
@@ -40,9 +47,14 @@ const useEndpoint = <T, R = T>(
         if (enableRequest) {
             refreshOnChange();
         }
-    }, [...deps, reloadEndpointData, enableRequest]);
+    }, [...deps, enableRequest]);
 
-    return [data, error, pending];
+    return {
+        data: data,
+        error: error,
+        pending: pending,
+        reloadEndpoint: refreshOnChange
+    };
 };
 
 export default useEndpoint;
