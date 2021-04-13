@@ -18,6 +18,10 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/team/listMembers": ["GET"],
     "/api/user/info": ["GET"],
     "/api/user/setInfo": ["POST"],
+    "/api/newsPost/newsPost": ["GET"],
+    "/api/newsPost/edit": ["POST"],
+    "/api/newsPost/createNew": ["POST"],
+    "/api/newsPost/delete": ["DELETE"],
 
 }
 

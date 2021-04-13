@@ -1,10 +1,5 @@
 import {isValidNonEmptyString} from "~/utils/CommonValidators";
-
-export interface UserNameContainer {
-    firstName: string;
-    lastName: string;
-    nickName: string;
-}
+import {UserNameContainer} from "~/model/UserInfo";
 
 function getBasicDisplayName(userNameContainer: UserNameContainer, defaultName: string = 'N/A'): string {
     if (!userNameContainer) {

@@ -3,13 +3,7 @@ import {isValidBoolean} from "~/utils/CommonValidators";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import LoginWall from "~/components/join/LoginWall";
 import {useRouter} from "next/router";
-import {UserNameContainer} from "~/utils/UserNameFormatter";
-
-export interface UserInfo extends UserNameContainer {
-    userId: number;
-
-    profilePicUrl: string;
-}
+import {UserInfo} from "~/model/UserInfo";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;

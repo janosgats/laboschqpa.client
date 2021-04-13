@@ -5,7 +5,8 @@ import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import {TeamRole, teamRoleData} from "~/enums/TeamRole";
-import UserNameFormatter, {UserNameContainer} from "~/utils/UserNameFormatter";
+import UserNameFormatter from "~/utils/UserNameFormatter";
+import {UserNameContainer} from "~/model/UserInfo";
 
 interface TeamInfo {
     id: number;

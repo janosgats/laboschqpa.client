@@ -3,15 +3,11 @@ import {NextPage} from "next";
 import React, {FC, useContext, useState} from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import {useRouter} from "next/router";
-import UserNameFormatter, {UserNameContainer} from "~/utils/UserNameFormatter";
+import UserNameFormatter from "~/utils/UserNameFormatter";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-
-interface UserInfo extends UserNameContainer {
-    userId: number;
-    profilePicUrl: string;
-}
+import {UserInfo} from "~/model/UserInfo";
 
 //TODO: Replace with MUi
 const Index: NextPage = () => {
@@ -72,7 +68,11 @@ const Index: NextPage = () => {
                     <h2>{UserNameFormatter.getFullName(userInfo)}</h2>
                     <h4>{UserNameFormatter.getNickName(userInfo)}</h4>
                     <img src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)}/>
-
+                    <ul>
+                        {
+                            userInfo.authorities.map(value => <li key={value}>{value}</li>)
+                        }
+                    </ul>
                     {userInfo.userId == currentUser.getUserInfo().userId && (
                         <div>
                             <button onClick={() => setUserInfoEditorOpen(true)}>Edit info</button>
