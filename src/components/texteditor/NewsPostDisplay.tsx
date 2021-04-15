@@ -9,6 +9,7 @@ import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
 import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
+import EventBus from "~/utils/EventBus";
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -61,6 +62,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
         setIsAuthorFetchingPending(true);
         UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId)
             .then(value => setAuthor(value))
+            .catch(() => EventBus.notifyError("Error while loading Author"))
             .finally(() => setIsAuthorFetchingPending(false));
     }
 
