@@ -24,6 +24,10 @@ const NavBar: FC = () => {
                 <Link href="/users">
                     <button>users</button>
                 </Link>
+                &nbsp;
+                <Link href="/news">
+                    <button>news</button>
+                </Link>
             </nav>
         </div>
     )
