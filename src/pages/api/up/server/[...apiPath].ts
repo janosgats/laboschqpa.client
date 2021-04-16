@@ -10,19 +10,22 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/logout": ["POST"],
     "/api/noAuthRequired/registerByEmail/submitEmail": ["POST"],
     "/api/noAuthRequired/registerByEmail/verifyEmail": ["POST"],
-    "/api/currentUser/userInfo": ["GET"],
+    "/api/currentUser/userInfoWithAuthorities": ["GET"],
     "/api/currentUser/csrfToken": ["GET"],
     "/api/profileInfo/currentProfileInfo": ["GET"],
     "/api/team/listActiveTeamsWithScores": ["GET"],
     "/api/team/info": ["GET"],
     "/api/team/listMembers": ["GET"],
     "/api/user/info": ["GET"],
+    "/api/user/infoWithAuthorities": ["GET"],
     "/api/user/setInfo": ["POST"],
     "/api/newsPost/newsPost": ["GET"],
     "/api/newsPost/listAllWithAttachments": ["GET"],
     "/api/newsPost/edit": ["POST"],
     "/api/newsPost/createNew": ["POST"],
     "/api/newsPost/delete": ["DELETE"],
+    "/api/user/listAll": ["GET"],
+    "/api/admin/users/logInAsUser": ["POST"],
 
 }
 

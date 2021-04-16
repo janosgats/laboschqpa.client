@@ -1,5 +1,11 @@
 import {ApiErrorDescriptor} from "~/utils/api/ApiErrorDescriptorUtils";
 
+export enum ApiErrorCategory {
+    fieldValidationFailed = "fieldValidationFailed",
+    registration = "registration",
+    auth = "auth",
+}
+
 export default class ApiError {
     private errorCategory: string;
     private errorCode: number;
@@ -22,6 +28,6 @@ export default class ApiError {
     }
 }
 
-export const fieldValidationFailed_FIELD_VALIDATION_FAILED = new ApiError("fieldValidationFailed", 1);
-export const registration_E_MAIL_ADDRESS_IS_ALREADY_IN_THE_SYSTEM = new ApiError("registration", 1);
-export const auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER = new ApiError("auth", 1);
+export const fieldValidationFailed_FIELD_VALIDATION_FAILED = new ApiError(ApiErrorCategory.fieldValidationFailed, 1);
+export const registration_E_MAIL_ADDRESS_IS_ALREADY_IN_THE_SYSTEM = new ApiError(ApiErrorCategory.registration, 1);
+export const auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER = new ApiError(ApiErrorCategory.auth, 1);

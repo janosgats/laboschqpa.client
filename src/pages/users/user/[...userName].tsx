@@ -17,7 +17,7 @@ const Index: NextPage = () => {
 
     const usedEndpoint = useEndpoint<UserInfo>({
         config: {
-            url: "/api/up/server/api/user/info",
+            url: "/api/up/server/api/user/infoWithAuthorities",
             params: {
                 id: router.query["id"]
             }

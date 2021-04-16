@@ -5,7 +5,6 @@ import React, {useContext} from "react";
 import EventBus from "~/utils/EventBus";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
-import LogoutForm from "~/components/join/LogoutForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import NewsPostDisplay from "~/components/texteditor/NewsPostDisplay";
 import FetchableDisplayContainer from "~/components/texteditor/FetchableDisplayContainer";
@@ -26,9 +25,6 @@ const Index: NextPage = () => {
             <hr/>
             <h4>LoginForm</h4>
             <LoginForm/>
-            <hr/>
-            <h4>LogoutForm</h4>
-            <LogoutForm/>
             <hr/>
 
             <button onClick={() =>
