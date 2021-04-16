@@ -99,7 +99,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity,
     return (
         <>
             {isDeleted && (
-                <p style={{color: 'red'}}>Entity was deleted</p>
+                <p>Entity was deleted</p>
             )}
 
             {(!isDeleted) && (
