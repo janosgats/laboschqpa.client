@@ -60,7 +60,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
     function fetchAuthor() {
         setIsAuthorFetchingPending(true);
-        UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId)
+        UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId, false)
             .then(value => setAuthor(value))
             .catch(() => EventBus.notifyError("Error while loading Author"))
             .finally(() => setIsAuthorFetchingPending(false));

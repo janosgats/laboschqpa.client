@@ -3,7 +3,6 @@ import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 
 
-//TODO: Replace with MUI
 const LoginWall: FC = () => {
     return (
         <div>

@@ -12,7 +12,6 @@ interface EmailVerificationParams {
     successfullyExtracted: boolean;
 }
 
-//TODO: Replace with MUI
 const nextPage: NextPage = () => {
     const router = useRouter();
     const [isEmailVerificationInProgress, setEmailVerificationInProgress] = useState<boolean>(true);
@@ -75,7 +74,7 @@ const nextPage: NextPage = () => {
     return (
         <div>
             <Head>
-                <title>TODO: Fill the head, etc...</title>
+                <title>Email verification</title>
             </Head>
             {
                 isEmailVerificationInProgress && (

@@ -42,7 +42,7 @@ const nextPage: NextPage = () => {
     return (
         <div>
             <Head>
-                <title>TODO: Fill the head, etc...</title>
+                <title>Almost there...</title>
             </Head>
             {
                 isLoginInProgress && (

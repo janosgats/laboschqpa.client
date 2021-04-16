@@ -11,7 +11,6 @@ interface TeamWithScore {
     score: number;
 }
 
-//TODO: Replace with MUi
 const Index: NextPage = () => {
     const usedEndpoint = useEndpoint<TeamWithScore[]>({
         config: {

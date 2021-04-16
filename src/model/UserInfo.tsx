@@ -1,3 +1,5 @@
+import {Authority} from "~/enums/Authority";
+
 export interface UserNameContainer {
     firstName: string;
     lastName: string;
@@ -8,5 +10,5 @@ export interface UserInfo extends UserNameContainer {
     userId: number;
 
     profilePicUrl: string;
-    authorities: string[];
+    authorities: Authority[];
 }

@@ -5,7 +5,7 @@ import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException
 import {registration_E_MAIL_ADDRESS_IS_ALREADY_IN_THE_SYSTEM} from "~/enums/ApiErrors";
 
 
-//TODO: Replace with MUI and add validations
+//TODO: Add e-mail validation
 const RegisterForm: FC = () => {
     const [email, setEmail] = useState<string>("");
     const [isCheckYourMailDialogShown, setCheckYourMailDialogShown] = useState<boolean>(false);

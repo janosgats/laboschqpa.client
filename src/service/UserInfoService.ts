@@ -6,18 +6,18 @@ export interface Author {
     editor: UserInfo;
 }
 
-async function getUserInfo(userId: number): Promise<UserInfo> {
+async function getUserInfo(userId: number, publishExceptionEvents = true): Promise<UserInfo> {
     return callJsonEndpoint<UserInfo>({
         url: "/api/up/server/api/user/info",
         params: {
             id: userId
         }
-    }).then(resp => resp.data);
+    }, publishExceptionEvents).then(resp => resp.data);
 }
 
-async function getAuthor(creatorUserId: number, editorUserId: number): Promise<Author> {
-    const creatorPromise = UserInfoService.getUserInfo(creatorUserId);
-    const editorPromise = UserInfoService.getUserInfo(editorUserId);
+async function getAuthor(creatorUserId: number, editorUserId: number, publishExceptionEvents = true): Promise<Author> {
+    const creatorPromise = UserInfoService.getUserInfo(creatorUserId, publishExceptionEvents);
+    const editorPromise = UserInfoService.getUserInfo(editorUserId, publishExceptionEvents);
 
     return await Promise.all([creatorPromise, editorPromise])
         .then(value => {

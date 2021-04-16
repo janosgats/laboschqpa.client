@@ -3,14 +3,16 @@ import {FetchableDisplay} from "~/model/FetchableDisplay";
 import EventBus from "~/utils/EventBus";
 import {CircularProgress} from "@material-ui/core";
 import {ErrorBoundary} from "react-error-boundary";
+import Entity from "~/model/Entity";
 
-interface Props<E, S> {
+interface Props<E extends Entity, S> {
     entityId?: number;
+    overriddenBeginningEntity?: E;
     shouldCreateNew: boolean;
     displayComponent: FetchableDisplay<E, S>;
 }
 
-const FetchableDisplayContainer: FC<Props<unknown, unknown>> = <E, S>(props: Props<E, S>) => {
+const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity, S>(props: Props<E, S>) => {
     const WrappedDisplay = props.displayComponent;
 
     const [isCreatingNew, setIsCreatingNew] = useState<boolean>(props.shouldCreateNew);
@@ -23,11 +25,18 @@ const FetchableDisplayContainer: FC<Props<unknown, unknown>> = <E, S>(props: Pro
     const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!isCreatingNew) {
+        if (isCreatingNew) {
+            return;
+        }
+
+        if (props.overriddenBeginningEntity) {
+            setEntityId(props.overriddenBeginningEntity.id);
+            setEntity(props.overriddenBeginningEntity);
+        } else {
             setEntityId(props.entityId);
             retrieveEntity(props.entityId);
         }
-    }, [props.entityId]);
+    }, [props.entityId, props.overriddenBeginningEntity]);
 
     async function retrieveEntity(id: number): Promise<void> {
         setRetrieveError(false);
@@ -100,7 +109,7 @@ const FetchableDisplayContainer: FC<Props<unknown, unknown>> = <E, S>(props: Pro
                     )}
                     {retrieveError && (
                         <>
-                            <p>TODO: Show error here: Cannot retrieve entity</p>
+                            <p>Cannot retrieve entity :'(</p>
                             <button onClick={() => retrieveEntity(entityId)}>Retry</button>
                         </>
                     )}

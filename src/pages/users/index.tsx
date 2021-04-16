@@ -3,7 +3,6 @@ import {NextPage} from "next";
 import React from "react";
 
 
-//TODO: Replace with MUi
 const Index: NextPage = () => {
 
     return (

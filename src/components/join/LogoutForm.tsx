@@ -4,7 +4,6 @@ import EventBus from "~/utils/EventBus";
 import {useRouter} from "next/router";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 
-//TODO: Replace with MUI
 const LogoutForm: FC = () => {
     const router = useRouter();
     const loggedInUser = useContext(CurrentUserContext);

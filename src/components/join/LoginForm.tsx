@@ -9,7 +9,6 @@ const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redir
 
 type loginOauthProvider = "google" | "github";
 
-//TODO: Replace with MUI
 const LoginForm: FC = () => {
     const router = useRouter();
 

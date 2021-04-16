@@ -9,7 +9,6 @@ import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import {UserInfo} from "~/model/UserInfo";
 
-//TODO: Replace with MUi
 const Index: NextPage = () => {
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
