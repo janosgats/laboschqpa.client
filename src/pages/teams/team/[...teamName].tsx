@@ -20,7 +20,6 @@ interface TeamMember extends UserNameContainer {
     teamRole: number;
 }
 
-//TODO: Replace with MUi
 const Index: NextPage = () => {
     const router = useRouter();
 

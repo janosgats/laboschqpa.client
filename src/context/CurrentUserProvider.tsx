@@ -27,7 +27,6 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     const router = useRouter();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(null);
     const [userInfo, setUserInfo] = useState<UserInfo>(null);
-    console.log(JSON.stringify(router));
 
     function shouldApplyLoginWall(): boolean {
         return !router.pathname.startsWith('/login/');

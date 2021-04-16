@@ -2,7 +2,6 @@ import React, {FC, useContext} from "react";
 import Link from "next/link";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 
-//TODO: Replace with MUI
 const NavBar: FC = () => {
     const currentUser = useContext(CurrentUserContext);
 
@@ -23,6 +22,10 @@ const NavBar: FC = () => {
                 &nbsp;
                 <Link href="/users">
                     <button>users</button>
+                </Link>
+                &nbsp;
+                <Link href="/news">
+                    <button>news</button>
                 </Link>
             </nav>
         </div>

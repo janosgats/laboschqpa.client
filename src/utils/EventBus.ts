@@ -39,9 +39,9 @@ const notify = (notificationEvent: AppNotification): void => {
     publish(EventType.APP_NOTIFICATION, notificationEvent);
 };
 
-const notifyLevel = (level: AppNotificationLevel,
-                     message: string = undefined, title: string = undefined, timeout: number = undefined,
-                     onclick: () => void = () => {
+const notifyOnLevel = (level: AppNotificationLevel,
+                       message: string = undefined, title: string = undefined, timeout: number = undefined,
+                       onclick: () => void = () => {
                      }, priority: boolean = false): void => {
     const notification: AppNotification = {
         level: level,
@@ -57,25 +57,25 @@ const notifyLevel = (level: AppNotificationLevel,
 const notifyInfo = (message: string = undefined, title: string = undefined, timeout: number = undefined,
                     onclick: () => void = () => {
                     }, priority: boolean = false): void => {
-    notifyLevel(AppNotificationLevel.INFO, message, title, timeout, onclick, priority);
+    notifyOnLevel(AppNotificationLevel.INFO, message, title, timeout, onclick, priority);
 };
 
 const notifySuccess = (message: string = undefined, title: string = undefined, timeout: number = undefined,
                        onclick: () => void = () => {
                        }, priority: boolean = false): void => {
-    notifyLevel(AppNotificationLevel.SUCCESS, message, title, timeout, onclick, priority);
+    notifyOnLevel(AppNotificationLevel.SUCCESS, message, title, timeout, onclick, priority);
 };
 
 const notifyWarning = (message: string = undefined, title: string = undefined, timeout: number = undefined,
                        onclick: () => void = () => {
                        }, priority: boolean = false): void => {
-    notifyLevel(AppNotificationLevel.WARNING, message, title, timeout, onclick, priority);
+    notifyOnLevel(AppNotificationLevel.WARNING, message, title, timeout, onclick, priority);
 };
 
 const notifyError = (message: string = undefined, title: string = undefined, timeout: number = undefined,
                      onclick: () => void = () => {
                      }, priority: boolean = false): void => {
-    notifyLevel(AppNotificationLevel.ERROR, message, title, timeout, onclick, priority);
+    notifyOnLevel(AppNotificationLevel.ERROR, message, title, timeout, onclick, priority);
 };
 
 const EventBus = {
@@ -83,7 +83,7 @@ const EventBus = {
     publish,
     publishException,
     notify,
-    notifyLevel,
+    notifyOnLevel,
     notifyInfo,
     notifySuccess,
     notifyWarning,

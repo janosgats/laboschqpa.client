@@ -1,27 +1,18 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext} from "react";
 import EventBus from "~/utils/EventBus";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 import LogoutForm from "~/components/join/LogoutForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import NewsPostDisplay from "~/components/texteditor/NewsPostDisplay";
+import FetchableDisplayContainer from "~/components/texteditor/FetchableDisplayContainer";
 
 
 const Index: NextPage = () => {
     const currentUser = useContext(CurrentUserContext);
-    const [profileInfo, setProfileInfo] = useState(undefined);
-
-    useEffect(() => {
-            callJsonEndpoint({
-                url: "/api/up/server/api/profileInfo/currentProfileInfo"
-            }).then(res => setProfileInfo(res.data)
-            ).catch(() => setProfileInfo("Couldn't load profile info"));
-
-        }, []
-    );
 
     return (
         <div className={styles.container}>
@@ -52,14 +43,11 @@ const Index: NextPage = () => {
 
             <button onClick={() => currentUser.getUserInfo()}>Gimme UserInfo</button>
 
+            <FetchableDisplayContainer entityId={3} shouldCreateNew={false} displayComponent={NewsPostDisplay}/>
 
-                <div style={{borderWidth: 1, borderStyle: "solid", borderColor: "blue"}}>
-                    <h3>profile info</h3>
-                    <br/>
-                    {
-                        profileInfo ? JSON.stringify(profileInfo) : "Nothing was loaded yet"
-                    }
-                </div>
+            <FetchableDisplayContainer shouldCreateNew={true} displayComponent={NewsPostDisplay}/>
+
+            <div style={{margin: 200}}></div>
 
         </div>
     )

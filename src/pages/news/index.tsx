@@ -1,16 +1,16 @@
 import Head from 'next/head'
 import {NextPage} from "next";
 import React from "react";
-
+import NewsFeedPanel from "~/components/NewsFeedPanel";
 
 const Index: NextPage = () => {
-
     return (
         <div>
             <Head>
-                <title>Users</title>
+                <title>News</title>
             </Head>
-            <h2>TODO: List users</h2>
+
+            <NewsFeedPanel/>
         </div>
     )
 };
