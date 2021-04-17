@@ -1,6 +1,6 @@
 import React, {FC} from "react";
-import AppNotificationEventDisplay from "~/components/eventDisplays/AppNotificationEventDisplay";
-import ExceptionEventDisplay from "~/components/eventDisplays/ExceptionEventDisplay";
+import AppNotificationEventDisplay from "~/components/eventDisplay/AppNotificationEventDisplay";
+import ExceptionEventDisplay from "~/components/eventDisplay/ExceptionEventDisplay";
 
 
 const EventDisplayContainer: FC = () => {

@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react'
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Authority} from "~/enums/Authority";
 import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
-import RichTextEditor from "~/components/texteditor/RichTextEditor";
+import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
@@ -10,6 +10,7 @@ import CreatedEntityResponse from "~/model/CreatedEntityResponse";
 import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -71,7 +72,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
             <div style={{borderStyle: "solid", borderWidth: 2, padding: 10}}>
 
                 {(!isEdited)
-                && currentUser.getUserInfo() && currentUser.getUserInfo().authorities.includes(Authority.NewsPostEditor) && (
+                && currentUser.hasAuthority(Authority.NewsPostEditor) && (
                     <button onClick={() => setIsEdited(true)}>Edit</button>
                 )}
 
@@ -86,8 +87,8 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                 {(!props.isCreatingNew) && (!isEdited) && (
                     <>
                         <ul>
-                            <li>Created at: {props.existingEntity.creationTime}</li>
-                            <li>Last edited at: {props.existingEntity.editTime}</li>
+                            <li>Created at: {DateTimeFormatter.toBasic(props.existingEntity.creationTime)}</li>
+                            <li>Last edited at: {DateTimeFormatter.toBasic(props.existingEntity.editTime)}</li>
                         </ul>
                         {author ? (
                             <ul>
@@ -134,7 +135,7 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
     }
 
     deleteEntity(id: number): Promise<any> {
-        return callJsonEndpoint<NewsPost>({
+        return callJsonEndpoint({
             url: "/api/up/server/api/newsPost/delete",
             method: "delete",
             params: {

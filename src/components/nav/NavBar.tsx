@@ -47,7 +47,12 @@ const NavBar: FC = () => {
                 <Link href="/news">
                     <button>news</button>
                 </Link>
-                {currentUser.getUserInfo() && currentUser.getUserInfo().authorities.includes(Authority.Admin) && (
+                &nbsp;
+                <Link href="/objectives">
+                    <button>objectives</button>
+                </Link>
+
+                {currentUser.hasAuthority(Authority.Admin) && (
                     <>
                         &nbsp;
                         <Link href="/admin">
@@ -55,6 +60,7 @@ const NavBar: FC = () => {
                         </Link>
                     </>
                 )}
+
                 &nbsp;
                 <button onClick={() => doLogout()}>Logout</button>
             </nav>

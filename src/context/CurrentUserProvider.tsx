@@ -4,9 +4,14 @@ import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import LoginWall from "~/components/join/LoginWall";
 import {useRouter} from "next/router";
 import {UserInfo} from "~/model/UserInfo";
+import {Authority} from "~/enums/Authority";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
+    /**
+     * Returns false until the UserInfo was fetched. After that, it checks for authority.
+     */
+    hasAuthority: (authorityToCheck: Authority) => boolean;
     isLoggedIn: () => boolean;
     setLoggedInState: (isLoggedIn: boolean) => void;
     reload: () => Promise<void>;
@@ -14,6 +19,7 @@ export interface CurrentUser {
 
 export const CurrentUserContext = createContext<CurrentUser>({
     getUserInfo: null,
+    hasAuthority: null,
     isLoggedIn: null,
     setLoggedInState: null,
     reload: null,
@@ -70,6 +76,10 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         return null;
     }
 
+    function hasAuthority(authorityToCheck: Authority): boolean {
+        return getUserInfo() && getUserInfo().authorities.includes(authorityToCheck);
+    }
+
     function setLoggedInState(isLoggedIn: boolean) {
         setIsUserLoggedIn(isLoggedIn);
         setUserInfo(null);
@@ -83,7 +93,8 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         getUserInfo: getUserInfo,
         isLoggedIn: isLoggedIn,
         setLoggedInState: setLoggedInState,
-        reload: reload
+        reload: reload,
+        hasAuthority: hasAuthority,
     };
 
     function getPageContent(): ReactNode {

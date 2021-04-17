@@ -7,12 +7,7 @@ import {useRouter} from "next/router";
 import {TeamRole, teamRoleData} from "~/enums/TeamRole";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import {UserNameContainer} from "~/model/UserInfo";
-
-interface TeamInfo {
-    id: number;
-    name: string;
-    archived: boolean;
-}
+import {TeamInfo} from "~/model/Team";
 
 interface TeamMember extends UserNameContainer {
     userId: number;

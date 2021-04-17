@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import React from "react";
-import EventDisplayContainer from "~/components/eventDisplays/EventDisplayContainer";
+import EventDisplayContainer from "~/components/eventDisplay/EventDisplayContainer";
 import CurrentUserProvider from "~/context/CurrentUserProvider";
 import NavBar from "~/components/nav/NavBar";
 import Head from "next/head";

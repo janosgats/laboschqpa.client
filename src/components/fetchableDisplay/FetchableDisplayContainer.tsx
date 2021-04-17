@@ -82,8 +82,8 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity,
             setIsPendingApiCall(true);
             const idToRetrieve = await doSaveAndGetIdToRetrieve(command);
             await retrieveEntity(idToRetrieve);
-        } catch (ignored) {
-
+        } catch (e) {
+            throw e;
         } finally {
             setIsPendingApiCall(false);
         }

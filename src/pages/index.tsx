@@ -6,8 +6,8 @@ import EventBus from "~/utils/EventBus";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import NewsPostDisplay from "~/components/texteditor/NewsPostDisplay";
-import FetchableDisplayContainer from "~/components/texteditor/FetchableDisplayContainer";
+import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
+import FetchableDisplayContainer from "~/components/fetchableDisplay/FetchableDisplayContainer";
 
 
 const Index: NextPage = () => {
