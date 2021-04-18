@@ -1,7 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
@@ -11,18 +9,44 @@ import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
+import {Submission} from "~/model/usergeneratedcontent/Submission";
+import {TeamRole} from "~/enums/TeamRole";
+import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
+import {submission_OBJECTIVE_DEADLINE_HAS_PASSED, submission_OBJECTIVE_IS_NOT_SUBMITTABLE} from "~/enums/ApiErrors";
+import {getSurelyDate} from "~/utils/DateHelpers";
+import {Authority} from "~/enums/Authority";
+import Scorer from "~/components/Scorer";
 
-export interface SaveNewsPostCommand {
+export interface SaveSubmissionCommand {
+    /**
+     * Only needed when creating new submission
+     */
+    objectiveId?: number;
+
     content: string;
     attachments: number[];
 }
 
-const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props) => {
+export interface SubmissionDisplayExtraProps {
+    creationObjectiveId?: number;
+    creationObjectiveTitle?: string;
+    creationTeamName?: string;
+
+    showObjectiveTitle: boolean;
+    showTeamName: boolean;
+}
+
+const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, SubmissionDisplayExtraProps> = (props) => {
+    const objectiveId = props.isCreatingNew ? props.creationObjectiveId : props.existingEntity.objectiveId;
+    const objectiveTitle = props.isCreatingNew ? props.creationObjectiveTitle : props.existingEntity.objectiveTitle;
+    const teamName = props.isCreatingNew ? props.creationTeamName : props.existingEntity.teamName;
     const defaultContent = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.content;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
+    const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
+
     const [content, setContent] = useState<string>(defaultContent);
     const [attachments, setAttachments] = useState<number[]>(defaultAttachments);
 
@@ -34,8 +58,9 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
         setAttachments(defaultAttachments);
     }, [props.existingEntity]);
 
-    function composeSaveNewsPostCommand(): SaveNewsPostCommand {
+    function composeSaveSubmissionCommand(): SaveSubmissionCommand {
         return {
+            objectiveId: objectiveId,
             content: content,
             attachments: attachments
         };
@@ -43,7 +68,16 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
     function doSave() {
         //TODO: Wait for attachments to finish uploading
-        props.onSave(composeSaveNewsPostCommand());
+        props.onSave(composeSaveSubmissionCommand())
+            .catch(e => {
+                if (e instanceof ApiErrorDescriptorException) {
+                    if (submission_OBJECTIVE_DEADLINE_HAS_PASSED.is(e.apiErrorDescriptor)) {
+                        EventBus.notifyWarning('The deadline of this objective has already passed', 'Cannot submit')
+                    } else if (submission_OBJECTIVE_IS_NOT_SUBMITTABLE.is(e.apiErrorDescriptor)) {
+                        EventBus.notifyWarning('This objective is not open for manual submissions', 'Cannot submit')
+                    }
+                }
+            });
     }
 
     function doCancelEdit() {
@@ -53,7 +87,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     function doDelete() {
-        const surelyDelete: boolean = confirm("Do you want to delete this NewsPost?");
+        const surelyDelete: boolean = confirm("Do you want to delete this Submission?");
         if (surelyDelete) {
             props.onDelete();
         }
@@ -67,13 +101,35 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
             .finally(() => setIsAuthorFetchingPending(false));
     }
 
+    function canEditSubmission(): boolean {
+        if (!currentUser.isMemberOrLeaderOfTeam(props.existingEntity.teamId)) {
+            return false;
+        }
+        if (!props.existingEntity.objectiveSubmittable) {
+            return false;
+        }
+        if (getSurelyDate(props.existingEntity.objectiveDeadline).getTime() < new Date().getTime()) {
+            return false;
+        }
+
+        return currentUser.getUserInfo().teamRole == TeamRole.LEADER
+            || currentUser.getUserInfo().userId === props.existingEntity.creatorUserId;
+    }
+
     return (
         <>
             <div style={{borderStyle: "solid", borderWidth: 2, padding: 10}}>
 
-                {(!isEdited)
-                && currentUser.hasAuthority(Authority.NewsPostEditor) && (
+                {(!isEdited) && canEditSubmission() && (
                     <button onClick={() => setIsEdited(true)}>Edit</button>
+                )}
+
+                {props.showObjectiveTitle && (
+                    <h1>For {objectiveTitle}</h1>
+                )}
+
+                {props.showTeamName && (
+                    <h3>By {teamName}</h3>
                 )}
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
@@ -86,6 +142,16 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
                 {(!isEdited) && (
                     <>
+                        {currentUser.hasAuthority(Authority.TeamScoreEditor) && (
+                            <button onClick={() => setIsScorerOpen(true)}>Score</button>
+                        )}
+
+                        {isScorerOpen && (
+                            <Scorer defaultObjectiveId={props.existingEntity.objectiveId}
+                                    defaultTeamId={props.existingEntity.teamId}
+                                    onClose={() => setIsScorerOpen(false)}/>
+                        )}
+
                         <ul>
                             <li>Created at: {DateTimeFormatter.toBasic(props.existingEntity.creationTime)}</li>
                             <li>Last edited at: {DateTimeFormatter.toBasic(props.existingEntity.editTime)}</li>
@@ -122,12 +188,13 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     )
 }
 
-class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> {
-    createNewEntity(command: SaveNewsPostCommand): Promise<number> {
+class FetchingToolsImpl implements FetchingTools<Submission, SaveSubmissionCommand> {
+    createNewEntity(command: SaveSubmissionCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
-            url: "/api/up/server/api/newsPost/createNew",
+            url: "/api/up/server/api/submission/createNew",
             method: "post",
             data: {
+                objectiveId: command.objectiveId,
                 content: command.content,
                 attachments: command.attachments,
             }
@@ -136,7 +203,7 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
 
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/newsPost/delete",
+            url: "/api/up/server/api/submission/delete",
             method: "delete",
             params: {
                 id: id
@@ -144,9 +211,9 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
         });
     }
 
-    editEntity(id: number, command: SaveNewsPostCommand): Promise<any> {
+    editEntity(id: number, command: SaveSubmissionCommand): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/newsPost/edit",
+            url: "/api/up/server/api/submission/edit",
             method: "post",
             data: {
                 id: id,
@@ -156,9 +223,9 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
         });
     }
 
-    fetchEntity(id: number): Promise<NewsPost> {
-        return callJsonEndpoint<NewsPost>({
-            url: "/api/up/server/api/newsPost/newsPost",
+    fetchEntity(id: number): Promise<Submission> {
+        return callJsonEndpoint<Submission>({
+            url: "/api/up/server/api/submission/submission",
             method: "get",
             params: {
                 id: id
@@ -167,6 +234,6 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
     }
 }
 
-NewsPostDisplay.fetchingTools = new FetchingToolsImpl();
+SubmissionDisplay.fetchingTools = new FetchingToolsImpl();
 
-export default NewsPostDisplay;
+export default SubmissionDisplay;

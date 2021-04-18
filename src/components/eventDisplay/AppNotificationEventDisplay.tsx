@@ -7,6 +7,10 @@ import 'react-notifications/lib/notifications.css';
 EventBus.subscribe(EventType.APP_NOTIFICATION, "AppNotificationEventDisplay", (event => {
     const noti = event as AppNotification;
 
+    if (typeof noti.timeout === "undefined") {
+        noti.timeout = 20000;
+    }
+
     switch (noti.level) {
         case AppNotificationLevel.INFO:
             NotificationManager.info(noti.message, noti.title, noti.timeout, noti.onClick, noti.priority);

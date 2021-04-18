@@ -15,6 +15,7 @@ import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
 import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
 import Scorer from "~/components/Scorer";
+import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 
 export interface SaveObjectiveCommand {
     title: string;
@@ -36,6 +37,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
     const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
+    const [isSubmissionDisplayOpen, setIsSubmissionDisplayOpen] = useState<boolean>(false);
 
     const [title, setTitle] = useState<string>(defaultTitle);
     const [description, setDescription] = useState<string>(defaultDescription);
@@ -93,6 +95,10 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
             .finally(() => setIsAuthorFetchingPending(false));
     }
 
+    function isBeforeSubmissionDeadline() {
+        return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
+    }
+
     return (
         <>
             <div style={{borderStyle: "solid", borderWidth: 2, padding: 10}}>
@@ -136,13 +142,30 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                     <p>{isEdited && 'Editing'} Attachments: {JSON.stringify(attachments)}</p>
                 </div>
 
-                {(!props.isCreatingNew) && (!isEdited) && (
+                {(!isEdited) && (
                     <>
-                        {submittable && (
-                            <button onClick={() => alert('TODO submission display')}>Submit</button>
+                        {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
+                            <button onClick={() => setIsSubmissionDisplayOpen(true)}>Submit</button>
                         )}
                         {currentUser.hasAuthority(Authority.TeamScoreEditor) && (
                             <button onClick={() => setIsScorerOpen(true)}>Score</button>
+                        )}
+
+                        {isSubmissionDisplayOpen && (
+                            <div style={{borderStyle: 'solid', borderColor: 'green'}}>
+                                <p>TODO: This should be a modal</p>
+                                <button onClick={() => setIsSubmissionDisplayOpen(false)}>Close modal</button>
+                                <SubmissionDisplayContainer
+                                    shouldCreateNew={true}
+                                    displayExtraProps={{
+                                        creationObjectiveId: props.existingEntity.id,
+                                        creationObjectiveTitle: props.existingEntity.title,
+                                        creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                        showObjectiveTitle: true,
+                                        showTeamName: !!currentUser.getUserInfo()
+                                    }}
+                                />
+                            </div>
                         )}
 
                         {isScorerOpen && (

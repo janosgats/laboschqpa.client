@@ -14,7 +14,8 @@ export interface UserInfo extends UserNameContainer {
 
     teamId: number;
     teamRole: TeamRole;
+    teamName?: string;
 
     enabled: boolean;
-    authorities: Authority[];
+    authorities?: Authority[];
 }

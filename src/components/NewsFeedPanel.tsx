@@ -1,10 +1,9 @@
 import React, {FC, useContext, useState} from 'react'
 import useEndpoint from "~/hooks/useEndpoint";
 import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
-import FetchableDisplayContainer from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Authority} from "~/enums/Authority";
+import {NewsPostDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 
 const NewsFeedPanel: FC<{}> = () => {
     const currentUser = useContext(CurrentUserContext);
@@ -24,9 +23,8 @@ const NewsFeedPanel: FC<{}> = () => {
             )}
 
             {wasCreateNewPostClicked && (
-                <FetchableDisplayContainer
+                <NewsPostDisplayContainer
                     shouldCreateNew={true}
-                    displayComponent={NewsPostDisplay}
                 />
             )}
 
@@ -44,11 +42,10 @@ const NewsFeedPanel: FC<{}> = () => {
                 usedEndpoint.data &&
                 usedEndpoint.data.map((newsPost, index) => {
                     return (
-                        <FetchableDisplayContainer
+                        <NewsPostDisplayContainer
                             key={newsPost.id}
                             overriddenBeginningEntity={newsPost}
                             shouldCreateNew={false}
-                            displayComponent={NewsPostDisplay}
                         />
                     );
                 })

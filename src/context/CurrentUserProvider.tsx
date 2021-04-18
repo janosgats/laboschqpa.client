@@ -5,6 +5,7 @@ import LoginWall from "~/components/join/LoginWall";
 import {useRouter} from "next/router";
 import {UserInfo} from "~/model/UserInfo";
 import {Authority} from "~/enums/Authority";
+import {TeamRole} from "~/enums/TeamRole";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
@@ -12,6 +13,14 @@ export interface CurrentUser {
      * Returns false until the UserInfo was fetched. After that, it checks for authority.
      */
     hasAuthority: (authorityToCheck: Authority) => boolean;
+    /**
+     * Returns false until the UserInfo was fetched. After that, it checks for team membership.
+     */
+    isMemberOrLeaderOfTeam: (teamId: number) => boolean;
+    /**
+     * Returns false until the UserInfo was fetched. After that, it checks for team membership.
+     */
+    isMemberOrLeaderOfAnyTeam: () => boolean;
     isLoggedIn: () => boolean;
     setLoggedInState: (isLoggedIn: boolean) => void;
     reload: () => Promise<void>;
@@ -20,6 +29,8 @@ export interface CurrentUser {
 export const CurrentUserContext = createContext<CurrentUser>({
     getUserInfo: null,
     hasAuthority: null,
+    isMemberOrLeaderOfTeam: null,
+    isMemberOrLeaderOfAnyTeam: null,
     isLoggedIn: null,
     setLoggedInState: null,
     reload: null,
@@ -40,7 +51,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         await callJsonEndpoint<UserInfo>({
-                url: "/api/up/server/api/currentUser/userInfoWithAuthorities"
+                url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
             },
             true,
             [200, 403]
@@ -80,6 +91,17 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         return getUserInfo() && getUserInfo().authorities.includes(authorityToCheck);
     }
 
+    function isMemberOrLeaderOfTeam(teamId: number): boolean {
+        return getUserInfo()
+            && getUserInfo().teamId === teamId
+            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
+    }
+
+    function isMemberOrLeaderOfAnyTeam(): boolean {
+        return getUserInfo()
+            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
+    }
+
     function setLoggedInState(isLoggedIn: boolean) {
         setIsUserLoggedIn(isLoggedIn);
         setUserInfo(null);
@@ -95,6 +117,9 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         setLoggedInState: setLoggedInState,
         reload: reload,
         hasAuthority: hasAuthority,
+        isMemberOrLeaderOfTeam: isMemberOrLeaderOfTeam,
+        isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
+
     };
 
     function getPageContent(): ReactNode {

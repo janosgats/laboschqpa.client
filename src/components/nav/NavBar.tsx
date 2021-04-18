@@ -51,6 +51,10 @@ const NavBar: FC = () => {
                 <Link href="/objectives">
                     <button>objectives</button>
                 </Link>
+                &nbsp;
+                <Link href="/submissions">
+                    <button>submissions</button>
+                </Link>
 
                 {currentUser.hasAuthority(Authority.Admin) && (
                     <>

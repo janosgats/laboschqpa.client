@@ -4,16 +4,24 @@ import EventBus from "~/utils/EventBus";
 import {CircularProgress} from "@material-ui/core";
 import {ErrorBoundary} from "react-error-boundary";
 import Entity from "~/model/Entity";
+import SubmissionDisplay, {SubmissionDisplayExtraProps} from "~/components/fetchableDisplay/SubmissionDisplay";
+import {Submission} from "~/model/usergeneratedcontent/Submission";
+import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
+import ObjectiveDisplay from "~/components/fetchableDisplay/ObjectiveDisplay";
+import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
+import {Objective} from "~/model/usergeneratedcontent/Objective";
 
-interface Props<E extends Entity, S> {
+interface Props<E extends Entity, S, P extends Record<string, any>> {
     entityId?: number;
     overriddenBeginningEntity?: E;
     shouldCreateNew: boolean;
-    displayComponent: FetchableDisplay<E, S>;
+    displayComponent: FetchableDisplay<E, S, P>;
+    displayExtraProps?: P;
 }
 
-const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity, S>(props: Props<E, S>) => {
-    const WrappedDisplay = props.displayComponent;
+const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
+    = <E extends Entity, S, P extends Record<string, any>>(props: Props<E, S, P>) => {
+    const WrappedDisplay: FetchableDisplay<E, S, P> = props.displayComponent;
 
     const [isCreatingNew, setIsCreatingNew] = useState<boolean>(props.shouldCreateNew);
     const [entityId, setEntityId] = useState<number>(props.entityId);
@@ -121,6 +129,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity,
                                 isApiCallPending={pendingApiCall}
                                 onSave={handleOnSave}
                                 onDelete={handleOnDelete}
+                                {...(props.displayExtraProps ? props.displayExtraProps : ({} as P))}
                             />
                         </ErrorBoundary>
                     )}
@@ -130,4 +139,55 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown>> = <E extends Entity,
     )
 }
 
-export default FetchableDisplayContainer;
+interface SubmissionDisplayContainerProps {
+    entityId?: number;
+    overriddenBeginningEntity?: Submission;
+    shouldCreateNew: boolean;
+    displayExtraProps: SubmissionDisplayExtraProps;
+}
+
+export const SubmissionDisplayContainer: FC<SubmissionDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={SubmissionDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            displayExtraProps={props.displayExtraProps}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+        />
+    );
+}
+
+interface NewsPostDisplayContainerProps {
+    entityId?: number;
+    overriddenBeginningEntity?: NewsPost;
+    shouldCreateNew: boolean;
+}
+
+export const NewsPostDisplayContainer: FC<NewsPostDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={NewsPostDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+        />
+    );
+}
+
+interface ObjectiveDisplayContainerProps {
+    entityId?: number;
+    overriddenBeginningEntity?: Objective;
+    shouldCreateNew: boolean;
+}
+
+export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={ObjectiveDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+        />
+    );
+}

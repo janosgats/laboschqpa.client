@@ -18,6 +18,8 @@ export interface FetchingTools<E extends Entity, S> {
     deleteEntity: (id: number) => Promise<any>;
 }
 
-export type FetchableDisplay<E extends Entity, S> = FC<FetchableDisplayProps<E, S>> & {
+export type FetchableDisplay<E extends Entity, S, P = {}> =
+    FC<FetchableDisplayProps<E, S> & P>
+    & {
     fetchingTools: FetchingTools<E, S>
 };

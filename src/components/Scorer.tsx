@@ -109,7 +109,7 @@ const Scorer: FC<Props> = (props) => {
 
             {(usedEndpointObjectives.error || usedEndpointTeams.error) && (
                 <>
-                    <p>Couldn't load assets :'(</p>
+                    <p>Couldn't load teams and objectives :'(</p>
                     <button onClick={() => {
                         usedEndpointObjectives.reloadEndpoint();
                         usedEndpointTeams.reloadEndpoint();

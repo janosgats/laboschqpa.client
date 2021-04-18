@@ -6,8 +6,6 @@ import EventBus from "~/utils/EventBus";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
-import FetchableDisplayContainer from "~/components/fetchableDisplay/FetchableDisplayContainer";
 
 
 const Index: NextPage = () => {
@@ -38,10 +36,6 @@ const Index: NextPage = () => {
             </button>
 
             <button onClick={() => currentUser.getUserInfo()}>Gimme UserInfo</button>
-
-            <FetchableDisplayContainer entityId={3} shouldCreateNew={false} displayComponent={NewsPostDisplay}/>
-
-            <FetchableDisplayContainer shouldCreateNew={true} displayComponent={NewsPostDisplay}/>
 
             <div style={{margin: 200}}></div>
 

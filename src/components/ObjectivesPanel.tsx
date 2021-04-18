@@ -1,11 +1,10 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
 import useEndpoint from "~/hooks/useEndpoint";
-import FetchableDisplayContainer from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Authority} from "~/enums/Authority";
 import {ObjectiveType} from "~/enums/ObjectiveType";
-import ObjectiveDisplay from "~/components/fetchableDisplay/ObjectiveDisplay";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
+import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 
 interface Props {
     filteredObjectiveTypes: ObjectiveType[];
@@ -37,9 +36,8 @@ const ObjectivesPanel: FC<Props> = (props) => {
             )}
 
             {wasCreateNewObjectiveClicked && (
-                <FetchableDisplayContainer
+                <ObjectiveDisplayContainer
                     shouldCreateNew={true}
-                    displayComponent={ObjectiveDisplay}
                 />
             )}
 
@@ -57,11 +55,10 @@ const ObjectivesPanel: FC<Props> = (props) => {
                 usedEndpoint.data &&
                 usedEndpoint.data.map((objective, index) => {
                     return (
-                        <FetchableDisplayContainer
+                        <ObjectiveDisplayContainer
                             key={objective.id}
                             overriddenBeginningEntity={objective}
                             shouldCreateNew={false}
-                            displayComponent={ObjectiveDisplay}
                         />
                     );
                 })
