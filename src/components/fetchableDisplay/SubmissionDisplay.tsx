@@ -82,8 +82,9 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 
     function doCancelEdit() {
         setIsEdited(false);
-        setContent(defaultContent)
-        setAttachments(defaultAttachments)
+        setContent(defaultContent);
+        setAttachments(defaultAttachments);
+        props.onCancelEditing();
     }
 
     function doDelete() {
@@ -153,8 +154,8 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                         )}
 
                         <ul>
-                            <li>Created at: {DateTimeFormatter.toBasic(props.existingEntity.creationTime)}</li>
-                            <li>Last edited at: {DateTimeFormatter.toBasic(props.existingEntity.editTime)}</li>
+                            <li>Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</li>
+                            <li>Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</li>
                         </ul>
                         {author ? (
                             <ul>
@@ -176,7 +177,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                         )}
                         {(!props.isCreatingNew) && (
                             <>
-                                <button onClick={doSave} disabled={props.isApiCallPending}>Save</button>
+                                <button onClick={doSave} disabled={props.isApiCallPending}>Modify</button>
                                 <button onClick={doCancelEdit} disabled={props.isApiCallPending}>Cancel</button>
                                 <button onClick={doDelete} disabled={props.isApiCallPending}>Delete</button>
                             </>

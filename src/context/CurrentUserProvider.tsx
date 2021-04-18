@@ -137,8 +137,6 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     return (
         <CurrentUserContext.Provider value={contextValue}>
-            {JSON.stringify(isUserLoggedIn)}
-            {JSON.stringify(userInfo)}
             {getPageContent()}
         </CurrentUserContext.Provider>
     );

@@ -127,7 +127,7 @@ const Scorer: FC<Props> = (props) => {
                             onChange={(e) => {
                                 const val = e.target.value;
                                 if (isValidNumber(val)) {
-                                    setSelectedObjectiveId(Number.parseInt(e.target.value));
+                                    setSelectedObjectiveId(Number.parseInt(val));
                                 }
                             }}>
                         <option>Select an objective...</option>
@@ -145,7 +145,7 @@ const Scorer: FC<Props> = (props) => {
                             onChange={(e) => {
                                 const val = e.target.value;
                                 if (isValidNumber(val)) {
-                                    setSelectedTeamId(Number.parseInt(e.target.value));
+                                    setSelectedTeamId(Number.parseInt(val));
                                 }
                             }}>
 

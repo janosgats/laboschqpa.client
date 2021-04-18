@@ -18,7 +18,7 @@ const ObjectiveTypeSelector: FC<Props> = (props) => {
                             props.onChange(Number.parseInt(val) as ObjectiveType);
                         }
                     }}>
-                <option>Select an type...</option>
+                <option>Select a type...</option>
                 {Object.values(objectiveTypeData).map(objectiveTypeDataEntry => {
                     return (
                         <option key={objectiveTypeDataEntry.objectiveType} value={objectiveTypeDataEntry.objectiveType}>

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import {NextPage} from "next";
 import React from "react";
-import NewsFeedPanel from "~/components/NewsFeedPanel";
+import NewsFeedPanel from "~/components/panel/NewsFeedPanel";
 
 const Index: NextPage = () => {
     return (

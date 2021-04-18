@@ -23,6 +23,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
+
     const [content, setContent] = useState<string>(defaultContent);
     const [attachments, setAttachments] = useState<number[]>(defaultAttachments);
 
@@ -48,8 +49,9 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
     function doCancelEdit() {
         setIsEdited(false);
-        setContent(defaultContent)
-        setAttachments(defaultAttachments)
+        setContent(defaultContent);
+        setAttachments(defaultAttachments);
+        props.onCancelEditing();
     }
 
     function doDelete() {
@@ -87,8 +89,8 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                 {(!isEdited) && (
                     <>
                         <ul>
-                            <li>Created at: {DateTimeFormatter.toBasic(props.existingEntity.creationTime)}</li>
-                            <li>Last edited at: {DateTimeFormatter.toBasic(props.existingEntity.editTime)}</li>
+                            <li>Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</li>
+                            <li>Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</li>
                         </ul>
                         {author ? (
                             <ul>
@@ -110,7 +112,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                         )}
                         {(!props.isCreatingNew) && (
                             <>
-                                <button onClick={doSave} disabled={props.isApiCallPending}>Save</button>
+                                <button onClick={doSave} disabled={props.isApiCallPending}>Modify</button>
                                 <button onClick={doCancelEdit} disabled={props.isApiCallPending}>Cancel</button>
                                 <button onClick={doDelete} disabled={props.isApiCallPending}>Delete</button>
                             </>

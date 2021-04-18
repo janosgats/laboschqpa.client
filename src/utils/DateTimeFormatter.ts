@@ -1,18 +1,32 @@
 import {getSurelyDate} from "~/utils/DateHelpers";
 
-const basicFormatterOptions: Intl.DateTimeFormatOptions = {
+const fullBasicFormatterOptions: Intl.DateTimeFormatOptions = {
     dateStyle: 'medium',
     timeStyle: 'medium',
 };
-const basicFormatter = new Intl.DateTimeFormat("hu-HU", basicFormatterOptions);
+const fullBasicFormatter = new Intl.DateTimeFormat("hu-HU", fullBasicFormatterOptions);
 
-function toBasic(date: Date | string): string {
+const fullShortFormatterOptions: Intl.DateTimeFormatOptions = {
+    year: '2-digit',
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+};
+const fullShortFormatter = new Intl.DateTimeFormat("hu-HU", fullShortFormatterOptions);
+
+function toFullBasic(date: Date | string): string {
     date = getSurelyDate(date);
-    return basicFormatter.format(date);
+    return fullBasicFormatter.format(date);
 }
 
+function toFullShort(date: Date | string): string {
+    date = getSurelyDate(date);
+    return "'" + fullShortFormatter.format(date);
+}
 
 const DateTimeFormatter = {
-    toBasic
+    toFullBasic,
+    toFullShort,
 };
 export default DateTimeFormatter;

@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import {NextPage} from "next";
 import React, {useState} from "react";
-import ObjectivesPanel from "~/components/ObjectivesPanel";
+import ObjectivesPanel from "~/components/panel/ObjectivesPanel";
 import {ObjectiveType} from "~/enums/ObjectiveType";
 
 const Index: NextPage = () => {

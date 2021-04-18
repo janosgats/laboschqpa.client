@@ -2,7 +2,7 @@ import Head from 'next/head'
 import {NextPage} from "next";
 import React, {useState} from "react";
 import {objectiveTypeData} from "~/enums/ObjectiveType";
-import SubmissionsPanel from "~/components/SubmissionsPanel";
+import SubmissionsPanel from "~/components/panel/SubmissionsPanel";
 import {isValidNumber} from "~/utils/CommonValidators";
 import useEndpoint from "~/hooks/useEndpoint";
 import {Objective} from "~/model/usergeneratedcontent/Objective";

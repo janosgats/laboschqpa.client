@@ -8,41 +8,56 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/login/oauth2/code/google": ["GET"],
     "/login/oauth2/code/github": ["GET"],
     "/logout": ["POST"],
+
     "/api/noAuthRequired/registerByEmail/submitEmail": ["POST"],
     "/api/noAuthRequired/registerByEmail/verifyEmail": ["POST"],
+
     "/api/currentUser/userInfoWithAuthoritiesAndTeam": ["GET"],
     "/api/currentUser/csrfToken": ["GET"],
+
     "/api/profileInfo/currentProfileInfo": ["GET"],
+
     "/api/team/listActiveTeamsWithScores": ["GET"],
     "/api/team/listAll": ["GET"],
     "/api/team/info": ["GET"],
     "/api/team/listMembers": ["GET"],
+
     "/api/teamScore/find": ["GET"],
     "/api/teamScore/edit": ["POST"],
     "/api/teamScore/createNew": ["POST"],
     "/api/teamScore/delete": ["DELETE"],
+
     "/api/user/info": ["GET"],
     "/api/user/infoWithAuthorities": ["GET"],
     "/api/user/setInfo": ["POST"],
+    "/api/user/listAll": ["GET"],
+
     "/api/newsPost/listAllWithAttachments": ["GET"],
     "/api/newsPost/newsPost": ["GET"],
     "/api/newsPost/edit": ["POST"],
     "/api/newsPost/createNew": ["POST"],
     "/api/newsPost/delete": ["DELETE"],
+
     "/api/objective/listAll": ["GET"],
     "/api/objective/listWithAttachments": ["POST"],
     "/api/objective/objective": ["GET"],
     "/api/objective/edit": ["POST"],
     "/api/objective/createNew": ["POST"],
     "/api/objective/delete": ["DELETE"],
+
     "/api/submission/display/list": ["POST"],
     "/api/submission/submission": ["GET"],
     "/api/submission/edit": ["POST"],
     "/api/submission/createNew": ["POST"],
     "/api/submission/delete": ["DELETE"],
-    "/api/user/listAll": ["GET"],
-    "/api/admin/users/logInAsUser": ["POST"],
 
+    "/api/speedDrinking/display/list": ["POST"],
+    "/api/speedDrinking/display/get": ["GET"],
+    "/api/speedDrinking/edit": ["POST"],
+    "/api/speedDrinking/createNew": ["POST"],
+    "/api/speedDrinking/delete": ["DELETE"],
+
+    "/api/admin/users/logInAsUser": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

@@ -10,8 +10,15 @@ import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
 import ObjectiveDisplay from "~/components/fetchableDisplay/ObjectiveDisplay";
 import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
+import SpeedDrinkingDisplay, {SpeedDrinkingDisplayExtraProps} from "~/components/fetchableDisplay/SpeedDrinkingDisplay";
+import {SpeedDrinking} from "~/model/usergeneratedcontent/SpeedDrinking";
 
-interface Props<E extends Entity, S, P extends Record<string, any>> {
+interface CallbackProps {
+    onCreatedNew?: (createdId: number) => void;
+    onCancelledNewCreation?: () => void;
+}
+
+interface Props<E extends Entity, S, P extends Record<string, any>> extends CallbackProps {
     entityId?: number;
     overriddenBeginningEntity?: E;
     shouldCreateNew: boolean;
@@ -24,6 +31,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
     const WrappedDisplay: FetchableDisplay<E, S, P> = props.displayComponent;
 
     const [isCreatingNew, setIsCreatingNew] = useState<boolean>(props.shouldCreateNew);
+    const [isCancelledNewCreation, setIsCancelledNewCreation] = useState<boolean>(false);
     const [entityId, setEntityId] = useState<number>(props.entityId);
 
     const [pendingApiCall, setIsPendingApiCall] = useState<boolean>(false);
@@ -63,7 +71,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
 
     async function doSaveAndGetIdToRetrieve(command: S): Promise<number> {
         if (isCreatingNew) {
-            const idToRetrieve = await WrappedDisplay.fetchingTools.createNewEntity(command)
+            const createdId = await WrappedDisplay.fetchingTools.createNewEntity(command)
                 .then(id => {
                     setEntityId(id);
                     return id;
@@ -73,8 +81,8 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                     throw e;
                 });
             setIsCreatingNew(false);
-
-            return idToRetrieve;
+            props.onCreatedNew(createdId);
+            return createdId;
         }
 
         await WrappedDisplay.fetchingTools.editEntity(entityId, command)
@@ -104,13 +112,26 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
             .finally(() => setIsPendingApiCall(false));
     }
 
+    function handleOnCancelEditing(): void {
+        if (isCreatingNew) {
+            setIsCancelledNewCreation(true);
+            if (props.onCancelledNewCreation) {
+                props.onCancelledNewCreation();
+            }
+        }
+    }
+
     return (
         <>
             {isDeleted && (
                 <p>Entity was deleted</p>
             )}
 
-            {(!isDeleted) && (
+            {isCancelledNewCreation && (
+                <p>Entity creation was cancelled</p>
+            )}
+
+            {(!isDeleted) && (!isCancelledNewCreation) && (
                 <>
                     {isUnderRetrieval && (
                         <CircularProgress size={250}/>
@@ -129,6 +150,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                                 isApiCallPending={pendingApiCall}
                                 onSave={handleOnSave}
                                 onDelete={handleOnDelete}
+                                onCancelEditing={handleOnCancelEditing}
                                 {...(props.displayExtraProps ? props.displayExtraProps : ({} as P))}
                             />
                         </ErrorBoundary>
@@ -139,7 +161,45 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
     )
 }
 
-interface SubmissionDisplayContainerProps {
+interface NewsPostDisplayContainerProps extends CallbackProps {
+    entityId?: number;
+    overriddenBeginningEntity?: NewsPost;
+    shouldCreateNew: boolean;
+}
+
+export const NewsPostDisplayContainer: FC<NewsPostDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={NewsPostDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+            onCreatedNew={props.onCreatedNew}
+            onCancelledNewCreation={props.onCancelledNewCreation}
+        />
+    );
+}
+
+interface ObjectiveDisplayContainerProps extends CallbackProps {
+    entityId?: number;
+    overriddenBeginningEntity?: Objective;
+    shouldCreateNew: boolean;
+}
+
+export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={ObjectiveDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+            onCreatedNew={props.onCreatedNew}
+            onCancelledNewCreation={props.onCancelledNewCreation}
+        />
+    );
+}
+
+interface SubmissionDisplayContainerProps extends CallbackProps {
     entityId?: number;
     overriddenBeginningEntity?: Submission;
     shouldCreateNew: boolean;
@@ -154,40 +214,29 @@ export const SubmissionDisplayContainer: FC<SubmissionDisplayContainerProps> = (
             displayExtraProps={props.displayExtraProps}
             entityId={props.entityId}
             overriddenBeginningEntity={props.overriddenBeginningEntity}
+            onCreatedNew={props.onCreatedNew}
+            onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
 }
 
-interface NewsPostDisplayContainerProps {
+interface SpeedDrinkingDisplayContainerProps extends CallbackProps {
     entityId?: number;
-    overriddenBeginningEntity?: NewsPost;
+    overriddenBeginningEntity?: SpeedDrinking;
     shouldCreateNew: boolean;
+    displayExtraProps: SpeedDrinkingDisplayExtraProps;
 }
 
-export const NewsPostDisplayContainer: FC<NewsPostDisplayContainerProps> = (props) => {
+export const SpeedDrinkingDisplayContainer: FC<SpeedDrinkingDisplayContainerProps> = (props) => {
     return (
         <FetchableDisplayContainer
-            displayComponent={NewsPostDisplay}
+            displayComponent={SpeedDrinkingDisplay}
             shouldCreateNew={props.shouldCreateNew}
+            displayExtraProps={props.displayExtraProps}
             entityId={props.entityId}
             overriddenBeginningEntity={props.overriddenBeginningEntity}
-        />
-    );
-}
-
-interface ObjectiveDisplayContainerProps {
-    entityId?: number;
-    overriddenBeginningEntity?: Objective;
-    shouldCreateNew: boolean;
-}
-
-export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (props) => {
-    return (
-        <FetchableDisplayContainer
-            displayComponent={ObjectiveDisplay}
-            shouldCreateNew={props.shouldCreateNew}
-            entityId={props.entityId}
-            overriddenBeginningEntity={props.overriddenBeginningEntity}
+            onCreatedNew={props.onCreatedNew}
+            onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
 }
