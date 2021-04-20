@@ -1,4 +1,4 @@
-FROM node:12.7-alpine
+FROM node:12.22-buster
 MAINTAINER "János Gats <gatsjanos@gmail.com>"
 
 EXPOSE 3000

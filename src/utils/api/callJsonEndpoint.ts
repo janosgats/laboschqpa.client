@@ -7,7 +7,7 @@ import FrontendApiCallException from "~/exception/FrontendApiCallException";
 import Exception from "~/exception/Exception";
 import * as CsrfService from "~/service/CsrfService";
 
-const CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
+export const CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
 
 export enum CsrfSendingCommand {
     AUTO = 1,

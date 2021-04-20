@@ -1,10 +1,17 @@
 import {NextApiHandler, NextApiRequest, NextApiResponse} from "next";
 import axios, {AxiosResponse} from "axios";
 import {HttpMethod} from "~/utils/Types";
+import {
+    OAUTH2_OVERRIDE_REDIRECTION_ORIGIN_HEADER_NAME,
+    OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME
+} from "~/components/join/LoginForm";
+import {CSRF_TOKEN_HEADER_NAME} from "~/utils/api/callJsonEndpoint";
 
 //TODO: This concept is really, really bad... but quick
 
 const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
+    "/login/oauth2/google": ["GET"],
+    "/login/oauth2/github": ["GET"],
     "/login/oauth2/code/google": ["GET"],
     "/login/oauth2/code/github": ["GET"],
     "/logout": ["POST"],
@@ -83,7 +90,9 @@ async function proxyToServer(targetMethod: HttpMethod, targetUrl: string, reques
     setRequestHeader('cookie');
     setRequestHeader('content-type');
     setRequestHeader('accept');
-    setRequestHeader('x-csrf-token');
+    setRequestHeader(CSRF_TOKEN_HEADER_NAME.toLowerCase());
+    setRequestHeader(OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME.toLowerCase());
+    setRequestHeader(OAUTH2_OVERRIDE_REDIRECTION_ORIGIN_HEADER_NAME.toLowerCase());
 
     const apiResponse: AxiosResponse = await axios({
         method: targetMethod,

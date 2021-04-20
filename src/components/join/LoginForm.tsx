@@ -5,19 +5,25 @@ import {auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER} from "~/e
 import {useRouter} from "next/router";
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
-const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
+export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
+export const OAUTH2_OVERRIDE_REDIRECTION_ORIGIN_HEADER_NAME = "X-Oauth2-Override-Redirection-Origin";
 
 type loginOauthProvider = "google" | "github";
+
+function getOverriddenOauth2RedirectionOrigin() {
+    return location.origin;
+}
 
 const LoginForm: FC = () => {
     const router = useRouter();
 
     function doStartLogin(oauthProvider: loginOauthProvider) {
         callJsonEndpoint({
-                url: `/server/login/oauth2/${oauthProvider}`,
+                url: `/api/up/server/login/oauth2/${oauthProvider}`,
                 method: "GET",
                 headers: {
-                    [OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME]: "true"
+                    [OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME]: "true",
+                    [OAUTH2_OVERRIDE_REDIRECTION_ORIGIN_HEADER_NAME]: getOverriddenOauth2RedirectionOrigin(),
                 }
             },
             true,
