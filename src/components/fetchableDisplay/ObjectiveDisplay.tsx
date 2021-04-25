@@ -221,12 +221,21 @@ interface TempDatetimePickerProps {
     disabled: boolean;
 }
 
+function padToTwoChars(num: number): string {
+    if (num >= 10) {
+        return num.toString();
+    }
+    return '0' + num.toString();
+}
+
 /**
  * TODO: Replace this ugliness with a MUI component
  */
 const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disabled}) => {
+    const valueDate = getSurelyDate(value);
     const [internalValue, setInternalValue] = useState<string>(
-        getSurelyDate(value).toISOString().replace('T', ' ').replace('Z', '')
+        `${valueDate.getFullYear()}-${padToTwoChars(valueDate.getMonth() + 1)}-${padToTwoChars(valueDate.getDate())} ` +
+        `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(valueDate.getMinutes())}:${padToTwoChars(valueDate.getSeconds())}`
     );
     const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue));
 
