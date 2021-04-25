@@ -11,17 +11,19 @@ import EventBus from "~/utils/EventBus";
 
 function logInAsUser(userId: number) {
     callJsonEndpoint({
-        url: '/api/up/server/api/admin/users/logInAsUser',
-        method: "post",
-        params: {
-            userAccId: userId
+        conf: {
+            url: '/api/up/server/api/admin/users/logInAsUser',
+            method: "post",
+            params: {
+                userAccId: userId
+            }
         }
     }).then(() => EventBus.notifyInfo(`Logged in as user ${userId}`))
 }
 
 const Index: NextPage = () => {
     const usedEndpoint = useEndpoint<UserInfo[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/user/listAll"
         }
     });

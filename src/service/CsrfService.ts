@@ -5,7 +5,9 @@ let csrfToken: string;
 
 async function loadCsrfToken() {
     await callJsonEndpoint<string>({
-            url: "/api/up/server/api/currentUser/csrfToken"
+            conf: {
+                url: "/api/up/server/api/currentUser/csrfToken"
+            }
         }
     ).then((res) => {
         csrfToken = res.data;

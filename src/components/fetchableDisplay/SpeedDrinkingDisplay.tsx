@@ -71,12 +71,15 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking, SaveSpeedDrinkingCom
     }
 
     function doCancelEdit() {
-        setIsEdited(false);
-        setDrinkerUserId(defaultDrinkerUserId);
-        setTime(defaultTime);
-        setCategory(defaultCategory);
-        setNote(defaultNote);
-        props.onCancelEditing();
+        const confirmResult = confirm('Do you want to discard your changes?');
+        if (confirmResult) {
+            setIsEdited(false);
+            setDrinkerUserId(defaultDrinkerUserId);
+            setTime(defaultTime);
+            setCategory(defaultCategory);
+            setNote(defaultNote);
+            props.onCancelEditing();
+        }
     }
 
     function doDelete() {
@@ -183,47 +186,55 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking, SaveSpeedDrinkingCom
 class FetchingToolsImpl implements FetchingTools<SpeedDrinking, SaveSpeedDrinkingCommand> {
     createNewEntity(command: SaveSpeedDrinkingCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
-            url: "/api/up/server/api/speedDrinking/createNew",
-            method: "post",
-            data: {
-                drinkerUserId: command.drinkerUserId,
-                time: command.time,
-                category: command.category,
-                note: command.note,
+            conf: {
+                url: "/api/up/server/api/speedDrinking/createNew",
+                method: "post",
+                data: {
+                    drinkerUserId: command.drinkerUserId,
+                    time: command.time,
+                    category: command.category,
+                    note: command.note,
+                }
             }
         }).then(resp => resp.data.createdId);
     }
 
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/speedDrinking/delete",
-            method: "delete",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/speedDrinking/delete",
+                method: "delete",
+                params: {
+                    id: id
+                }
             }
         });
     }
 
     editEntity(id: number, command: SaveSpeedDrinkingCommand): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/speedDrinking/edit",
-            method: "post",
-            data: {
-                id: id,
-                drinkerUserId: command.drinkerUserId,
-                time: command.time,
-                category: command.category,
-                note: command.note,
+            conf: {
+                url: "/api/up/server/api/speedDrinking/edit",
+                method: "post",
+                data: {
+                    id: id,
+                    drinkerUserId: command.drinkerUserId,
+                    time: command.time,
+                    category: command.category,
+                    note: command.note,
+                }
             }
         });
     }
 
     fetchEntity(id: number): Promise<SpeedDrinking> {
         return callJsonEndpoint<SpeedDrinking>({
-            url: "/api/up/server/api/speedDrinking/display/get",
-            method: "get",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/speedDrinking/display/get",
+                method: "get",
+                params: {
+                    id: id
+                }
             }
         }).then(resp => resp.data);
     }

@@ -16,7 +16,7 @@ const Index: NextPage = () => {
     const [userInfoEditorOpen, setUserInfoEditorOpen] = useState<boolean>(false);
 
     const usedEndpoint = useEndpoint<UserInfo>({
-        config: {
+        conf: {
             url: "/api/up/server/api/user/infoWithAuthorities",
             params: {
                 id: router.query["id"]
@@ -29,13 +29,15 @@ const Index: NextPage = () => {
 
     function submitEditedUserInfo(userNamesDto: UserNamesDto) {
         callJsonEndpoint<void>({
-            url: "/api/up/server/api/user/setInfo",
-            method: "POST",
-            data: {
-                userId: usedEndpoint.data.userId,
-                firstName: userNamesDto.firstName,
-                lastName: userNamesDto.lastName,
-                nickName: userNamesDto.nickName,
+            conf: {
+                url: "/api/up/server/api/user/setInfo",
+                method: "POST",
+                data: {
+                    userId: usedEndpoint.data.userId,
+                    firstName: userNamesDto.firstName,
+                    lastName: userNamesDto.lastName,
+                    nickName: userNamesDto.nickName,
+                }
             }
         })
             .then(resp => {

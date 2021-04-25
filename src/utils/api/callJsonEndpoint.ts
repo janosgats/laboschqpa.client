@@ -58,19 +58,23 @@ const extractExceptionFromResponse = (
     );
 };
 
-async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrfSendingCommand: CsrfSendingCommand) {
+async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig,
+                                    insertJsonContentType: boolean,
+                                    csrfSendingCommand: CsrfSendingCommand) {
     if (!axiosRequestConfig.method) {
         axiosRequestConfig.method = "GET";
     }
 
-    if (axiosRequestConfig.headers) {
-        axiosRequestConfig.headers["Content-type"] = "application/json";
-        axiosRequestConfig.headers["accept"] = "application/json";
-    } else {
-        axiosRequestConfig.headers = {
-            "Content-type": "application/json",
-            accept: "application/json",
-        };
+    if (insertJsonContentType) {
+        if (axiosRequestConfig.headers) {
+            axiosRequestConfig.headers["Content-type"] = "application/json";
+            axiosRequestConfig.headers["accept"] = "application/json";
+        } else {
+            axiosRequestConfig.headers = {
+                "Content-type": "application/json",
+                accept: "application/json",
+            };
+        }
     }
 
     async function setCsrf() {
@@ -97,43 +101,72 @@ async function prepareRequestConfig(axiosRequestConfig: AxiosRequestConfig, csrf
     };
 }
 
+function isUndefined(val) {
+    return typeof val === "undefined";
+}
+
+async function prepareCommand(command: CallJsonEndpointCommand): Promise<void> {
+    if (isUndefined(command.publishExceptionEvents)) {
+        command.publishExceptionEvents = true;
+    }
+    if (isUndefined(command.acceptedResponseCodes)) {
+        command.acceptedResponseCodes = [200];
+    }
+    if (isUndefined(command.csrfSendingCommand)) {
+        command.csrfSendingCommand = CsrfSendingCommand.AUTO;
+    }
+    if (isUndefined(command.insertJsonContentType)) {
+        command.insertJsonContentType = true;
+    }
+
+    await prepareRequestConfig(command.conf, command.insertJsonContentType, command.csrfSendingCommand);
+}
+
+export interface CallJsonEndpointCommand {
+    conf: AxiosRequestConfig;
+    /**
+     * set this to false to disable publishing errors onto the EventBus
+     */
+    publishExceptionEvents?: boolean;
+    /**
+     * response codes counted as success
+     */
+    acceptedResponseCodes?: Array<number>;
+    csrfSendingCommand?: CsrfSendingCommand;
+    /**
+     * set to false to not to insert the JSON Content-Type adn accept headers
+     */
+    insertJsonContentType?: boolean;
+}
+
 /**
  * Use this function for every call made by the client-side (browser) code. This takes care of the proper global error handling.
- * @param axiosRequestConfig
- * @param acceptedResponseCodes response codes counted as success
- * @param publishExceptionEvents set this to false to disable publishing errors onto the EventBus
- * @param csrfSendingCommand
  *
  * @return If the API call succeeds AND the statusCode is contained by acceptedResponseCodes: Fulfilled promise with the response. Otherwise: rejected promise.
  */
-const callJsonEndpoint = async <ReturnType>(
-    axiosRequestConfig: AxiosRequestConfig,
-    publishExceptionEvents: boolean = true,
-    acceptedResponseCodes: Array<number> = [200],
-    csrfSendingCommand: CsrfSendingCommand = CsrfSendingCommand.AUTO,
-): Promise<AxiosResponse<ReturnType>> => {
-    await prepareRequestConfig(axiosRequestConfig, csrfSendingCommand);
+const callJsonEndpoint = async <ReturnType>(command: CallJsonEndpointCommand): Promise<AxiosResponse<ReturnType>> => {
+    await prepareCommand(command);
 
-    const axiosPromise: AxiosPromise<ReturnType> = axios(axiosRequestConfig);
+    const axiosPromise: AxiosPromise<ReturnType> = axios(command.conf);
 
     return axiosPromise
         .catch((err) => {
             //This catch clause is intentionally put before the then clause to not to catch exceptions thrown there (there = then clause)
-            const extractedException = extractExceptionFromResponse(false, null, axiosRequestConfig, err);
+            const extractedException = extractExceptionFromResponse(false, null, command.conf, err);
 
-            if (publishExceptionEvents) {
+            if (command.publishExceptionEvents) {
                 EventBus.publishException(extractedException);
             }
             throw extractedException;
         })
         .then((response) => {
-            if (acceptedResponseCodes.includes(response.status)) {
+            if (command.acceptedResponseCodes.includes(response.status)) {
                 return response;
             }
 
-            const extractedException = extractExceptionFromResponse(true, response, axiosRequestConfig, null);
+            const extractedException = extractExceptionFromResponse(true, response, command.conf, null);
 
-            if (publishExceptionEvents) {
+            if (command.publishExceptionEvents) {
                 EventBus.publishException(extractedException);
             }
             throw extractedException;

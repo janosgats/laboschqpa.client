@@ -25,9 +25,11 @@ const nextPage: NextPage = () => {
 
     function doLogin() {
         callJsonEndpoint({
-            url: `/api/up/server/login/oauth2/code/${router.query.oauth2Provider}`,
-            method: "GET",
-            params: router.query
+            conf: {
+                url: `/api/up/server/login/oauth2/code/${router.query.oauth2Provider}`,
+                method: "GET",
+                params: router.query
+            }
         }).then(res => {
             currentUser.setLoggedInState(true);
             EventBus.notifySuccess("You just logged in", "Hello there");

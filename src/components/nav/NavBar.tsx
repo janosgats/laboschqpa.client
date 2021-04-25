@@ -12,10 +12,11 @@ const NavBar: FC = () => {
 
     function doLogout() {
         callJsonEndpoint({
+            conf: {
                 url: "/api/up/server/logout",
                 method: "POST"
             }
-        ).then(res => {
+        }).then(res => {
             currentUser.setLoggedInState(false);
             EventBus.notifyInfo("You just logged out", "See you soon")
             router.push("/");

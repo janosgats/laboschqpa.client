@@ -11,7 +11,7 @@ interface Props {
 
 const SubmissionsPanel: FC<Props> = (props) => {
     const usedEndpoint = useEndpoint<Submission[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/submission/display/list",
             method: "post",
             data: {

@@ -8,11 +8,13 @@ export interface Author {
 
 async function getUserInfo(userId: number, publishExceptionEvents = true): Promise<UserInfo> {
     return callJsonEndpoint<UserInfo>({
-        url: "/api/up/server/api/user/info",
-        params: {
-            id: userId
-        }
-    }, publishExceptionEvents).then(resp => resp.data);
+        conf: {
+            url: "/api/up/server/api/user/info",
+            params: {
+                id: userId
+            }
+        }, publishExceptionEvents: publishExceptionEvents
+    }).then(resp => resp.data);
 }
 
 async function getAuthor(creatorUserId: number, editorUserId: number, publishExceptionEvents = true): Promise<Author> {

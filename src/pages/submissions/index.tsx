@@ -15,14 +15,14 @@ const Index: NextPage = () => {
     const [filteredTeamId, setFilteredTeamId] = useState<number>(null);
 
     const usedEndpointObjectives = useEndpoint<Objective[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/objective/listAll",
         }
     });
     const fetchedObjectives = usedEndpointObjectives.data;
 
     const usedEndpointTeams = useEndpoint<TeamInfo[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/team/listAll",
         }
     });

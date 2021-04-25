@@ -11,7 +11,7 @@ const NewsFeedPanel: FC<{}> = () => {
     const [wasCreateNewPostClicked, setWasCreateNewPostClicked] = useState<boolean>(false);
 
     const usedEndpoint = useEndpoint<NewsPost[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/newsPost/listAllWithAttachments"
         }
     });

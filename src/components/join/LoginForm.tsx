@@ -19,6 +19,7 @@ const LoginForm: FC = () => {
 
     function doStartLogin(oauthProvider: loginOauthProvider) {
         callJsonEndpoint({
+            conf: {
                 url: `/api/up/server/login/oauth2/${oauthProvider}`,
                 method: "GET",
                 headers: {
@@ -26,9 +27,8 @@ const LoginForm: FC = () => {
                     [OAUTH2_OVERRIDE_REDIRECTION_ORIGIN_HEADER_NAME]: getOverriddenOauth2RedirectionOrigin(),
                 }
             },
-            true,
-            [OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE]
-        ).then(res => {
+            acceptedResponseCodes: [OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE]
+        }).then(res => {
             const redirectLocation = res.headers["location"];
             if (!redirectLocation) {
                 EventBus.notifyError("Please try a different login provider. There are problems with the login response.",

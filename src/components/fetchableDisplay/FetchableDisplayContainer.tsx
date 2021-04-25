@@ -81,7 +81,9 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                     throw e;
                 });
             setIsCreatingNew(false);
-            props.onCreatedNew(createdId);
+            if (props.onCreatedNew) {
+                props.onCreatedNew(createdId);
+            }
             return createdId;
         }
 

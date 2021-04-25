@@ -27,7 +27,7 @@ interface Props {
 
 const SpeedDrinkingEditor: FC<Props> = (props) => {
     const usedEndpointUsers = useEndpoint<UserInfo[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/user/listAll",
         },
     });

@@ -65,6 +65,8 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/speedDrinking/delete": ["DELETE"],
 
     "/api/admin/users/logInAsUser": ["POST"],
+
+    "/api/file/readBulkAttachmentInfo": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

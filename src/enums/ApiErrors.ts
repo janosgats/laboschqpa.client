@@ -5,6 +5,7 @@ export enum ApiErrorCategory {
     registration = "registration",
     auth = "auth",
     submission = "submission",
+    upload = "upload",
 }
 
 export default class ApiError {
@@ -34,3 +35,4 @@ export const registration_E_MAIL_ADDRESS_IS_ALREADY_IN_THE_SYSTEM = new ApiError
 export const auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER = new ApiError(ApiErrorCategory.auth, 1);
 export const submission_OBJECTIVE_IS_NOT_SUBMITTABLE = new ApiError(ApiErrorCategory.submission, 4);
 export const submission_OBJECTIVE_DEADLINE_HAS_PASSED = new ApiError(ApiErrorCategory.submission, 5);
+export const upload_MIME_TYPE_IS_NOT_IMAGE = new ApiError(ApiErrorCategory.upload, 5);

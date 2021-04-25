@@ -17,7 +17,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
     const [isCreatingNewDisplayShown, setIsCreatingNewDisplayShown] = useState<boolean>(false);
 
     const usedEndpoint = useEndpoint<SpeedDrinking[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/speedDrinking/display/list",
             method: "post",
             data: {

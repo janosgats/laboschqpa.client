@@ -19,7 +19,7 @@ const Index: NextPage = () => {
     const router = useRouter();
 
     const usedTeamInfo = useEndpoint<TeamInfo>({
-        config: {
+        conf: {
             url: "/api/up/server/api/team/info",
             params: {
                 id: router.query["id"]
@@ -30,7 +30,7 @@ const Index: NextPage = () => {
     });
 
     const usedTeamMembers = useEndpoint<TeamMember[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/team/listMembers",
             params: {
                 id: router.query["id"]

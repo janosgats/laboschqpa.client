@@ -13,7 +13,7 @@ interface TeamWithScore {
 
 const Index: NextPage = () => {
     const usedEndpoint = useEndpoint<TeamWithScore[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/team/listActiveTeamsWithScores"
         }
     });

@@ -16,6 +16,8 @@ import {submission_OBJECTIVE_DEADLINE_HAS_PASSED, submission_OBJECTIVE_IS_NOT_SU
 import {getSurelyDate} from "~/utils/DateHelpers";
 import {Authority} from "~/enums/Authority";
 import Scorer from "~/components/Scorer";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
+import AttachmentPanel from "~/components/file/AttachmentPanel";
 
 export interface SaveSubmissionCommand {
     /**
@@ -48,21 +50,21 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
     const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
 
     const [content, setContent] = useState<string>(defaultContent);
-    const [attachments, setAttachments] = useState<number[]>(defaultAttachments);
+    const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
     const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
 
     useEffect(() => {
         setContent(defaultContent);
-        setAttachments(defaultAttachments);
+        usedAttachments.reset(defaultAttachments);
     }, [props.existingEntity]);
 
     function composeSaveSubmissionCommand(): SaveSubmissionCommand {
         return {
             objectiveId: objectiveId,
             content: content,
-            attachments: attachments
+            attachments: usedAttachments.firmAttachmentIds
         };
     }
 
@@ -81,10 +83,13 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
     }
 
     function doCancelEdit() {
-        setIsEdited(false);
-        setContent(defaultContent);
-        setAttachments(defaultAttachments);
-        props.onCancelEditing();
+        const confirmResult = confirm('Do you want to discard your changes?');
+        if (confirmResult) {
+            setIsEdited(false);
+            setContent(defaultContent);
+            usedAttachments.reset(defaultAttachments);
+            props.onCancelEditing();
+        }
     }
 
     function doDelete() {
@@ -135,11 +140,11 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
                                 defaultValue={defaultContent}
-                                onChange={(data) => setContent(data)}/>
+                                onChange={(data) => setContent(data)}
+                                usedAttachments={usedAttachments}
+                />
 
-                <div>
-                    <p>{isEdited && 'Editing'} Attachments: {JSON.stringify(attachments)}</p>
-                </div>
+                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
 
                 {(!isEdited) && (
                     <>
@@ -192,44 +197,52 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 class FetchingToolsImpl implements FetchingTools<Submission, SaveSubmissionCommand> {
     createNewEntity(command: SaveSubmissionCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
-            url: "/api/up/server/api/submission/createNew",
-            method: "post",
-            data: {
-                objectiveId: command.objectiveId,
-                content: command.content,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/submission/createNew",
+                method: "post",
+                data: {
+                    objectiveId: command.objectiveId,
+                    content: command.content,
+                    attachments: command.attachments,
+                }
             }
         }).then(resp => resp.data.createdId);
     }
 
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/submission/delete",
-            method: "delete",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/submission/delete",
+                method: "delete",
+                params: {
+                    id: id
+                }
             }
         });
     }
 
     editEntity(id: number, command: SaveSubmissionCommand): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/submission/edit",
-            method: "post",
-            data: {
-                id: id,
-                content: command.content,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/submission/edit",
+                method: "post",
+                data: {
+                    id: id,
+                    content: command.content,
+                    attachments: command.attachments,
+                }
             }
         });
     }
 
     fetchEntity(id: number): Promise<Submission> {
         return callJsonEndpoint<Submission>({
-            url: "/api/up/server/api/submission/submission",
-            method: "get",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/submission/submission",
+                method: "get",
+                params: {
+                    id: id
+                }
             }
         }).then(resp => resp.data);
     }

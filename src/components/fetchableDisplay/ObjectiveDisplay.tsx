@@ -16,6 +16,8 @@ import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
 import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
 import Scorer from "~/components/Scorer";
 import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
+import AttachmentPanel from "~/components/file/AttachmentPanel";
 
 export interface SaveObjectiveCommand {
     title: string;
@@ -44,14 +46,14 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     const [submittable, setSubmittable] = useState<boolean>(defaultSubmittable);
     const [deadline, setDeadline] = useState<Date>(defaultDeadline);
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
-    const [attachments, setAttachments] = useState<number[]>(defaultAttachments);
+    const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
     const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
 
     useEffect(() => {
         setDescription(defaultDescription);
-        setAttachments(defaultAttachments);
+        usedAttachments.reset(defaultAttachments);
     }, [props.existingEntity]);
 
     function composeSaveObjectiveCommand(): SaveObjectiveCommand {
@@ -61,7 +63,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
             submittable: submittable,
             deadline: deadline,
             objectiveType: objectiveType,
-            attachments: attachments,
+            attachments: usedAttachments.firmAttachmentIds,
         };
     }
 
@@ -71,14 +73,17 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     }
 
     function doCancelEdit() {
-        setIsEdited(false);
-        setTitle(defaultTitle);
-        setDescription(defaultDescription);
-        setSubmittable(defaultSubmittable);
-        setDeadline(defaultDeadline);
-        setObjectiveType(defaultObjectiveType);
-        setAttachments(defaultAttachments);
-        props.onCancelEditing();
+        const confirmResult = confirm('Do you want to discard your changes?');
+        if (confirmResult) {
+            setIsEdited(false);
+            setTitle(defaultTitle);
+            setDescription(defaultDescription);
+            setSubmittable(defaultSubmittable);
+            setDeadline(defaultDeadline);
+            setObjectiveType(defaultObjectiveType);
+            usedAttachments.reset(defaultAttachments);
+            props.onCancelEditing();
+        }
     }
 
     function doDelete() {
@@ -125,7 +130,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
                                 defaultValue={defaultDescription}
-                                onChange={(data) => setDescription(data)}/>
+                                onChange={(data) => setDescription(data)}
+                                usedAttachments={usedAttachments}
+                />
 
                 {isEdited && (
                     <>
@@ -139,9 +146,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                 <label>Deadline: </label>
                 <TempDatetimePicker value={deadline} onChange={setDeadline} disabled={!isEdited}/>
 
-                <div>
-                    <p>{isEdited && 'Editing'} Attachments: {JSON.stringify(attachments)}</p>
-                </div>
+                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
 
                 {(!isEdited) && (
                     <>
@@ -247,51 +252,59 @@ const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disab
 class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand> {
     createNewEntity(command: SaveObjectiveCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
-            url: "/api/up/server/api/objective/createNew",
-            method: "post",
-            data: {
-                title: command.title,
-                description: command.description,
-                submittable: command.submittable,
-                deadline: command.deadline,
-                objectiveType: command.objectiveType,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/objective/createNew",
+                method: "post",
+                data: {
+                    title: command.title,
+                    description: command.description,
+                    submittable: command.submittable,
+                    deadline: command.deadline,
+                    objectiveType: command.objectiveType,
+                    attachments: command.attachments,
+                }
             }
         }).then(resp => resp.data.createdId);
     }
 
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/objective/delete",
-            method: "delete",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/objective/delete",
+                method: "delete",
+                params: {
+                    id: id
+                }
             }
         });
     }
 
     editEntity(id: number, command: SaveObjectiveCommand): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/objective/edit",
-            method: "post",
-            data: {
-                id: id,
-                title: command.title,
-                description: command.description,
-                submittable: command.submittable,
-                deadline: command.deadline,
-                objectiveType: command.objectiveType,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/objective/edit",
+                method: "post",
+                data: {
+                    id: id,
+                    title: command.title,
+                    description: command.description,
+                    submittable: command.submittable,
+                    deadline: command.deadline,
+                    objectiveType: command.objectiveType,
+                    attachments: command.attachments,
+                }
             }
         });
     }
 
     fetchEntity(id: number): Promise<Objective> {
         return callJsonEndpoint<Objective>({
-            url: "/api/up/server/api/objective/objective",
-            method: "get",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/objective/objective",
+                method: "get",
+                params: {
+                    id: id
+                }
             }
         }).then(resp => resp.data);
     }

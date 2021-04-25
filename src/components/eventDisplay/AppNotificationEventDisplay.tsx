@@ -4,11 +4,14 @@ import {NotificationContainer, NotificationManager} from "react-notifications"
 import {AppNotification, AppNotificationLevel} from "~/model/AppNotification";
 import 'react-notifications/lib/notifications.css';
 
+export const NOTIFICATION_TIMEOUT_NORMAL = 20000;
+export const NOTIFICATION_TIMEOUT_LONG = 40000;
+
 EventBus.subscribe(EventType.APP_NOTIFICATION, "AppNotificationEventDisplay", (event => {
     const noti = event as AppNotification;
 
     if (typeof noti.timeout === "undefined") {
-        noti.timeout = 20000;
+        noti.timeout = NOTIFICATION_TIMEOUT_NORMAL;
     }
 
     switch (noti.level) {

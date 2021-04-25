@@ -6,10 +6,12 @@ import EventBus from "~/utils/EventBus";
 import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
-
+import AttachmentPanel from "~/components/file/AttachmentPanel";
+import useAttachments from "~/hooks/useAttachments";
 
 const Index: NextPage = () => {
     const currentUser = useContext(CurrentUserContext);
+    const usedAttachments = useAttachments([])
 
     return (
         <div className={styles.container}>
@@ -36,6 +38,8 @@ const Index: NextPage = () => {
             </button>
 
             <button onClick={() => currentUser.getUserInfo()}>Gimme UserInfo</button>
+
+            <AttachmentPanel usedAttachments={usedAttachments} isEdited={true}/>
 
             <div style={{margin: 200}}></div>
 

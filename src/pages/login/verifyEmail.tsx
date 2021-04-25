@@ -35,17 +35,15 @@ const nextPage: NextPage = () => {
         }
 
         callJsonEndpoint({
+            conf:{
                 url: "/api/up/server/api/noAuthRequired/registerByEmail/verifyEmail",
                 method: "POST",
                 params: {
                     id: registrationParams.id,
                     key: registrationParams.key
                 }
-            },
-            true,
-            [200],
-            CsrfSendingCommand.DO_NOT_SEND
-        ).then(res => {
+            },csrfSendingCommand:CsrfSendingCommand.DO_NOT_SEND
+        }).then(res => {
             EventBus.notifySuccess("Your e-mail is verified", "Welcome");
             setEmailVerificationSucceeded(true);
         }).catch((reason) => {

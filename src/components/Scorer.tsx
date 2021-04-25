@@ -22,21 +22,21 @@ const Scorer: FC<Props> = (props) => {
     const [saveOrDeletionInProgress, setSaveOrDeletionInProgress] = useState<boolean>(false);
 
     const usedEndpointObjectives = useEndpoint<Objective[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/objective/listAll",
         }
     });
     const fetchedObjectives = usedEndpointObjectives.data;
 
     const usedEndpointTeams = useEndpoint<TeamInfo[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/team/listAll",
         }
     });
     const fetchedTeams = usedEndpointTeams.data;
 
     const usedEndpointTeamScore = useEndpoint<TeamScore[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/teamScore/find",
             params: {
                 objectiveId: selectedObjectiveId,
@@ -78,22 +78,25 @@ const Scorer: FC<Props> = (props) => {
             };
         }
 
-        callJsonEndpoint(requestConfig)
-            .then(() => props.onClose())
+        callJsonEndpoint({
+            conf: requestConfig
+        }).then(() => props.onClose())
             .catch(() => EventBus.notifyError('Error while saving', 'Cannot save TeamScore'))
             .finally(() => setSaveOrDeletionInProgress(false));
     }
 
     function doDelete() {
         setSaveOrDeletionInProgress(true);
+
         callJsonEndpoint({
-            url: '/api/up/server/api/teamScore/delete',
-            method: 'delete',
-            params: {
-                id: usedEndpointTeamScore.data[0].id
+            conf: {
+                url: '/api/up/server/api/teamScore/delete',
+                method: 'delete',
+                params: {
+                    id: usedEndpointTeamScore.data[0].id
+                }
             }
-        })
-            .then(() => props.onClose())
+        }).then(() => props.onClose())
             .catch(() => EventBus.notifyError('Error while deleting', 'Cannot delete TeamScore'))
             .finally(() => setSaveOrDeletionInProgress(false));
     }

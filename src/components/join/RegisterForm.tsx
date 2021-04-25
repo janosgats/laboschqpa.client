@@ -12,16 +12,14 @@ const RegisterForm: FC = () => {
 
     function submitRegistrationEmail() {
         callJsonEndpoint({
+            conf: {
                 url: "/api/up/server/api/noAuthRequired/registerByEmail/submitEmail",
                 method: "POST",
                 params: {
                     "email": email
                 }
-            },
-            true,
-            [200],
-            CsrfSendingCommand.DO_NOT_SEND
-        ).then(() => {
+            }, csrfSendingCommand: CsrfSendingCommand.DO_NOT_SEND
+        }).then(() => {
             setCheckYourMailDialogShown(true);
             EventBus.notifySuccess("We sent you a registration e-mail", "Check your mailbox")
         }).catch(reason => {

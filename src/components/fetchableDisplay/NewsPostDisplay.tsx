@@ -11,6 +11,8 @@ import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
+import AttachmentPanel from "~/components/file/AttachmentPanel";
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -25,20 +27,20 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
 
     const [content, setContent] = useState<string>(defaultContent);
-    const [attachments, setAttachments] = useState<number[]>(defaultAttachments);
+    const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
     const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
 
     useEffect(() => {
         setContent(defaultContent);
-        setAttachments(defaultAttachments);
+        usedAttachments.reset(defaultAttachments);
     }, [props.existingEntity]);
 
     function composeSaveNewsPostCommand(): SaveNewsPostCommand {
         return {
             content: content,
-            attachments: attachments
+            attachments: usedAttachments.firmAttachmentIds
         };
     }
 
@@ -48,10 +50,13 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     function doCancelEdit() {
-        setIsEdited(false);
-        setContent(defaultContent);
-        setAttachments(defaultAttachments);
-        props.onCancelEditing();
+        const confirmResult = confirm('Do you want to discard your changes?');
+        if (confirmResult) {
+            setIsEdited(false);
+            setContent(defaultContent);
+            usedAttachments.reset(defaultAttachments);
+            props.onCancelEditing();
+        }
     }
 
     function doDelete() {
@@ -80,11 +85,11 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
                                 defaultValue={defaultContent}
-                                onChange={(data) => setContent(data)}/>
+                                onChange={(data) => setContent(data)}
+                                usedAttachments={usedAttachments}
+                />
 
-                <div>
-                    <p>{isEdited && 'Editing'} Attachments: {JSON.stringify(attachments)}</p>
-                </div>
+                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
 
                 {(!isEdited) && (
                     <>
@@ -127,43 +132,51 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> {
     createNewEntity(command: SaveNewsPostCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
-            url: "/api/up/server/api/newsPost/createNew",
-            method: "post",
-            data: {
-                content: command.content,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/newsPost/createNew",
+                method: "post",
+                data: {
+                    content: command.content,
+                    attachments: command.attachments,
+                }
             }
         }).then(resp => resp.data.createdId);
     }
 
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/newsPost/delete",
-            method: "delete",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/newsPost/delete",
+                method: "delete",
+                params: {
+                    id: id
+                }
             }
         });
     }
 
     editEntity(id: number, command: SaveNewsPostCommand): Promise<any> {
         return callJsonEndpoint({
-            url: "/api/up/server/api/newsPost/edit",
-            method: "post",
-            data: {
-                id: id,
-                content: command.content,
-                attachments: command.attachments,
+            conf: {
+                url: "/api/up/server/api/newsPost/edit",
+                method: "post",
+                data: {
+                    id: id,
+                    content: command.content,
+                    attachments: command.attachments,
+                }
             }
         });
     }
 
     fetchEntity(id: number): Promise<NewsPost> {
         return callJsonEndpoint<NewsPost>({
-            url: "/api/up/server/api/newsPost/newsPost",
-            method: "get",
-            params: {
-                id: id
+            conf: {
+                url: "/api/up/server/api/newsPost/newsPost",
+                method: "get",
+                params: {
+                    id: id
+                }
             }
         }).then(resp => resp.data);
     }

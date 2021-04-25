@@ -16,7 +16,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     const [wasCreateNewObjectiveClicked, setWasCreateNewPostClicked] = useState<boolean>(false);
 
     const usedEndpoint = useEndpoint<Objective[]>({
-        config: {
+        conf: {
             url: "/api/up/server/api/objective/listWithAttachments",
             method: "post",
             data: {

@@ -51,10 +51,11 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         await callJsonEndpoint<UserInfo>({
-                url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
-            },
-            true,
-            [200, 403]
+                conf: {
+                    url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
+                },
+                acceptedResponseCodes: [200, 403]
+            }
         ).then(res => {
             if (res.status === 200) {
                 setIsUserLoggedIn(true);

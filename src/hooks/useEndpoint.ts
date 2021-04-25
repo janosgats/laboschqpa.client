@@ -3,10 +3,11 @@ import {AxiosRequestConfig, AxiosResponse} from "axios";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 
 export interface UseEndpointCommand<T, R = T> {
-    config: AxiosRequestConfig;
+    conf: AxiosRequestConfig;
     deps?: ReadonlyArray<any>;
     customSuccessProcessor?: (axiosResponse: AxiosResponse<T>) => R;
     enableRequest?: boolean;
+    keepOldDataWhileFetchingNew?: boolean;
 }
 
 export interface UsedEndpoint<R> {
@@ -17,7 +18,7 @@ export interface UsedEndpoint<R> {
 }
 
 const useEndpoint = <T, R = T>(
-    {config, deps = [], customSuccessProcessor, enableRequest = true}: UseEndpointCommand<T, R>
+    {conf, deps = [], customSuccessProcessor, enableRequest = true, keepOldDataWhileFetchingNew = false}: UseEndpointCommand<T, R>
 ): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
@@ -25,9 +26,11 @@ const useEndpoint = <T, R = T>(
 
     const refreshOnChange = () => {
         setPending(true);
-        setData(null);
         setError(false);
-        callJsonEndpoint<T>(config)
+        if (!keepOldDataWhileFetchingNew) {
+            setData(null);
+        }
+        callJsonEndpoint<T>({conf: conf})
             .then((axiosResponse) => {
                 if (customSuccessProcessor) {
                     setData(customSuccessProcessor(axiosResponse));
