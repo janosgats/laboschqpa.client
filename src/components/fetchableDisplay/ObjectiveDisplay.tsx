@@ -24,6 +24,7 @@ export interface SaveObjectiveCommand {
     description: string;
     submittable: boolean;
     deadline: Date;
+    hideSubmissionsBefore: Date;
     objectiveType: ObjectiveType;
     attachments: number[];
 }
@@ -32,19 +33,24 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     const defaultTitle = props.isCreatingNew ? '' : props.existingEntity.title;
     const defaultDescription = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.description;
     const defaultSubmittable = props.isCreatingNew ? true : props.existingEntity.submittable;
-    const defaultDeadline = props.isCreatingNew ? new Date() : props.existingEntity.deadline as Date;
+    const defaultDeadline = props.isCreatingNew ? new Date() : getSurelyDate(props.existingEntity.deadline);
+    const defaultHideSubmissionsBefore = props.isCreatingNew ? null : getSurelyDate(props.existingEntity.hideSubmissionsBefore);
     const defaultObjectiveType = props.isCreatingNew ? ObjectiveType.MAIN_OBJECTIVE : props.existingEntity.objectiveType;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
+
+    const defaultIsHideSubmissionsBeforeChecked = !!defaultHideSubmissionsBefore;
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
     const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
     const [isSubmissionDisplayOpen, setIsSubmissionDisplayOpen] = useState<boolean>(false);
+    const [isHideSubmissionsBeforeChecked, setIsHideSubmissionsBeforeChecked] = useState<boolean>(defaultIsHideSubmissionsBeforeChecked);
 
     const [title, setTitle] = useState<string>(defaultTitle);
     const [description, setDescription] = useState<string>(defaultDescription);
     const [submittable, setSubmittable] = useState<boolean>(defaultSubmittable);
     const [deadline, setDeadline] = useState<Date>(defaultDeadline);
+    const [hideSubmissionsBefore, setHideSubmissionsBefore] = useState<Date>(defaultHideSubmissionsBefore);
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
@@ -57,11 +63,17 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     }, [props.existingEntity]);
 
     function composeSaveObjectiveCommand(): SaveObjectiveCommand {
+        let hideSubmissionsBeforeToSave = null;
+        if (isHideSubmissionsBeforeChecked) {
+            hideSubmissionsBeforeToSave = hideSubmissionsBefore;
+        }
+
         return {
             title: title,
             description: description,
             submittable: submittable,
             deadline: deadline,
+            hideSubmissionsBefore: hideSubmissionsBeforeToSave,
             objectiveType: objectiveType,
             attachments: usedAttachments.firmAttachmentIds,
         };
@@ -80,6 +92,8 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
             setDescription(defaultDescription);
             setSubmittable(defaultSubmittable);
             setDeadline(defaultDeadline);
+            setHideSubmissionsBefore(defaultHideSubmissionsBefore);
+            setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
             setObjectiveType(defaultObjectiveType);
             usedAttachments.reset(defaultAttachments);
             props.onCancelEditing();
@@ -143,8 +157,29 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                         <br/>
                     </>
                 )}
+
                 <label>Deadline: </label>
                 <TempDatetimePicker value={deadline} onChange={setDeadline} disabled={!isEdited}/>
+                <br/>
+
+                {isEdited && (
+                    <>
+                        <label>Submissions should not be public before a given time: </label>
+                        <input type="checkbox"
+                               checked={isHideSubmissionsBeforeChecked}
+                               onChange={e => setIsHideSubmissionsBeforeChecked(e.target.checked)}/>
+                        <br/>
+                        {isHideSubmissionsBeforeChecked && (
+                            <>
+                                <label>Submissions are not public before: </label>
+                                <TempDatetimePicker value={hideSubmissionsBefore}
+                                                    onChange={setHideSubmissionsBefore}
+                                                    disabled={!isEdited}/>
+                                <br/>
+                            </>
+                        )}
+                    </>
+                )}
 
                 <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
 
@@ -234,9 +269,10 @@ function padToTwoChars(num: number): string {
 const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disabled}) => {
     const valueDate = getSurelyDate(value);
     const [internalValue, setInternalValue] = useState<string>(
-        `${valueDate.getFullYear()}-${padToTwoChars(valueDate.getMonth() + 1)}-${padToTwoChars(valueDate.getDate())} ` +
-        `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(valueDate.getMinutes())}:${padToTwoChars(valueDate.getSeconds())}`
-    );
+        valueDate
+            ? `${valueDate.getFullYear()}-${padToTwoChars(valueDate.getMonth() + 1)}-${padToTwoChars(valueDate.getDate())} ` +
+            `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(valueDate.getMinutes())}:${padToTwoChars(valueDate.getSeconds())}`
+            : '');
     const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue));
 
     return (<>
@@ -269,6 +305,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     description: command.description,
                     submittable: command.submittable,
                     deadline: command.deadline,
+                    hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
                     attachments: command.attachments,
                 }
@@ -299,6 +336,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     description: command.description,
                     submittable: command.submittable,
                     deadline: command.deadline,
+                    hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
                     attachments: command.attachments,
                 }

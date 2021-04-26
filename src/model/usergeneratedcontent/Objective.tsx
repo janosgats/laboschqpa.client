@@ -6,5 +6,6 @@ export interface Objective extends UserGeneratedContent {
     description: string;
     submittable: boolean;
     deadline: string | Date;
+    hideSubmissionsBefore: string | Date;
     objectiveType: ObjectiveType;
 }

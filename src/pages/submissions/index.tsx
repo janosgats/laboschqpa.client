@@ -53,7 +53,7 @@ const Index: NextPage = () => {
             {fetchedObjectives && fetchedTeams && (
                 <>
                     <label>Filter objective: </label>
-                    <select value={filteredObjectiveId}
+                    <select value={filteredObjectiveId !== null ? filteredObjectiveId : ''}
                             onChange={(e) => {
                                 const val = e.target.value;
                                 if (isValidNumber(val)) {
@@ -74,7 +74,7 @@ const Index: NextPage = () => {
                     </select>
                     <br/>
                     <label>Filter team: </label>
-                    <select value={filteredTeamId}
+                    <select value={filteredTeamId !== null ? filteredTeamId : ''}
                             onChange={(e) => {
                                 const val = e.target.value;
                                 if (isValidNumber(val)) {
