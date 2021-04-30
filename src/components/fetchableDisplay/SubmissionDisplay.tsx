@@ -148,7 +148,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 
                 {(!isEdited) && (
                     <>
-                        {currentUser.hasAuthority(Authority.TeamScoreEditor) && (
+                        {currentUser.hasAuthority(Authority.TeamScorer) && (
                             <button onClick={() => setIsScorerOpen(true)}>Score</button>
                         )}
 

@@ -188,7 +188,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                         {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
                             <button onClick={() => setIsSubmissionDisplayOpen(true)}>Submit</button>
                         )}
-                        {currentUser.hasAuthority(Authority.TeamScoreEditor) && (
+                        {currentUser.hasAuthority(Authority.TeamScorer) && (
                             <button onClick={() => setIsScorerOpen(true)}>Score</button>
                         )}
 
