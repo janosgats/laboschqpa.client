@@ -3,6 +3,7 @@ import {UsedAttachments} from "~/hooks/useAttachments";
 import useEndpoint from "~/hooks/useEndpoint";
 import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
 import FileUploader from "~/components/file/FileUploader";
+import FileInfoModal from "~/components/file/FileInfoModal";
 
 interface AttachmentInfo {
     fileId: number;
@@ -16,6 +17,7 @@ interface Props {
 
 const AttachmentPanel: FC<Props> = (props) => {
     const [isFileUploaderShown, setIsFileUploaderShown] = useState<boolean>(false);
+    const [fileIdToShowInInfoModal, setFileIdToShowInInfoModal] = useState<number>(null);
 
     const usedEndpoint = useEndpoint<AttachmentInfo[]>({
         conf: {
@@ -55,7 +57,7 @@ const AttachmentPanel: FC<Props> = (props) => {
     }
 
     return (
-        <div style={{borderStyle:'dashed', borderColor:'red', borderWidth:1}}>
+        <div style={{borderStyle: 'dashed', borderColor: 'red', borderWidth: 1}}>
             <h3>Attachments</h3>
             <table>
                 <tbody>
@@ -84,7 +86,9 @@ const AttachmentPanel: FC<Props> = (props) => {
                                             <p>{attachmentInfo.fileName}</p>
                                         </td>
                                         <td>
-                                            <button onClick={() => alert('TODO: Show FileDisplay')}>More</button>
+                                            <button
+                                                onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>More
+                                            </button>
                                         </td>
                                         {props.isEdited && (
                                             <td>
@@ -116,6 +120,9 @@ const AttachmentPanel: FC<Props> = (props) => {
                 })}
                 </tbody>
             </table>
+            {fileIdToShowInInfoModal && (
+                <FileInfoModal fileId={fileIdToShowInInfoModal}/>
+            )}
             {props.isEdited && (
                 <>
                     <button onClick={() => setIsFileUploaderShown(true)}>Add attachment</button>

@@ -6,6 +6,7 @@ export enum ApiErrorCategory {
     auth = "auth",
     submission = "submission",
     upload = "upload",
+    content = "content",
 }
 
 export default class ApiError {
@@ -36,3 +37,4 @@ export const auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER = new
 export const submission_OBJECTIVE_IS_NOT_SUBMITTABLE = new ApiError(ApiErrorCategory.submission, 4);
 export const submission_OBJECTIVE_DEADLINE_HAS_PASSED = new ApiError(ApiErrorCategory.submission, 5);
 export const upload_MIME_TYPE_IS_NOT_IMAGE = new ApiError(ApiErrorCategory.upload, 5);
+export const content_CONTENT_IS_NOT_FOUND = new ApiError(ApiErrorCategory.content, 1);

@@ -69,7 +69,11 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
     }
 
     function doSave() {
-        //TODO: Wait for attachments to finish uploading
+        if (usedAttachments.attachmentsUnderUpload.length > 0) {
+            EventBus.notifyWarning("Please wait until all the attachments are uploaded!", "You cannot save yet");
+            return;
+        }
+
         props.onSave(composeSaveSubmissionCommand())
             .catch(e => {
                 if (e instanceof ApiErrorDescriptorException) {

@@ -80,7 +80,11 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     }
 
     function doSave() {
-        //TODO: Wait for attachments to finish uploading
+        if (usedAttachments.attachmentsUnderUpload.length > 0) {
+            EventBus.notifyWarning("Please wait until all the attachments are uploaded!", "You cannot save yet");
+            return;
+        }
+
         props.onSave(composeSaveObjectiveCommand());
     }
 

@@ -45,7 +45,11 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     function doSave() {
-        //TODO: Wait for attachments to finish uploading
+        if (usedAttachments.attachmentsUnderUpload.length > 0) {
+            EventBus.notifyWarning("Please wait until all the attachments are uploaded!", "You really shouldn't save yet");
+            return;
+        }
+
         props.onSave(composeSaveNewsPostCommand());
     }
 

@@ -66,7 +66,6 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking, SaveSpeedDrinkingCom
     }
 
     function doSave() {
-        //TODO: Wait for attachments to finish uploading
         props.onSave(composeSaveSpeedDrinkingCommand());
     }
 
