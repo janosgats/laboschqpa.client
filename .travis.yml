@@ -7,7 +7,6 @@ env:
     - SHORT_COMMIT_HASH=${TRAVIS_COMMIT::10}
     - IMAGE_NAME_COMMIT=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${SHORT_COMMIT_HASH}
     - IMAGE_NAME_BRANCH=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${TRAVIS_BRANCH}
-    - SERVICE_ACCOUNT_JSON=${laboschqpa-k8s-travis-gcp-service-account.json}
 
 install: skip
 script: skip
@@ -20,7 +19,7 @@ jobs:
         - docker
       script: skip
       before_install:
-        - echo ${SERVICE_ACCOUNT_JSON} > service-account.json
+        - openssl aes-256-cbc -K $encrypted_1c649cda91e0_key -iv $encrypted_1c649cda91e0_iv -in laboschqpa-k8s-travis-gcp-service-account.json.enc -out laboschqpa-k8s-travis-gcp-service-account.json -d
         - ls -lah
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - IMAGE_NAME_LATEST=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}
