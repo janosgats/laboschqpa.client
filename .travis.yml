@@ -7,9 +7,11 @@ env:
     - SHORT_COMMIT_HASH=${TRAVIS_COMMIT::10}
     - IMAGE_NAME_COMMIT=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${SHORT_COMMIT_HASH}
     - IMAGE_NAME_BRANCH=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${TRAVIS_BRANCH}
+
 before_install:
   - echo ${laboschqpa-k8s-travis-gcp-service-account.json} > service-account.json
   - ls -lah
+
 install: skip
 script: skip
 
