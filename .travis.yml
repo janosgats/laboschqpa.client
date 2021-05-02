@@ -9,10 +9,6 @@ env:
     - IMAGE_NAME_BRANCH=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${TRAVIS_BRANCH}
     - SERVICE_ACCOUNT_JSON=${laboschqpa-k8s-travis-gcp-service-account.json}
 
-before_install:
-  - echo ${SERVICE_ACCOUNT_JSON} > blahblahtest
-  - echo ${laboschqpa-k8s-travis-gcp-service-account.json} > service-account.json
-
 install: skip
 script: skip
 
@@ -22,9 +18,9 @@ jobs:
       if: env(SKIP_DOCKER_BUILD) != "true"
       services:
         - docker
-      script:
-        - ls -lah
+      script: skip
       before_install:
+        - echo ${SERVICE_ACCOUNT_JSON} > service-account.json
         - ls -lah
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - IMAGE_NAME_LATEST=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}
