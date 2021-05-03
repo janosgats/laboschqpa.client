@@ -3,11 +3,13 @@ language: minimal
 env:
   global:
 #    - SKIP_DOCKER_BUILD=true
+#    - FORCE_DEPLOY_TO_GKE=true
+#    - SKIP_DEPLOY_TO_GKE=true
     - PROJECT_IMAGE_NAME=laboschqpa-client
     - SHORT_COMMIT_HASH=${TRAVIS_COMMIT::10}
     - IMAGE_NAME_COMMIT=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${SHORT_COMMIT_HASH}
     - IMAGE_NAME_BRANCH=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}:${TRAVIS_BRANCH}
-    - TEST_BASE64=${TEST_BASE64}
+    - GKE_SERVICE_ACCOUNT_BASE64=${GKE_SERVICE_ACCOUNT_BASE64}
 
 install: skip
 script: skip
@@ -20,8 +22,6 @@ jobs:
         - docker
       script: skip
       before_install:
-        - echo ${TEST_BASE64} | base64 --decode
-        - openssl aes-256-cbc -K $encrypted_1c649cda91e0_key -iv $encrypted_1c649cda91e0_iv -in laboschqpa-k8s-travis-gcp-service-account.json.enc -out laboschqpa-k8s-travis-gcp-service-account.json -d
         - ls -lah
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - IMAGE_NAME_LATEST=${DOCKER_USERNAME}/${PROJECT_IMAGE_NAME}
@@ -33,3 +33,16 @@ jobs:
         - docker push ${IMAGE_NAME_LATEST}
         - docker push ${IMAGE_NAME_COMMIT}
         - docker push ${IMAGE_NAME_BRANCH}
+    - stage: DeployToGKE
+      if: env(SKIP_DEPLOY_TO_GKE) != "true" AND (branch = master OR env(FORCE_DEPLOY_TO_GKE) = "true")
+      script: skip
+      before_install:
+        - echo ${GKE_SERVICE_ACCOUNT_BASE64} | base64 --decode > gke-service-account.json
+        - curl https://sdk.cloud.google.com | bash > /dev/null
+        - source $HOME/google-cloud-sdk/path.bash.inc
+        - gcloud components update kubectl
+        - gcloud auth activate-service-account --key-file gke-service-account.json
+        - gcloud config set project ringed-bebop-312422
+        - gcloud config set compute/zone europe-central2-a
+        - gcloud container clusters get-credentials laboschqpa-1
+        - ls -lah
