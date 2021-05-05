@@ -47,3 +47,5 @@ jobs:
         - gcloud config set compute/zone europe-central2-a
         - gcloud container clusters get-credentials laboschqpa-1
         - ls -lah
+      install:
+        - kubectl set image deployments/client-deployment client=${IMAGE_NAME_COMMIT}
