@@ -48,4 +48,4 @@ jobs:
         - gcloud container clusters get-credentials laboschqpa-1
         - ls -lah
       install:
-        - kubectl set image deployments/client-deployment client=${IMAGE_NAME_COMMIT}
+        - kubectl set image deployments/client client=${IMAGE_NAME_COMMIT}

@@ -1,4 +1,4 @@
-import React, {createContext, FunctionComponent, ReactNode, useState} from "react";
+import React, {createContext, FC, FunctionComponent, ReactNode, useState} from "react";
 import {isValidBoolean} from "~/utils/CommonValidators";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import LoginWall from "~/components/join/LoginWall";
@@ -40,16 +40,30 @@ interface Props {
     children: ReactNode;
 }
 
+const FetchErrorBlock: FC<{ onRetryClick: () => void; }> = (props) => {
+    return (
+        <>
+            <p>Error while fetching your login info</p>
+            <button onClick={props.onRetryClick}>
+                Retry
+            </button>
+        </>
+    );
+}
+
 const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element => {
     const router = useRouter();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(null);
     const [userInfo, setUserInfo] = useState<UserInfo>(null);
+    const [errorWhileFetchingUserInfo, setErrorWhileFetchingUserInfo] = useState<boolean>(false);
+    const [pendingFetchingUserInfo, setPendingFetchingUserInfo] = useState<boolean>(false);
 
     function shouldApplyLoginWall(): boolean {
         return !router.pathname.startsWith('/login/');
     }
 
     async function updateStateFromServer() {
+        setPendingFetchingUserInfo(true);
         await callJsonEndpoint<UserInfo>({
                 conf: {
                     url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
@@ -64,6 +78,11 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
                 setIsUserLoggedIn(false);
                 setUserInfo(null);
             }
+            setErrorWhileFetchingUserInfo(false);
+        }).catch(e => {
+            setErrorWhileFetchingUserInfo(true);
+        }).finally(() => {
+            setPendingFetchingUserInfo(false);
         });
     }
 
@@ -71,7 +90,10 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         if (isValidBoolean(isUserLoggedIn)) {
             return isUserLoggedIn;
         }
-        updateStateFromServer();
+
+        if (!pendingFetchingUserInfo) {
+            updateStateFromServer();
+        }
 
         return null;
     }
@@ -83,7 +105,10 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         if (userInfo) {
             return userInfo;
         }
-        updateStateFromServer();
+
+        if (!pendingFetchingUserInfo) {
+            updateStateFromServer();
+        }
 
         return null;
     }
@@ -127,6 +152,11 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         if (!shouldApplyLoginWall()) {
             return children;
         }
+
+        if (errorWhileFetchingUserInfo && !pendingFetchingUserInfo) {
+            return <FetchErrorBlock onRetryClick={reload}/>
+        }
+
         if (isLoggedIn() === null) {
             return (<p>TODO: Display a spinner here while determining login status</p>)
         }
