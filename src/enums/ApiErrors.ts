@@ -38,3 +38,4 @@ export const submission_OBJECTIVE_IS_NOT_SUBMITTABLE = new ApiError(ApiErrorCate
 export const submission_OBJECTIVE_DEADLINE_HAS_PASSED = new ApiError(ApiErrorCategory.submission, 5);
 export const upload_MIME_TYPE_IS_NOT_IMAGE = new ApiError(ApiErrorCategory.upload, 5);
 export const content_CONTENT_IS_NOT_FOUND = new ApiError(ApiErrorCategory.content, 1);
+export const upload_STREAM_LENGTH_LIMIT_EXCEEDED = new ApiError(ApiErrorCategory.upload, 2);
