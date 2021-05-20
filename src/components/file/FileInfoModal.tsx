@@ -168,7 +168,7 @@ const FileInfoModal: FC<Props> = (props) => {
                             {isVisible && (
                                 <>
                                     <a href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)} target="_blank">
-                                        <button>Download</button>
+                                        <button>Download original</button>
                                     </a>
                                     <a href={FileHostUtils.getUrlOfFile(fileInfo.id)} target="_blank">
                                         <button>Download optimized</button>
