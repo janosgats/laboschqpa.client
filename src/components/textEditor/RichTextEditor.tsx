@@ -101,7 +101,7 @@ const RichTextEditor: FC<Props> = (props) => {
 
     function handleFileUpload(fileToUpload: FileToUpload) {
         if (enableImageUpload && fileToUpload) {
-            //TODO: replace "IMAGE" with an atomicComponent (customControl) that magnifies the images when clicked
+            //TODO: replace "IMAGE" with an atomicComponent (customControl) that magnifies the images when clicked, and requests appropriate image sizes
             ref.current?.insertAtomicBlockAsync("IMAGE", uploadImage(fileToUpload), "...image...")
         }
     }
