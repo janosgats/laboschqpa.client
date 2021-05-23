@@ -1,148 +1,85 @@
-import React, {FC, FunctionComponent, useEffect, useRef, useState} from 'react'
+import React, {FC, useContext, useRef, useState} from 'react'
 import BackupIcon from '@material-ui/icons/Backup'
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from "mui-rte";
 import EventBus from "~/utils/EventBus";
 import {convertToRaw} from "draft-js";
 import {UsedAttachments} from "~/hooks/useAttachments";
-import FileUploader from "~/components/file/FileUploader";
-import {ClickAwayListener, Popover} from "@material-ui/core";
-import FileHostUtils from "~/utils/FileHostUtils";
+import FileUploaderDialog from "~/components/file/FileUploaderDialog";
 import {NOTIFICATION_TIMEOUT_LONG} from "~/components/eventDisplay/AppNotificationEventDisplay";
 import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
+import {ImageBlock} from "~/components/textEditor/imageBlock/ImageBlock";
+import EditorContextProvider, {EditorContext} from "~/context/EditorContextProvider";
+import {ImageAlignment, ImageBlockSpec} from "~/components/textEditor/imageBlock/ImageBlockTypes";
+import LinkDecorator, {LinkMatcherRegex} from "~/components/textEditor/LinkDecorator";
 
-type TUploadImagePopoverState = {
-    anchor: TAnchor
-    isCancelled: boolean
-}
-
-type TAnchor = HTMLElement | null
-
-interface IUploadImagePopoverProps {
-    anchor: TAnchor
-    onUploadInitiation: (fileToUpload: FileToUpload) => void
-    onCancel: () => void
-}
-
-const UploadImagePopover: FunctionComponent<IUploadImagePopoverProps> = (props) => {
-    const [state, setState] = useState<TUploadImagePopoverState>({
-        anchor: null,
-        isCancelled: false
-    })
-
-    useEffect(() => {
-        setState({
-            anchor: props.anchor,
-            isCancelled: false
-        })
-    }, [props.anchor])
-
-    return (
-        <ClickAwayListener onClickAway={props.onCancel}>
-            <Popover
-                anchorEl={state.anchor}
-                open={state.anchor !== null}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right"
-                }}
-            >
-                <FileUploader uploadedFileType={UploadedFileType.IMAGE} onUploadInitiation={props.onUploadInitiation}/>
-                <button onClick={props.onCancel}>Cancel</button>
-            </Popover>
-        </ClickAwayListener>
-    )
-}
-
-const LinkDecorator: FunctionComponent<{ decoratedText: string }> = (props) => {
-    let targetUrl = '';
-    if (!props.decoratedText.startsWith('http://') && !props.decoratedText.startsWith('https://')) {
-        targetUrl = 'http://';
-    }
-    targetUrl += props.decoratedText;
-
-    return (
-        <a
-            href={targetUrl}
-            target={"_blank"}
-            onClick={(e) => {
-                try {
-                    if (e.ctrlKey) {
-                        window.open(targetUrl, '_blank').focus();
-                    }
-                } catch (e) {
-                    console.error("Cannot open link", [e]);
-                    EventBus.notifyWarning(e.message, "Cannot open link");
-                }
-            }}
-            style={{
-                color: "blue",
-                cursor: "pointer",
-                textDecoration: "underline",
-            }}
-        >
-            {props.children}
-        </a>
-    )
-}
 
 interface Props {
     isEdited: boolean;
     readOnlyControls: boolean;
     defaultValue?: string;
+    resetTrigger: number;
     onChange?: (data: string) => void;
     usedAttachments?: UsedAttachments;
 }
 
+interface ImageUploadAsyncAtomicBlockResponse extends TAsyncAtomicBlockResponse {
+    data: ImageBlockSpec;
+}
+
+function uploadImage(fileToUpload: FileToUpload, usedAttachments: UsedAttachments): Promise<ImageUploadAsyncAtomicBlockResponse> {
+    return usedAttachments.addAttachment(fileToUpload)
+        .then(createdFileResponse => {
+            if (typeof createdFileResponse.mimeType === 'string'
+                && createdFileResponse.mimeType.startsWith('image')) {
+                return {
+                    data: {
+                        isFileHostImage: true,
+                        indexedFileId: createdFileResponse.createdFileId,
+                        size: 300,
+                        alignment: ImageAlignment.center,
+                    }
+                };
+            }
+            EventBus.notifyWarning(
+                'The uploaded file is not an image',
+                'Added as attachment',
+                NOTIFICATION_TIMEOUT_LONG
+            );
+            throw 'The uploaded file is not an image!';
+        });
+}
+
 const RichTextEditor: FC<Props> = (props) => {
+    const editorContext = useContext(EditorContext);
+
     const ref = useRef<TMUIRichTextEditorRef>(null);
-    const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+
+    const [isUploadImageModalOpen, setIsUploadImageModalOpen] = useState<boolean>(false);
 
     const enableImageUpload = !!props.usedAttachments;
 
     function handleFileUpload(fileToUpload: FileToUpload) {
         if (enableImageUpload && fileToUpload) {
-            //TODO: replace "IMAGE" with an atomicComponent (customControl) that magnifies the images when clicked, and requests appropriate image sizes
-            ref.current?.insertAtomicBlockAsync("IMAGE", uploadImage(fileToUpload), "...image...")
+            ref.current?.insertAtomicBlockAsync(
+                "image-block",
+                uploadImage(fileToUpload, props.usedAttachments),
+                "...image...");
         }
-    }
-
-    function uploadImage(fileToUpload: FileToUpload): Promise<TAsyncAtomicBlockResponse> {
-        return props.usedAttachments.addAttachment(fileToUpload)
-            .then(createdFileResponse => {
-                if (typeof createdFileResponse.mimeType === 'string'
-                    && createdFileResponse.mimeType.startsWith('image')) {
-                    return {
-                        data: {
-                            url: FileHostUtils.getUrlOfFile(createdFileResponse.createdFileId),
-                            width: 300,
-                            alignment: "center",
-                            type: "image",
-                        }
-                    };
-                }
-                EventBus.notifyWarning(
-                    'The uploaded file is not an image',
-                    'Added as attachment',
-                    NOTIFICATION_TIMEOUT_LONG
-                );
-                throw 'The uploaded file is not an image!';
-            });
     }
 
     return (
         <>
-            <UploadImagePopover
-                anchor={anchor}
-                onUploadInitiation={(fileToUpload) => {
-                    handleFileUpload(fileToUpload)
-                    setAnchor(null)
-                }}
-                onCancel={() => {
-                    setAnchor(null)
-                }}
+            <FileUploaderDialog uploadedFileType={UploadedFileType.IMAGE}
+                                onUploadInitiation={fileToUpload => {
+                                    handleFileUpload(fileToUpload);
+                                    setIsUploadImageModalOpen(false);
+                                }}
+                                isOpen={isUploadImageModalOpen}
+                                onClose={() => setIsUploadImageModalOpen(false)}
             />
             <MUIRichTextEditor
-                readOnly={!props.isEdited || props.readOnlyControls}
+                key={props.resetTrigger}
+                readOnly={editorContext.isMuiRteReadonly}
                 toolbar={props.isEdited}
                 defaultValue={props.defaultValue}
                 onChange={(state) => {
@@ -156,14 +93,14 @@ const RichTextEditor: FC<Props> = (props) => {
                 decorators={[
                     {
                         component: LinkDecorator,
-                        regex: /((https?:\/\/)|(www\.))[^\s]+/gi
+                        regex: LinkMatcherRegex
                     }
                 ]}
                 controls={[
                     "title", "bold", "italic", "underline", "strikethrough",
                     "bulletList", "numberList",
                     "quote", "code", "highlight", "clear",
-                    "link", "media", ...(enableImageUpload ? ["upload-image"] : []),
+                    "link", ...(enableImageUpload ? ["upload-image"] : []),
                 ]}
                 customControls={[
                     {
@@ -171,8 +108,13 @@ const RichTextEditor: FC<Props> = (props) => {
                         icon: <BackupIcon/>,
                         type: "callback",
                         onClick: (_editorState, _name, anchor) => {
-                            setAnchor(anchor)
+                            setIsUploadImageModalOpen(true);
                         }
+                    },
+                    {
+                        name: "image-block",
+                        type: "atomic",
+                        atomicComponent: ImageBlock
                     },
                 ]}
                 draftEditorProps={{
@@ -187,6 +129,14 @@ const RichTextEditor: FC<Props> = (props) => {
             />
         </>
     )
+};
+
+const ContextWrappedRichTextEditor: FC<Props> = (props) => {
+    return (
+        <EditorContextProvider areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
+            <RichTextEditor {...props}/>
+        </EditorContextProvider>
+    )
 }
 
-export default RichTextEditor
+export default ContextWrappedRichTextEditor;

@@ -42,6 +42,8 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
+    const [resetTrigger, setResetTrigger] = useState<number>(1);
+
     const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
     const [isSubmissionDisplayOpen, setIsSubmissionDisplayOpen] = useState<boolean>(false);
     const [isHideSubmissionsBeforeChecked, setIsHideSubmissionsBeforeChecked] = useState<boolean>(defaultIsHideSubmissionsBeforeChecked);
@@ -92,6 +94,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         const confirmResult = confirm('Do you want to discard your changes?');
         if (confirmResult) {
             setIsEdited(false);
+            setResetTrigger(resetTrigger + 1)
             setTitle(defaultTitle);
             setDescription(defaultDescription);
             setSubmittable(defaultSubmittable);
@@ -148,6 +151,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
                                 defaultValue={defaultDescription}
+                                resetTrigger={resetTrigger}
                                 onChange={(data) => setDescription(data)}
                                 usedAttachments={usedAttachments}
                 />

@@ -5,7 +5,7 @@ import {getSurelyDate} from "~/utils/DateHelpers";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import {content_CONTENT_IS_NOT_FOUND} from "~/enums/ApiErrors";
 import EventBus from "~/utils/EventBus";
-import FileHostUtils from "~/utils/FileHostUtils";
+import * as FileHostUtils from "~/utils/FileHostUtils";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import {UserNameContainer} from "~/model/UserInfo";
 import UserNameFormatter from "~/utils/UserNameFormatter";

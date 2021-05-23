@@ -47,6 +47,8 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
+    const [resetTrigger, setResetTrigger] = useState<number>(1);
+
     const [isScorerOpen, setIsScorerOpen] = useState<boolean>(false);
 
     const [content, setContent] = useState<string>(defaultContent);
@@ -90,6 +92,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
         const confirmResult = confirm('Do you want to discard your changes?');
         if (confirmResult) {
             setIsEdited(false);
+            setResetTrigger(resetTrigger + 1)
             setContent(defaultContent);
             usedAttachments.reset(defaultAttachments);
             props.onCancelEditing();
@@ -144,6 +147,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
                                 defaultValue={defaultContent}
+                                resetTrigger={resetTrigger}
                                 onChange={(data) => setContent(data)}
                                 usedAttachments={usedAttachments}
                 />

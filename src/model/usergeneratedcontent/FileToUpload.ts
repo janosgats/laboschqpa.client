@@ -7,6 +7,7 @@ import EventBus from "~/utils/EventBus";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import {upload_MIME_TYPE_IS_NOT_IMAGE} from "~/enums/ApiErrors";
 import FileUploadCancelledByUserException from "~/exception/FileUploadCancelledByUserException";
+import Exception from "~/exception/Exception";
 
 export interface CreatedFileResponse {
     createdFileId: number;
@@ -62,7 +63,19 @@ export default class FileToUpload {
                 headers: {
                     [CSRF_TOKEN_HEADER_NAME]: await CsrfService.getCsrfToken()
                 }
-            }, insertJsonContentType: false
+            },
+            insertJsonContentType: false,
+            acceptedResponseCodes: [200, 413],
+        }).then(resp => {
+            if (resp.status === 200) {
+                EventBus.notifySuccess(this.getFileName(), 'File uploaded');
+                return resp;
+            }
+            if (resp.status === 413) {
+                EventBus.notifyWarning('The file exceeds the maximum upload size', 'Too large file');
+                throw new Exception('The file is too large');
+            }
+            throw new Exception('Error while processing file upload response');
         }).catch(e => {
             if (e instanceof UnauthorizedApiCallException) {
                 EventBus.notifyWarning('Make sure you are logged in and part of a team!',

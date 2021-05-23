@@ -2,7 +2,7 @@ import React, {FC, useState} from "react";
 import {UsedAttachments} from "~/hooks/useAttachments";
 import useEndpoint from "~/hooks/useEndpoint";
 import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
-import FileUploader from "~/components/file/FileUploader";
+import FileUploaderDialog from "~/components/file/FileUploaderDialog";
 import FileInfoModal from "~/components/file/FileInfoModal";
 
 interface AttachmentInfo {
@@ -126,10 +126,11 @@ const AttachmentPanel: FC<Props> = (props) => {
             {props.isEdited && (
                 <>
                     <button onClick={() => setIsFileUploaderShown(true)}>Add attachment</button>
-                    {isFileUploaderShown && (
-                        <FileUploader uploadedFileType={UploadedFileType.ANY}
-                                      onUploadInitiation={handleUploadInitiation}/>
-                    )}
+                    <FileUploaderDialog uploadedFileType={UploadedFileType.ANY}
+                                        onUploadInitiation={handleUploadInitiation}
+                                        isOpen={isFileUploaderShown}
+                                        onClose={() => setIsFileUploaderShown(false)}
+                    />
                 </>
             )}
         </div>
