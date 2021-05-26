@@ -19,6 +19,7 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
     useEffect(() => {
         if (props.isOpen) {
             setEmail('');
+            setApiCallPending(false);
         }
     }, [props.isOpen])
 
