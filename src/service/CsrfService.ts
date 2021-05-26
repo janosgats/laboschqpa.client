@@ -31,3 +31,6 @@ export async function getCsrfToken(): Promise<string> {
     return csrfToken;
 }
 
+export async function reloadCsrfToken() {
+    await loadCsrfToken();
+}

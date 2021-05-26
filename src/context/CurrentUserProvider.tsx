@@ -6,6 +6,7 @@ import {useRouter} from "next/router";
 import {UserInfo} from "~/model/UserInfo";
 import {Authority} from "~/enums/Authority";
 import {TeamRole} from "~/enums/TeamRole";
+import * as CsrfService from "~/service/CsrfService";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
@@ -64,6 +65,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         setPendingFetchingUserInfo(true);
+        CsrfService.reloadCsrfToken();
         await callJsonEndpoint<UserInfo>({
                 conf: {
                     url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
