@@ -16,8 +16,12 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/login/oauth2/code/github": ["GET"],
     "/logout": ["POST"],
 
-    "/api/noAuthRequired/registerByEmail/submitEmail": ["POST"],
-    "/api/noAuthRequired/registerByEmail/verifyEmail": ["POST"],
+    "/api/noAuthRequired/register/createNewAccountFromSessionOAuthInfo": ["POST"],
+
+    "/api/noAuthRequired/emailVerification/verify": ["POST"],
+
+    "/api/emailAddress/listOwnAddresses": ["GET"],
+    "/api/emailAddress/submitNewAddress": ["POST"],
 
     "/api/currentUser/userInfoWithAuthoritiesAndTeam": ["GET"],
     "/api/currentUser/csrfToken": ["GET"],
@@ -135,7 +139,7 @@ export const nextApiHandler: NextApiHandler = async (
         await proxyToServer(targetMethod, targetUrl, request, response);
     } else {
         response.status(418)
-        response.json("This endpoint is only accessible for teapots.")
+        response.send("This endpoint is only accessible for teapots.")
     }
 };
 

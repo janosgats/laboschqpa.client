@@ -3,7 +3,6 @@ import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
 import React, {useContext} from "react";
 import EventBus from "~/utils/EventBus";
-import RegisterForm from "~/components/join/RegisterForm";
 import LoginForm from "~/components/join/LoginForm";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
@@ -20,8 +19,6 @@ const Index: NextPage = () => {
             </Head>
 
             <hr/>
-            <h4>RegisterForm</h4>
-            <RegisterForm/>
             <hr/>
             <h4>LoginForm</h4>
             <LoginForm/>

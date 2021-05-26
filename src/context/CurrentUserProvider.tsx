@@ -59,7 +59,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     const [pendingFetchingUserInfo, setPendingFetchingUserInfo] = useState<boolean>(false);
 
     function shouldApplyLoginWall(): boolean {
-        return !router.pathname.startsWith('/login/');
+        return !router.pathname.startsWith('/login/') && !router.pathname.startsWith('/emailVerification/');
     }
 
     async function updateStateFromServer() {

@@ -8,6 +8,8 @@ import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import {UserInfo} from "~/model/UserInfo";
+import LoginForm from "~/components/join/LoginForm";
+import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
 
 const Index: NextPage = () => {
     const router = useRouter();
@@ -50,6 +52,8 @@ const Index: NextPage = () => {
             });
     }
 
+    const isViewingOwnProfile: boolean = !!(userInfo && userInfo.userId === currentUser?.getUserInfo()?.userId);
+
     return (
         <div>
             <Head>
@@ -66,6 +70,13 @@ const Index: NextPage = () => {
 
             {userInfo && (
                 <div>
+                    {isViewingOwnProfile && (
+                        <LoginForm addLoginMethod={true}/>
+                    )}
+                    {isViewingOwnProfile && (
+                        <EmailAddressesPanel/>
+                    )}
+
                     <h2>{UserNameFormatter.getFullName(userInfo)}</h2>
                     <h4>{UserNameFormatter.getNickName(userInfo)}</h4>
                     <img src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)}/>
@@ -74,7 +85,7 @@ const Index: NextPage = () => {
                             userInfo.authorities.map(value => <li key={value}>{value}</li>)
                         }
                     </ul>
-                    {userInfo.userId == currentUser.getUserInfo().userId && (
+                    {isViewingOwnProfile && (
                         <div>
                             <button onClick={() => setUserInfoEditorOpen(true)}>Edit info</button>
 
