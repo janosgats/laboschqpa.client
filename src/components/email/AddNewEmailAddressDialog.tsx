@@ -14,6 +14,7 @@ interface Props {
 
 export const AddNewEmailAddressDialog: FC<Props> = (props) => {
     const [email, setEmail] = useState<string>();
+    const [isApiCallPending, setApiCallPending] = useState<boolean>(false);
 
     useEffect(() => {
         if (props.isOpen) {
@@ -22,6 +23,7 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
     }, [props.isOpen])
 
     function submitNewAddress() {
+        setApiCallPending(true);
         callJsonEndpoint({
             conf: {
                 url: "/api/up/server/api/emailAddress/submitNewAddress",
@@ -42,7 +44,7 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
                 }
             }
             EventBus.notifyError("We couldn't send you the mail", "Something went wrong :/");
-        })
+        }).finally(() => setApiCallPending(false));
     }
 
     return (
@@ -57,7 +59,7 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
                 </Button>
                 <Button onClick={submitNewAddress}
                         color="primary"
-                        disabled={!isValidEmail(email)}>
+                        disabled={!isValidEmail(email) || isApiCallPending}>
                     Add new address
                 </Button>
             </DialogActions>
