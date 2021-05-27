@@ -33,7 +33,7 @@ const nextPage: NextPage = () => {
     function doEmailVerification() {
         const registrationParams: EmailVerificationParams = extractEmailVerificationParams();
         if (!registrationParams.successfullyExtracted) {
-            EventBus.notifyError("We couldn't extract your verification data from the URL", "Missing registration data")
+            EventBus.notifyError("We couldn't extract your verification data from the URL", "Malformed verification URL")
             return;
         }
 
