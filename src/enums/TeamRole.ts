@@ -7,24 +7,24 @@ export enum TeamRole {
 
 export interface TeamRoleDataEntry {
     displayName: string;
-    payHoldStatus: TeamRole;
+    teamRole: TeamRole;
 }
 
 export const teamRoleData: Record<TeamRole, TeamRoleDataEntry> = {
     [TeamRole.NOTHING]: {
-        payHoldStatus: TeamRole.NOTHING,
+        teamRole: TeamRole.NOTHING,
         displayName: "Nothing",
     },
     [TeamRole.APPLIED]: {
-        payHoldStatus: TeamRole.APPLIED,
+        teamRole: TeamRole.APPLIED,
         displayName: "Applied",
     },
     [TeamRole.MEMBER]: {
-        payHoldStatus: TeamRole.MEMBER,
+        teamRole: TeamRole.MEMBER,
         displayName: "Member",
     },
     [TeamRole.LEADER]: {
-        payHoldStatus: TeamRole.LEADER,
+        teamRole: TeamRole.LEADER,
         displayName: "Leader",
     },
 

@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import {NextPage} from "next";
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import {UserInfo} from "~/model/UserInfo";
 import {CircularProgress} from "@material-ui/core";
@@ -9,10 +9,13 @@ import {teamRoleData} from "~/enums/TeamRole";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import EditAuthoritiesDialog from "~/components/admin/EditAuthoritiesDialog";
 
 
 const Index: NextPage = () => {
     const currentUser = useContext(CurrentUserContext);
+    const [userIdToEdit, setUserIdToEdit] = useState<number>()
+    const [isEditAuthoritiesDialogOpen, setEditAuthoritiesDialogOpen] = useState<boolean>(false)
 
     const usedEndpoint = useEndpoint<UserInfo[]>({
         conf: {
@@ -35,6 +38,11 @@ const Index: NextPage = () => {
         })
     }
 
+    function editAuthorities(userId: number) {
+        setUserIdToEdit(userId);
+        setEditAuthoritiesDialogOpen(true);
+    }
+
     return (
         <>
             <Head>
@@ -42,6 +50,10 @@ const Index: NextPage = () => {
             </Head>
 
             <AdminNavBar/>
+
+            <EditAuthoritiesDialog onClose={() => setEditAuthoritiesDialogOpen(false)}
+                                   isOpen={isEditAuthoritiesDialogOpen}
+                                   userId={userIdToEdit}/>
 
             {usedEndpoint.pending && <CircularProgress/>}
             {usedEndpoint.error && <p>Couldn't load users :'(</p>}
@@ -73,6 +85,11 @@ const Index: NextPage = () => {
                                     <td>{userInfo.nickName}</td>
                                     <td>{userInfo.firstName}</td>
                                     <td>{userInfo.lastName}</td>
+                                    <td>
+                                        <button onClick={() => editAuthorities(userInfo.userId)}>
+                                            Edit authorities
+                                        </button>
+                                    </td>
                                     <td>
                                         <button onClick={() => logInAsUser(userInfo.userId)}>Log in as</button>
                                     </td>

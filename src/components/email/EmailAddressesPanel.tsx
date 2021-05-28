@@ -1,12 +1,7 @@
 import React, {FC, useState} from "react";
 import useEndpoint, {UsedEndpoint} from "~/hooks/useEndpoint";
 import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
-
-interface UserEmailAddress {
-    id: number;
-    userId: number;
-    email: string;
-}
+import {UserEmailAddress} from "~/model/UserEmailAddress";
 
 const EmailAddressesPanel: FC = () => {
     const [isAddNewAddressDialogOpen, setAddNewAddressDialogOpen] = useState<boolean>(false)

@@ -22,6 +22,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
 
     "/api/emailAddress/listOwnAddresses": ["GET"],
     "/api/emailAddress/submitNewAddress": ["POST"],
+    "/api/emailAddress/listAddressesOfUser": ["GET"],
 
     "/api/currentUser/userInfoWithAuthoritiesAndTeam": ["GET"],
     "/api/currentUser/csrfToken": ["GET"],
@@ -80,6 +81,9 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/acceptedEmail/recalculateByEmail": ["POST"],
     "/api/acceptedEmail/recalculateByUserId": ["POST"],
     "/api/acceptedEmail/delete": ["DELETE"],
+
+    "/api/admin/authority/user/add": ["POST"],
+    "/api/admin/authority/user/delete": ["DELETE"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {
