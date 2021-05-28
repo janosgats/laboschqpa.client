@@ -47,22 +47,27 @@ const Index: NextPage = () => {
             {usedEndpoint.error && <p>Couldn't load users :'(</p>}
             {usedEndpoint.data && (
                 <table>
+                    <thead>
                     <tr>
                         <th>ID</th>
                         <th>enabled</th>
+                        <th>accepted by e-mail</th>
                         <th>teamId</th>
                         <th>teamRole</th>
                         <th>nickName</th>
                         <th>firstName</th>
                         <th>lastName</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     {
 
                         usedEndpoint.data.map((userInfo: UserInfo) => {
                             return (
-                                <tr>
+                                <tr key={userInfo.userId}>
                                     <td>{userInfo.userId}</td>
                                     <td>{userInfo.enabled ? 'true' : 'false'}</td>
+                                    <td>{userInfo.isAcceptedByEmail ? 'true' : 'false'}</td>
                                     <td>{userInfo.teamId}</td>
                                     <td>{teamRoleData[userInfo.teamRole].displayName}</td>
                                     <td>{userInfo.nickName}</td>
@@ -75,6 +80,7 @@ const Index: NextPage = () => {
                             );
                         })
                     }
+                    </tbody>
                 </table>
             )}
 

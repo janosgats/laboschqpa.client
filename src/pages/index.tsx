@@ -1,44 +1,22 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import {NextPage} from "next";
-import React, {useContext} from "react";
-import EventBus from "~/utils/EventBus";
-import LoginForm from "~/components/join/LoginForm";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import AttachmentPanel from "~/components/file/AttachmentPanel";
-import useAttachments from "~/hooks/useAttachments";
+import React from "react";
+import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
+import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
+import NewsFeedPanel from "~/components/panel/NewsFeedPanel";
 
 const Index: NextPage = () => {
-    const currentUser = useContext(CurrentUserContext);
-    const usedAttachments = useAttachments([])
-
     return (
-        <div className={styles.container}>
+        <div>
             <Head>
                 <title>Home</title>
             </Head>
 
-            <hr/>
-            <hr/>
-            <h4>LoginForm</h4>
-            <LoginForm/>
-            <hr/>
+            <NotTeamMemberBanner/>
+            <NotAcceptedByEmailBanner/>
 
-            <button onClick={() =>
-                EventBus.notifyInfo("Was clicked", "Button", 10000, () => alert(23543254))
-            }>Test Button
-            </button>
-
-            <button onClick={() =>
-                EventBus.notifySuccess("Was clicked", "Button", 10000, () => alert(634), true)
-            }>Test Button Priority
-            </button>
-
-            <button onClick={() => currentUser.getUserInfo()}>Gimme UserInfo</button>
-
-            <AttachmentPanel usedAttachments={usedAttachments} isEdited={true}/>
-
-            <div style={{margin: 200}}></div>
+            <h1>News</h1>
+            <NewsFeedPanel/>
 
         </div>
     )

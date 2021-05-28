@@ -17,5 +17,6 @@ export interface UserInfo extends UserNameContainer {
     teamName?: string;
 
     enabled: boolean;
+    isAcceptedByEmail: boolean;
     authorities?: Authority[];
 }

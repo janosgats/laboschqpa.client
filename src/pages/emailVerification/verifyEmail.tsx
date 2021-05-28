@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import {NextPage} from "next";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import EventBus from "~/utils/EventBus";
 import callJsonEndpoint, {CsrfSendingCommand} from "~/utils/api/callJsonEndpoint";
 import {useRouter} from "next/router";
@@ -9,6 +9,7 @@ import {
     emailAddress_EMAIL_ALREADY_BELONGS_TO_A_USER,
     emailAddress_VERIFICATION_REQUEST_PHASE_IS_INVALID
 } from "~/enums/ApiErrors";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
 
 interface EmailVerificationParams {
     id: number;
@@ -18,6 +19,8 @@ interface EmailVerificationParams {
 
 const nextPage: NextPage = () => {
     const router = useRouter();
+    const currentUser = useContext(CurrentUserContext);
+
     const [isEmailVerificationInProgress, setEmailVerificationInProgress] = useState<boolean>(true);
 
     useEffect(() => {
@@ -46,8 +49,9 @@ const nextPage: NextPage = () => {
                     key: registrationParams.key
                 }
             }, csrfSendingCommand: CsrfSendingCommand.DO_NOT_SEND
-        }).then(res => {
+        }).then(async res => {
             EventBus.notifySuccess("Your e-mail is verified", "Nice");
+            await currentUser.reload();
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {

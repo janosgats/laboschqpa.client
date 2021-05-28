@@ -7,6 +7,7 @@ import {isValidNumber} from "~/utils/CommonValidators";
 import useEndpoint from "~/hooks/useEndpoint";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
 import {TeamInfo} from "~/model/Team";
+import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
 
 const NOT_FILTERED = 'not_filtered';
 
@@ -33,6 +34,8 @@ const Index: NextPage = () => {
             <Head>
                 <title>Submissions</title>
             </Head>
+
+            <NotAcceptedByEmailBanner/>
 
             {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && (
                 <p>Pending...</p>

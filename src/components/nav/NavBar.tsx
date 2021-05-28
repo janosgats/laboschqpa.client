@@ -61,6 +61,15 @@ const NavBar: FC = () => {
                     <button>speed drinking</button>
                 </Link>
 
+                {currentUser.hasAuthority(Authority.AcceptedEmailEditor) && (
+                    <>
+                        &nbsp;
+                        <Link href="/acceptedEmails">
+                            <button>accepted emails</button>
+                        </Link>
+                    </>
+                )}
+
                 {currentUser.hasAuthority(Authority.Admin) && (
                     <>
                         &nbsp;

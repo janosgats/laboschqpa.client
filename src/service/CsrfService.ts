@@ -1,18 +1,42 @@
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import Exception from "~/exception/Exception";
+import EventBus from "~/utils/EventBus";
+
+interface GetCsrfTokenResponse {
+    csrfToken: string;
+}
 
 let csrfToken: string;
+let isCsrfLoadingPending: boolean = false;
+
+function sleep(ms: number): Promise<number> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 async function loadCsrfToken() {
-    await callJsonEndpoint<string>({
+    for (let i = 0; i < 20 && isCsrfLoadingPending; ++i) {
+        await sleep(250);
+    }
+
+    isCsrfLoadingPending = true;
+    await callJsonEndpoint<GetCsrfTokenResponse>({
             conf: {
                 url: "/api/up/server/api/currentUser/csrfToken"
-            }
+            },
+            acceptedResponseCodes: [200, 403]
         }
     ).then((res) => {
-        csrfToken = res.data;
+        console.log("loadCsrfToken response", [res.status, res.data]);
+        if (res.status === 200) {
+            csrfToken = res.data.csrfToken;
+        }
     }).catch(reason => {
-        throw new Exception("Could not retrieve CSRF token from the server", reason)
+        let message = undefined;
+        if (reason instanceof Error) {
+            message = reason.message;
+        }
+        EventBus.notifyError(message, 'Could not retrieve CSRF token');
+    }).finally(() => {
+        isCsrfLoadingPending = false;
     });
 }
 
@@ -21,10 +45,6 @@ export function isCsrfTokenLoaded(): boolean {
 }
 
 export async function getCsrfToken(): Promise<string> {
-    if (!isCsrfTokenLoaded()) {
-        await loadCsrfToken();
-    }
-    // We have to double-tap when new users are created. It's possible that the CSRF token comes back empty. Not sure why.
     if (!isCsrfTokenLoaded()) {
         await loadCsrfToken();
     }

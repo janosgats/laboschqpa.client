@@ -5,5 +5,6 @@ export enum Authority {
     RiddleEditor = "RiddleEditor",
     TeamScorer = "TeamScorer",
     SpeedDrinkingEditor = "SpeedDrinkingEditor",
+    AcceptedEmailEditor = "AcceptedEmailEditor",
     Admin = "Admin",
 }
