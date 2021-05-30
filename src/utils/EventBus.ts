@@ -3,12 +3,14 @@ import Exception from "~/exception/Exception";
 
 export enum EventType {
     APP_NOTIFICATION = 1,
-    EXCEPTION = 2
+    EXCEPTION = 2,
+    TRIGGER_USER_CONTEXT_RELOAD = 3,
 }
 
 const subscriptions: Record<EventType, Record<string, CallableFunction>> = {
     [EventType.APP_NOTIFICATION]: {},
     [EventType.EXCEPTION]: {},
+    [EventType.TRIGGER_USER_CONTEXT_RELOAD]: {},
 };
 
 const subscribe = (eventType: EventType, key: string, callback: CallableFunction): void => {

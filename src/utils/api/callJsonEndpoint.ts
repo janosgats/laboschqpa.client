@@ -1,6 +1,6 @@
 import axios, {AxiosPromise, AxiosRequestConfig, AxiosResponse} from "axios";
 import ApiErrorDescriptorUtils, {ApiErrorDescriptor} from "~/utils/api/ApiErrorDescriptorUtils";
-import EventBus from "~/utils/EventBus";
+import EventBus, {EventType} from "~/utils/EventBus";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallException";
 import FrontendApiCallException from "~/exception/FrontendApiCallException";
@@ -162,6 +162,10 @@ const callJsonEndpoint = async <ReturnType>(command: CallJsonEndpointCommand): P
         .then((response) => {
             if (command.acceptedResponseCodes.includes(response.status)) {
                 return response;
+            }
+
+            if (response.status === 403) {
+                EventBus.publish(EventType.TRIGGER_USER_CONTEXT_RELOAD, "HTTP 403 received and not marked as success");
             }
 
             const extractedException = extractExceptionFromResponse(true, response, command.conf, null);

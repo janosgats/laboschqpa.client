@@ -7,6 +7,7 @@ import {UserInfo} from "~/model/UserInfo";
 import {Authority} from "~/enums/Authority";
 import {TeamRole} from "~/enums/TeamRole";
 import * as CsrfService from "~/service/CsrfService";
+import EventBus, {EventType} from "~/utils/EventBus";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
@@ -161,6 +162,10 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
 
     };
+
+    EventBus.subscribe(EventType.TRIGGER_USER_CONTEXT_RELOAD, "CurrentUserProvider", event => {
+        setTimeout(reload, 600);
+    });
 
     function getPageContent(): ReactNode {
         if (!shouldApplyLoginWall()) {

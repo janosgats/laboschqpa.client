@@ -27,7 +27,7 @@ const EmailAddressesPanel: FC = () => {
             {usedCurrentEmailAddresses.data && (
                 <>
                     <ul>
-                        {usedCurrentEmailAddresses.data.map(address => <li>{address.email}</li>)}
+                        {usedCurrentEmailAddresses.data.map(address => <li key={address.id}>{address.email}</li>)}
                     </ul>
 
                     <button onClick={() => setAddNewAddressDialogOpen(true)}>Add new e-mail address</button>
