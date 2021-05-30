@@ -1,8 +1,8 @@
 export enum TeamRole {
-    NOTHING = 0,
-    APPLIED = 1,
-    MEMBER = 2,
-    LEADER = 3,
+    NOTHING = 1,
+    APPLICANT = 2,
+    MEMBER = 3,
+    LEADER = 4,
 }
 
 export interface TeamRoleDataEntry {
@@ -15,9 +15,9 @@ export const teamRoleData: Record<TeamRole, TeamRoleDataEntry> = {
         teamRole: TeamRole.NOTHING,
         displayName: "Nothing",
     },
-    [TeamRole.APPLIED]: {
-        teamRole: TeamRole.APPLIED,
-        displayName: "Applied",
+    [TeamRole.APPLICANT]: {
+        teamRole: TeamRole.APPLICANT,
+        displayName: "Applicant",
     },
     [TeamRole.MEMBER]: {
         teamRole: TeamRole.MEMBER,

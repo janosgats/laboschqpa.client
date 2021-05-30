@@ -7,7 +7,7 @@ import {
 } from "~/components/join/LoginForm";
 import {CSRF_TOKEN_HEADER_NAME} from "~/utils/api/callJsonEndpoint";
 
-//TODO: This concept is really, really bad... but quick
+//TODO: This concept is really, really bad (and auth is pushed one layer further in)... but quick
 
 const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/login/oauth2/google": ["GET"],
@@ -34,6 +34,18 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/team/listAll": ["GET"],
     "/api/team/info": ["GET"],
     "/api/team/listMembers": ["GET"],
+    "/api/team/listApplicants": ["GET"],
+    "/api/team/createNewTeam": ["POST"],
+    "/api/team/applyToTeam": ["POST"],
+    "/api/team/cancelApplicationToTeam": ["POST"],
+    "/api/team/declineApplicationToTeam": ["POST"],
+    "/api/team/approveApplicationToTeam": ["POST"],
+    "/api/team/leaveTeam": ["POST"],
+    "/api/team/kickFromTeam": ["POST"],
+    "/api/team/archiveAndLeaveTeam": ["POST"],
+    "/api/team/giveLeaderRights": ["POST"],
+    "/api/team/takeAwayLeaderRights": ["POST"],
+    "/api/team/resignFromLeadership": ["POST"],
 
     "/api/teamScore/find": ["GET"],
     "/api/teamScore/edit": ["POST"],

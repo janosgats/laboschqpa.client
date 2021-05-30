@@ -18,6 +18,10 @@ export interface CurrentUser {
     /**
      * Returns false until the UserInfo was fetched. After that, it checks for team membership.
      */
+    isMemberOrLeaderOrApplicantOfAnyTeam: () => boolean;
+    /**
+     * Returns false until the UserInfo was fetched. After that, it checks for team membership.
+     */
     isMemberOrLeaderOfTeam: (teamId: number) => boolean;
     /**
      * Returns false until the UserInfo was fetched. After that, it checks for team leadership.
@@ -35,6 +39,7 @@ export interface CurrentUser {
 export const CurrentUserContext = createContext<CurrentUser>({
     getUserInfo: null,
     hasAuthority: null,
+    isMemberOrLeaderOrApplicantOfAnyTeam: null,
     isMemberOrLeaderOfTeam: null,
     isMemberOrLeaderOfAnyTeam: null,
     isLeaderOfTeam: null,
@@ -131,6 +136,13 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
             && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
     }
 
+    function isMemberOrLeaderOrApplicantOfAnyTeam(): boolean {
+        return getUserInfo()
+            && (getUserInfo().teamRole == TeamRole.MEMBER
+                || getUserInfo().teamRole == TeamRole.LEADER
+                || getUserInfo().teamRole == TeamRole.APPLICANT);
+    }
+
     function isLeaderOfTeam(teamId: number): boolean {
         return getUserInfo()
             && getUserInfo().teamId === teamId
@@ -157,6 +169,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         setLoggedInState: setLoggedInState,
         reload: reload,
         hasAuthority: hasAuthority,
+        isMemberOrLeaderOrApplicantOfAnyTeam: isMemberOrLeaderOrApplicantOfAnyTeam,
         isMemberOrLeaderOfTeam: isMemberOrLeaderOfTeam,
         isLeaderOfTeam: isLeaderOfTeam,
         isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
