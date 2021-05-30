@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react'
+import React, {CSSProperties, FC, useState} from 'react'
 import * as FileHostUtils from '~/utils/FileHostUtils'
 import FullScreenImageModal from "~/components/image/FullScreenImageModal";
 
@@ -8,6 +8,7 @@ interface Props {
     overriddenOnClick?: (e) => void;
     forcedSrc?: string;
     alt?: string;
+    imgStyles?: CSSProperties
 }
 
 const Image: FC<Props> = (props) => {
@@ -30,6 +31,7 @@ const Image: FC<Props> = (props) => {
                      cursor: 'pointer',
                      maxWidth: props.maxSize,
                      maxHeight: props.maxSize,
+                     ...(props.imgStyles ?? {}),
                  }}
             />
             <FullScreenImageModal

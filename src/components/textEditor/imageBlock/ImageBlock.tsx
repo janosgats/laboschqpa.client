@@ -31,15 +31,17 @@ export const ImageBlock: FC<Props> = (props) => {
     }
 
     return (
-        <div style={{
-            borderStyle: editorContext.areSubcomponentsEditable ? 'solid' : 'none',
-            borderWidth: 1,
-            textAlign: imageBlockSpec.alignment,
-        }}>
+        <div style={{textAlign: imageBlockSpec.alignment}}>
             <Image fileId={imageBlockSpec.indexedFileId}
                    maxSize={imageBlockSpec.size}
                    forcedSrc={imageBlockSpec.isExternalImage ? imageBlockSpec.externalUrl : null}
-                   overriddenOnClick={editorContext.areSubcomponentsEditable && openEditor}/>
+                   overriddenOnClick={editorContext.areSubcomponentsEditable && openEditor}
+                   imgStyles={{
+                       borderStyle: editorContext.areSubcomponentsEditable ? 'solid' : 'none',
+                       borderWidth: 1,
+                       borderColor: 'lightgray',
+                   }}
+            />
 
             <ImageBlockEditor value={imageBlockSpec}
                               onEdit={handleEdit}
