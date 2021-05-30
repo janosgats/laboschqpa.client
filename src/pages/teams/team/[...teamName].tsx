@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import {NextPage} from "next";
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
 import {useRouter} from "next/router";
@@ -8,6 +8,9 @@ import {TeamRole, teamRoleData} from "~/enums/TeamRole";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import {UserNameContainer} from "~/model/UserInfo";
 import {TeamInfo} from "~/model/Team";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import EventBus from "~/utils/EventBus";
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -17,6 +20,10 @@ interface TeamMember extends UserNameContainer {
 
 const Index: NextPage = () => {
     const router = useRouter();
+    const currentUser = useContext(CurrentUserContext);
+
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editedTeamName, setEditedTeamName] = useState<string>();
 
     const usedTeamInfo = useEndpoint<TeamInfo>({
         conf: {
@@ -40,6 +47,38 @@ const Index: NextPage = () => {
         enableRequest: router.isReady
     });
 
+    useEffect(() => {
+        if (!isEditing) {
+            return;
+        }
+        if (usedTeamInfo.data?.name) {
+            setEditedTeamName(usedTeamInfo.data.name);
+        }
+    }, [isEditing, usedTeamInfo.data?.name]);
+
+    function submitEdit() {
+        if (!(usedTeamInfo.data)) {
+            EventBus.notifyError('Cannot edit team');
+            return;
+        }
+
+        callJsonEndpoint({
+            conf: {
+                url: "/api/up/server/api/team/editTeam",
+                method: "POST",
+                data: {
+                    id: usedTeamInfo.data?.id,
+                    name: editedTeamName,
+                }
+            }
+        }).then(() => {
+            setIsEditing(false);
+            usedTeamInfo.reloadEndpoint();
+        })
+    }
+
+    const isViewedByLeaderOfTeam = usedTeamInfo.data && currentUser.isMemberOrLeaderOfTeam(usedTeamInfo.data.id);
+
     return (
         <div>
             <Head>
@@ -55,12 +94,39 @@ const Index: NextPage = () => {
             {
                 usedTeamInfo.data && (
                     <div>
-                        <h2>{usedTeamInfo.data.name}</h2>
+
+                        {isEditing ? (
+                            <>
+                                <input value={editedTeamName} onChange={e => setEditedTeamName(e.target.value)}/>
+                            </>
+                        ) : (
+                            <>
+                                <h2>{usedTeamInfo.data.name}</h2>
+                            </>
+                        )}
+
                         {usedTeamInfo.data.archived ? <h3>Archived</h3> : null}
+
+                        {isViewedByLeaderOfTeam && (
+                            <>
+                                {isEditing ? (
+                                    <>
+                                        <button onClick={() => submitEdit()}>Save</button>
+                                        <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button onClick={() => setIsEditing(true)}>Edit Team</button>
+                                    </>
+                                )}
+
+                            </>
+                        )}
                     </div>
                 )
             }
 
+            <h2>Members</h2>
             {
                 usedTeamMembers.pending && (
                     <p>Pending...</p>

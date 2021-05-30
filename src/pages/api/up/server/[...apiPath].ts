@@ -29,6 +29,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
 
     "/api/profileInfo/currentProfileInfo": ["GET"],
 
+    "/api/team/editTeam": ["POST"],
     "/api/team/listActiveTeamsWithScores": ["GET"],
     "/api/team/listAll": ["GET"],
     "/api/team/info": ["GET"],

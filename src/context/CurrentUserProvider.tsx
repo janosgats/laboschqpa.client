@@ -19,6 +19,10 @@ export interface CurrentUser {
      */
     isMemberOrLeaderOfTeam: (teamId: number) => boolean;
     /**
+     * Returns false until the UserInfo was fetched. After that, it checks for team leadership.
+     */
+    isLeaderOfTeam: (teamId: number) => boolean;
+    /**
      * Returns false until the UserInfo was fetched. After that, it checks for team membership.
      */
     isMemberOrLeaderOfAnyTeam: () => boolean;
@@ -32,6 +36,7 @@ export const CurrentUserContext = createContext<CurrentUser>({
     hasAuthority: null,
     isMemberOrLeaderOfTeam: null,
     isMemberOrLeaderOfAnyTeam: null,
+    isLeaderOfTeam: null,
     isLoggedIn: null,
     setLoggedInState: null,
     reload: null,
@@ -122,12 +127,18 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     function isMemberOrLeaderOfTeam(teamId: number): boolean {
         return getUserInfo()
             && getUserInfo().teamId === teamId
-            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
+            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
+    }
+
+    function isLeaderOfTeam(teamId: number): boolean {
+        return getUserInfo()
+            && getUserInfo().teamId === teamId
+            && getUserInfo().teamRole == TeamRole.LEADER;
     }
 
     function isMemberOrLeaderOfAnyTeam(): boolean {
         return getUserInfo()
-            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
+            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
     }
 
     function setLoggedInState(isLoggedIn: boolean) {
@@ -146,6 +157,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         reload: reload,
         hasAuthority: hasAuthority,
         isMemberOrLeaderOfTeam: isMemberOrLeaderOfTeam,
+        isLeaderOfTeam: isLeaderOfTeam,
         isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
 
     };
