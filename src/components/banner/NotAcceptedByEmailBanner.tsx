@@ -16,7 +16,7 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
             <DialogContent>
                 <p>
                     To make sure you are really a QPA participant, we asked the Team Leads
-                    to send us the e-mail addresses of people in their team.
+                    to send us the e-mail addresses of the people in their team.
                 </p>
                 <p>
                     Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted!
