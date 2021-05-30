@@ -36,6 +36,15 @@ const NavBar: FC = () => {
                 <Link href={`/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`}>
                     <button>my profile</button>
                 </Link>
+                {currentUser.isMemberOrLeaderOfAnyTeam() && (
+                    <>
+                        &nbsp;
+                        <Link
+                            href={`/teams/team/My/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`}>
+                            <button>my team</button>
+                        </Link>
+                    </>
+                )}
                 &nbsp;
                 <Link href="/teams">
                     <button>teams</button>
