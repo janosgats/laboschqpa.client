@@ -12,6 +12,7 @@ import UserNameFormatter from "~/utils/UserNameFormatter";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {TeamRole} from "~/enums/TeamRole";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import Image from "~/components/image/Image";
 
 interface FileInfo {
     id: number;
@@ -125,10 +126,7 @@ const FileInfoModal: FC<Props> = (props) => {
 
         if (isImage) {
             return (
-                <img src={FileHostUtils.getUrlOfFile(fileInfo.id)}
-                     alt={fileInfo.name}
-                     style={{maxWidth: 300}}
-                />
+                <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name}/>
             );
         }
 

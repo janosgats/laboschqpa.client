@@ -33,7 +33,7 @@ function uploadImage(fileToUpload: FileToUpload, usedAttachments: UsedAttachment
                 && createdFileResponse.mimeType.startsWith('image')) {
                 return {
                     data: {
-                        isFileHostImage: true,
+                        isExternalImage: false,
                         indexedFileId: createdFileResponse.createdFileId,
                         size: 300,
                         alignment: ImageAlignment.center,

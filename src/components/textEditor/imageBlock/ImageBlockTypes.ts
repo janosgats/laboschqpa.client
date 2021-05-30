@@ -1,5 +1,5 @@
 export interface ImageBlockSpec {
-    isFileHostImage: boolean;
+    isExternalImage: boolean;
     indexedFileId?: number;
     externalUrl?: string;
     size: number;

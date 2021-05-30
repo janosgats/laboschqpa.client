@@ -1,8 +1,8 @@
 import React, {FC, useContext, useState} from 'react'
 import {EditorContext} from "~/context/EditorContextProvider";
-import * as FileHostUtils from "~/utils/FileHostUtils";
 import {EditImageCommand, ImageBlockSpec} from "~/components/textEditor/imageBlock/ImageBlockTypes";
 import {ImageBlockEditor} from "~/components/textEditor/imageBlock/ImageBlockEditor";
+import Image from "~/components/image/Image";
 
 interface Props {
     blockProps: ImageBlockSpec;
@@ -13,13 +13,6 @@ export const ImageBlock: FC<Props> = (props) => {
     const imageBlockSpec: ImageBlockSpec = props.blockProps;
 
     const [isEditorOpen, setIsEditorOpen] = useState<boolean>(false)
-
-    let imageSrc: string;
-    if (imageBlockSpec.isFileHostImage) {
-        imageSrc = FileHostUtils.getUrlOfImage(imageBlockSpec.indexedFileId, imageBlockSpec.size);
-    } else {
-        imageSrc = imageBlockSpec.externalUrl;
-    }
 
     function openEditor(): void {
         setIsEditorOpen(true)
@@ -43,21 +36,10 @@ export const ImageBlock: FC<Props> = (props) => {
             borderWidth: 1,
             textAlign: imageBlockSpec.alignment,
         }}>
-            <img src={imageSrc}
-                 alt="Couldn't load image :/"
-                 style={{
-                     cursor: 'pointer',
-                     maxWidth: imageBlockSpec.size,
-                     maxHeight: imageBlockSpec.size,
-                 }}
-                 onClick={() => {
-                     if (editorContext.areSubcomponentsEditable) {
-                         openEditor();
-                     } else {
-                         alert('TODO: Display full image');
-                     }
-                 }}
-            />
+            <Image fileId={imageBlockSpec.indexedFileId}
+                   maxSize={imageBlockSpec.size}
+                   forcedSrc={imageBlockSpec.isExternalImage ? imageBlockSpec.externalUrl : null}
+                   overriddenOnClick={editorContext.areSubcomponentsEditable && openEditor}/>
 
             <ImageBlockEditor value={imageBlockSpec}
                               onEdit={handleEdit}
