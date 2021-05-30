@@ -51,7 +51,7 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
     return (
         <Dialog open={props.isOpen} onClose={props.onClose}>
             <DialogContent>
-                <label>E-mail:</label>
+                <label>E-mail: </label>
                 <input value={email} onChange={(e) => setEmail(e.target.value)}/>
             </DialogContent>
             <DialogActions>
