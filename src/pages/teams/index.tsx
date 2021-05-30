@@ -3,6 +3,7 @@ import {NextPage} from "next";
 import React from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
+import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
 
 interface TeamWithScore {
     id: number;
@@ -23,6 +24,8 @@ const Index: NextPage = () => {
             <Head>
                 <title>Teams</title>
             </Head>
+
+            <NotTeamMemberBanner/>
 
             {
                 usedEndpoint.pending && (
