@@ -70,6 +70,15 @@ const NavBar: FC = () => {
                     <button>speed drinking</button>
                 </Link>
 
+                {currentUser.hasAuthority(Authority.RiddleEditor) && (
+                    <>
+                        &nbsp;
+                        <Link href="/riddleEditor">
+                            <button>riddle editor</button>
+                        </Link>
+                    </>
+                )}
+
                 {currentUser.hasAuthority(Authority.AcceptedEmailEditor) && (
                     <>
                         &nbsp;

@@ -33,7 +33,7 @@ const Index: NextPage = () => {
                 )
             }
             {
-                usedEndpoint.error && (
+                usedEndpoint.failed && (
                     <p>Couldn't load teams :'(</p>
                 )
             }

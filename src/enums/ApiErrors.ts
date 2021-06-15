@@ -8,6 +8,7 @@ export enum ApiErrorCategory {
     content = "content",
     emailAddress = "emailAddress",
     teamLifecycle = "teamLifecycle",
+    riddle = "riddle",
 }
 
 export default class ApiError {
@@ -52,3 +53,4 @@ export const emailAddress_VERIFICATION_REQUEST_PHASE_IS_INVALID = new ApiError(A
 
 export const teamLifecycle_THERE_IS_NO_OTHER_LEADER = new ApiError(ApiErrorCategory.teamLifecycle, 5);
 export const teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM = new ApiError(ApiErrorCategory.teamLifecycle, 7);
+export const riddle_A_RIDDLE_HAS_TO_HAVE_EXACTLY_ONE_ATTACHMENT = new ApiError(ApiErrorCategory.riddle, 5);

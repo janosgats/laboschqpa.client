@@ -56,7 +56,7 @@ const Index: NextPage = () => {
                                    userId={userIdToEdit}/>
 
             {usedEndpoint.pending && <CircularProgress/>}
-            {usedEndpoint.error && <p>Couldn't load users :'(</p>}
+            {usedEndpoint.failed && <p>Couldn't load users :'(</p>}
             {usedEndpoint.data && (
                 <table>
                     <thead>

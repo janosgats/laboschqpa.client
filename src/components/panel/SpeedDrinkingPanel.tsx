@@ -95,7 +95,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 )
             }
             {
-                usedEndpoint.error && (
+                usedEndpoint.failed && (
                     <p>Couldn't load news :'(</p>
                 )
             }

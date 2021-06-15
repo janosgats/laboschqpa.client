@@ -34,7 +34,7 @@ const NewsFeedPanel: FC<{}> = () => {
                 )
             }
             {
-                usedEndpoint.error && (
+                usedEndpoint.failed && (
                     <p>Couldn't load news :'(</p>
                 )
             }

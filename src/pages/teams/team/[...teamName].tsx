@@ -356,7 +356,7 @@ const Index: NextPage = () => {
                         <p>Pending...</p>
                     )}
 
-                    {usedTeamApplicants.error && (
+                    {usedTeamApplicants.failed && (
                         <p>Couldn't load applicants :'(</p>
                     )}
 
@@ -386,7 +386,7 @@ const Index: NextPage = () => {
                 <p>Pending...</p>
             )}
 
-            {usedTeamMembers.error && (
+            {usedTeamMembers.failed && (
                 <p>Couldn't load members :'(</p>
             )}
 

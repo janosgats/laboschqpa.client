@@ -13,8 +13,11 @@ export interface UseEndpointCommand<T, R = T> {
 
 export interface UsedEndpoint<R> {
     data: R;
-    error: boolean;
+
     pending: boolean;
+    succeeded: boolean;
+    failed: boolean;
+
     reloadEndpoint: () => void;
 }
 
@@ -23,10 +26,12 @@ const useEndpoint = <T, R = T>(
 ): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
-    const [pending, setPending] = React.useState(false);
+    const [pending, setPending] = React.useState(true);
+    const [succeeded, setSucceeded] = React.useState(false);
 
     const refreshOnChange = () => {
         setPending(true);
+        setSucceeded(false);
         setError(false);
         if (!keepOldDataWhileFetchingNew) {
             setData(null);
@@ -39,9 +44,11 @@ const useEndpoint = <T, R = T>(
                     setData(axiosResponse.data as unknown as R);
                 }
                 setError(false);
+                setSucceeded(true);
             })
             .catch((err) => {
                 setError(true);
+                setSucceeded(false);
                 setData(null);
                 if (onError) {
                     onError(err);
@@ -58,8 +65,9 @@ const useEndpoint = <T, R = T>(
 
     return {
         data: data,
-        error: error,
         pending: pending,
+        succeeded: succeeded,
+        failed: error,
         reloadEndpoint: refreshOnChange
     };
 };

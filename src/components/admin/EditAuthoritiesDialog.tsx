@@ -87,10 +87,10 @@ const EditAuthoritiesDialog: FC<Props> = (props) => {
                 <br/>
 
                 {usedUserInfo.pending && <p>Pending user info...</p>}
-                {usedUserInfo.error && <p>Error while fetching user info :/</p>}
+                {usedUserInfo.failed && <p>Error while fetching user info :/</p>}
 
                 {usedEmailAddresses.pending && <p>Pending email addresses...</p>}
-                {usedEmailAddresses.error && <p>Error while fetching user emails :/</p>}
+                {usedEmailAddresses.failed && <p>Error while fetching user emails :/</p>}
 
                 {userInfo && usedEmailAddresses.data && (
                     <>

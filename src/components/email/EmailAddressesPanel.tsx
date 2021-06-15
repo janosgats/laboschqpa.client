@@ -18,7 +18,7 @@ const EmailAddressesPanel: FC = () => {
                 <p>TODO: Display a spinner here</p>
             )}
 
-            {usedCurrentEmailAddresses.error && (
+            {usedCurrentEmailAddresses.failed && (
                 <>
                     <p>Error while fetching addresses :'(</p>
                     <button onClick={() => usedCurrentEmailAddresses.reloadEndpoint()}>Retry</button>

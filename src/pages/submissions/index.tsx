@@ -41,7 +41,7 @@ const Index: NextPage = () => {
                 <p>Pending...</p>
             )}
 
-            {(usedEndpointObjectives.error || usedEndpointTeams.error) && (
+            {(usedEndpointObjectives.failed || usedEndpointTeams.failed) && (
                 <>
                     <p>Couldn't load teams and objectives :'(</p>
                     <button onClick={() => {

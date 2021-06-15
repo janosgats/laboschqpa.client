@@ -64,7 +64,7 @@ const Index: NextPage = () => {
                 <p>Pending...</p>
             )}
 
-            {usedEndpoint.error && (
+            {usedEndpoint.failed && (
                 <p>Couldn't load user :'(</p>
             )}
 

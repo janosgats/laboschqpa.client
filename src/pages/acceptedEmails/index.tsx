@@ -118,7 +118,7 @@ const Index: NextPage = () => {
             <button onClick={() => usedEndpoint.reloadEndpoint()}>Reload list</button>
             <br/>
             {usedEndpoint.pending && <CircularProgress/>}
-            {usedEndpoint.error && <p>Couldn't load accepted emails :'(</p>}
+            {usedEndpoint.failed && <p>Couldn't load accepted emails :'(</p>}
             {usedEndpoint.data && (
                 <table>
                     <thead>

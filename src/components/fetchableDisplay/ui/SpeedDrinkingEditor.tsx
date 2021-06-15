@@ -43,7 +43,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                     <p>Pending...</p>
                 )}
 
-                {usedEndpointUsers.error && (
+                {usedEndpointUsers.failed && (
                     <>
                         <p>Couldn't load users :'(</p>
                         <button onClick={() => {

@@ -13,6 +13,10 @@ interface AttachmentInfo {
 interface Props {
     usedAttachments: UsedAttachments;
     isEdited: boolean;
+    /**
+     * Set this if you want to limit allowed file types
+     */
+    onlyAllowUploadedFileType?: UploadedFileType;
 }
 
 const AttachmentPanel: FC<Props> = (props) => {
@@ -68,7 +72,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                         </td>
                     </tr>
                 )}
-                {usedEndpoint.error && (
+                {usedEndpoint.failed && (
                     <tr>
                         <td>
                             <p>Couldn't fetch attachments :'(</p>
@@ -76,7 +80,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                         </td>
                     </tr>
                 )}
-                {(!usedEndpoint.error) && usedEndpoint.data && (
+                {(!usedEndpoint.failed) && usedEndpoint.data && (
                     <>
                         {
                             usedEndpoint.data.map(attachmentInfo => {
@@ -126,7 +130,7 @@ const AttachmentPanel: FC<Props> = (props) => {
             {props.isEdited && (
                 <>
                     <button onClick={() => setIsFileUploaderShown(true)}>Add attachment</button>
-                    <FileUploaderDialog uploadedFileType={UploadedFileType.ANY}
+                    <FileUploaderDialog uploadedFileType={props.onlyAllowUploadedFileType ?? UploadedFileType.ANY}
                                         onUploadInitiation={handleUploadInitiation}
                                         isOpen={isFileUploaderShown}
                                         onClose={() => setIsFileUploaderShown(false)}

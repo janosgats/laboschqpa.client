@@ -142,7 +142,7 @@ const FileInfoModal: FC<Props> = (props) => {
                 <p>Pending...</p>
             )}
 
-            {usedEndpoint.error && (
+            {usedEndpoint.failed && (
                 <>
                     <p>Couldn't fetch file info :'(</p>
                     <button onClick={() => usedEndpoint.reloadEndpoint()}>Retry</button>

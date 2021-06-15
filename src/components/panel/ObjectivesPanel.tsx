@@ -47,7 +47,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
                 )
             }
             {
-                usedEndpoint.error && (
+                usedEndpoint.failed && (
                     <p>Couldn't load objectives :'(</p>
                 )
             }

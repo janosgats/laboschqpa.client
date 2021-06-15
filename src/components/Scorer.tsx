@@ -110,7 +110,7 @@ const Scorer: FC<Props> = (props) => {
                 <p>Pending...</p>
             )}
 
-            {(usedEndpointObjectives.error || usedEndpointTeams.error) && (
+            {(usedEndpointObjectives.failed || usedEndpointTeams.failed) && (
                 <>
                     <p>Couldn't load teams and objectives :'(</p>
                     <button onClick={() => {
@@ -167,7 +167,7 @@ const Scorer: FC<Props> = (props) => {
                         <p>Pending...</p>
                     )}
 
-                    {usedEndpointTeamScore.error && (
+                    {usedEndpointTeamScore.failed && (
                         <>
                             <p>Couldn't load score of this team for this objective :'(</p>
                             <button onClick={() => usedEndpointTeamScore.reloadEndpoint()}>
