@@ -20,7 +20,8 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
                 </p>
                 <p>
                     Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted!
-                    If yes, you can easily add it to your account below, if it's not the same as your SSO e-mail.
+                    If yes, you can easily add it to your account by clicking the below button.
+                    If not, your Team Lead can still submit it.
                 </p>
             </DialogContent>
             <DialogActions>
@@ -54,11 +55,8 @@ const NotAcceptedByEmailBanner: FC = () => {
             <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
             <p>- which makes you unable to see submissions of other users :/</p>
             <ButtonGroup variant="outlined" color="primary" aria-label="outlined primary button group">
-                <Button onClick={() => setAddNewEmailDialogOpen(true)}>
-                    Connect an accepted address to your account
-                </Button>
                 <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>
-                    Ask your Team Lead for help
+                    Click here to fix this
                 </Button>
             </ButtonGroup>
 
