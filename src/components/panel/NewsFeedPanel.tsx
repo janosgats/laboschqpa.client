@@ -4,15 +4,22 @@ import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Authority} from "~/enums/Authority";
 import {NewsPostDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
 
-const NewsFeedPanel: FC<{}> = () => {
+const NewsFeedPanel: FC = () => {
     const currentUser = useContext(CurrentUserContext);
+
+    const infiniteScroller: InfiniteScroller = useInfiniteScroller({
+        startingShowCount: 5
+    });
 
     const [wasCreateNewPostClicked, setWasCreateNewPostClicked] = useState<boolean>(false);
 
     const usedEndpoint = useEndpoint<NewsPost[]>({
         conf: {
             url: "/api/up/server/api/newsPost/listAllWithAttachments"
+        }, onSuccess: (res) => {
+            infiniteScroller.setMaxLength(res.data.length);
         }
     });
 
@@ -28,28 +35,32 @@ const NewsFeedPanel: FC<{}> = () => {
                 />
             )}
 
-            {
-                usedEndpoint.pending && (
-                    <p>Pending...</p>
-                )
-            }
-            {
-                usedEndpoint.failed && (
-                    <p>Couldn't load news :'(</p>
-                )
-            }
-            {
-                usedEndpoint.data &&
-                usedEndpoint.data.map((newsPost, index) => {
-                    return (
-                        <NewsPostDisplayContainer
-                            key={newsPost.id}
-                            overriddenBeginningEntity={newsPost}
-                            shouldCreateNew={false}
-                        />
-                    );
-                })
-            }
+            {usedEndpoint.pending && (
+                <p>Pending...</p>
+            )}
+
+            {usedEndpoint.failed && (
+                <p>Couldn't load news :'(</p>
+            )}
+
+            {usedEndpoint.succeeded && (
+                <>
+                    {usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((newsPost, index) => {
+                        return (
+                            <NewsPostDisplayContainer
+                                key={newsPost.id}
+                                overriddenBeginningEntity={newsPost}
+                                shouldCreateNew={false}
+                            />
+                        );
+                    })}
+                    {infiniteScroller.canShownCountBeIncreased && (
+                        <button onClick={() => infiniteScroller.increaseShownCount(5)}>
+                            &darr;&darr; Show more &darr;&darr;
+                        </button>
+                    )}
+                </>
+            )}
         </div>
     );
 }

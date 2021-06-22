@@ -6,6 +6,7 @@ export interface UseEndpointCommand<T, R = T> {
     conf: AxiosRequestConfig;
     deps?: ReadonlyArray<any>;
     customSuccessProcessor?: (axiosResponse: AxiosResponse<T>) => R;
+    onSuccess?: (axiosResponse: AxiosResponse<T>) => void;
     onError?: (err: any) => void;
     enableRequest?: boolean;
     keepOldDataWhileFetchingNew?: boolean;
@@ -22,7 +23,7 @@ export interface UsedEndpoint<R> {
 }
 
 const useEndpoint = <T, R = T>(
-    {conf, deps = [], customSuccessProcessor, enableRequest = true, keepOldDataWhileFetchingNew = false, onError}: UseEndpointCommand<T, R>
+    {conf, deps = [], customSuccessProcessor, enableRequest = true, keepOldDataWhileFetchingNew = false, onError, onSuccess}: UseEndpointCommand<T, R>
 ): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
@@ -43,6 +44,11 @@ const useEndpoint = <T, R = T>(
                 } else {
                     setData(axiosResponse.data as unknown as R);
                 }
+
+                if (onSuccess) {
+                    onSuccess(axiosResponse);
+                }
+
                 setError(false);
                 setSucceeded(true);
             })

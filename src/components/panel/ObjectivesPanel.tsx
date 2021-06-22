@@ -5,6 +5,7 @@ import {Authority} from "~/enums/Authority";
 import {ObjectiveType} from "~/enums/ObjectiveType";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
 import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
 
 interface Props {
     filteredObjectiveTypes: ObjectiveType[];
@@ -12,6 +13,10 @@ interface Props {
 
 const ObjectivesPanel: FC<Props> = (props) => {
     const currentUser = useContext(CurrentUserContext);
+
+    const infiniteScroller: InfiniteScroller = useInfiniteScroller({
+        startingShowCount: 5
+    });
 
     const [wasCreateNewObjectiveClicked, setWasCreateNewPostClicked] = useState<boolean>(false);
 
@@ -22,7 +27,11 @@ const ObjectivesPanel: FC<Props> = (props) => {
             data: {
                 objectiveTypes: props.filteredObjectiveTypes
             }
-        }, deps: props.filteredObjectiveTypes
+        },
+        deps: props.filteredObjectiveTypes,
+        onSuccess: (res) => {
+            infiniteScroller.setMaxLength(res.data.length);
+        }
     });
 
     useEffect(() => {
@@ -41,28 +50,32 @@ const ObjectivesPanel: FC<Props> = (props) => {
                 />
             )}
 
-            {
-                usedEndpoint.pending && (
-                    <p>Pending...</p>
-                )
-            }
-            {
-                usedEndpoint.failed && (
-                    <p>Couldn't load objectives :'(</p>
-                )
-            }
-            {
-                usedEndpoint.data &&
-                usedEndpoint.data.map((objective, index) => {
-                    return (
-                        <ObjectiveDisplayContainer
-                            key={objective.id}
-                            overriddenBeginningEntity={objective}
-                            shouldCreateNew={false}
-                        />
-                    );
-                })
-            }
+            {usedEndpoint.pending && (
+                <p>Pending...</p>
+            )}
+
+            {usedEndpoint.failed && (
+                <p>Couldn't load objectives :'(</p>
+            )}
+
+            {usedEndpoint.succeeded && (
+                <>
+                    {usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((objective, index) => {
+                        return (
+                            <ObjectiveDisplayContainer
+                                key={objective.id}
+                                overriddenBeginningEntity={objective}
+                                shouldCreateNew={false}
+                            />
+                        );
+                    })}
+                    {infiniteScroller.canShownCountBeIncreased && (
+                        <button onClick={() => infiniteScroller.increaseShownCount(5)}>
+                            &darr;&darr; Show more &darr;&darr;
+                        </button>
+                    )}
+                </>
+            )}
         </div>
     );
 }
