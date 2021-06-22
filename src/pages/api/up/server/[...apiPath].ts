@@ -88,6 +88,11 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/riddleEditor/edit": ["POST"],
     "/api/riddleEditor/delete": ["DELETE"],
 
+    "/api/riddle/listAccessibleRiddles": ["GET"],
+    "/api/riddle/riddle": ["GET"],
+    "/api/riddle/useHint": ["POST"],
+    "/api/riddle/submitSolution": ["POST"],
+
     "/api/admin/users/logInAsUser": ["POST"],
 
     "/api/file/readBulkAttachmentInfo": ["POST"],
