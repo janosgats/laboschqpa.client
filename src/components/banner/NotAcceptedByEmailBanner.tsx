@@ -3,6 +3,7 @@ import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Alert, AlertTitle} from '@material-ui/lab';
 import {Button, ButtonGroup, Dialog, DialogActions, DialogContent} from "@material-ui/core";
 import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
+import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
 
 interface AskYourTeamLeadForHelpDialogProps {
     onClose: () => void;
@@ -23,6 +24,8 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
                     If yes, you can easily add it to your account by clicking the below button.
                     If not, your Team Lead can still submit it.
                 </p>
+                <p style={{marginBottom: 0}}>Your current e-mail addresses:</p>
+                <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ul: {marginTop: 0}}}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onSubmitNewAddressClicked}
