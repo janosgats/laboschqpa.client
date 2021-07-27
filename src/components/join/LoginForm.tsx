@@ -5,6 +5,7 @@ import {auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER} from "~/e
 import {useRouter} from "next/router";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import { Grid, Typography } from "@material-ui/core";
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -70,15 +71,15 @@ const LoginForm: FC<Props> = (props) => {
     }
 
     return (
-        <div>
+        <Grid>
             {props.addLoginMethod ? (
-                <h3>Add a new login method</h3>
+                <Typography variant="h5">Add a new login method</Typography>
             ) : (
-                <h3>Choose a login method</h3>
+                <Typography variant="h5">Choose a login method</Typography>
             )}
             <button onClick={() => doStartLogin("google")}>Google</button>
             <button onClick={() => doStartLogin("github")}>GitHub</button>
-        </div>
+        </Grid>
     )
 };
 
