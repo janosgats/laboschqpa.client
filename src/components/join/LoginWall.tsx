@@ -30,25 +30,26 @@ const LoginWall: FC = () => {
             container
             direction="column"
             justify="center"
-            alignItems="center"
+            alignContent="center"
         >
             <Card
                 className={classes.paper}
-                elevation={3}
                 variant="outlined"
             >
-                <Grid item xs={12}>
+                <Grid item xs={12}
+                    container
+                    justify="center"
+                    alignContent="center"
+                >
                     <CardContent>
                         <Typography
-                            variant="h2"
+                            variant="h3"
                         >
                             Log In
                         </Typography>
                     </CardContent>
                 </Grid>
-                <Grid item xs={12}>
-                    <LoginForm />
-                </Grid>
+                <LoginForm />
             </Card>
         </Grid>
     )

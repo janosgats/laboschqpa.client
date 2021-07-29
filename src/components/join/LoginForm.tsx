@@ -1,11 +1,12 @@
-import React, {FC, useContext} from "react";
+import React, { FC, useContext } from "react";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import {auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER} from "~/enums/ApiErrors";
-import {useRouter} from "next/router";
+import { auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER } from "~/enums/ApiErrors";
+import { useRouter } from "next/router";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import { Grid, Typography } from "@material-ui/core";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Button, ButtonGroup, CardContent, Grid, Typography } from "@material-ui/core";
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -71,15 +72,39 @@ const LoginForm: FC<Props> = (props) => {
     }
 
     return (
-        <Grid>
+        <CardContent>
+        <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+        >
             {props.addLoginMethod ? (
-                <Typography variant="h5">Add a new login method</Typography>
+                <Grid item xs={12}>
+                    <Typography variant="h5">Add a new login method</Typography>
+                </Grid>
             ) : (
-                <Typography variant="h5">Choose a login method</Typography>
+                <Grid item xs={12}>
+                    <Typography variant="h5">Choose a login method</Typography>
+                </Grid>
             )}
-            <button onClick={() => doStartLogin("google")}>Google</button>
-            <button onClick={() => doStartLogin("github")}>GitHub</button>
+            <ButtonGroup variant="contained" color="primary">
+                <Button
+                    variant="contained"
+                    onClick={() => doStartLogin("google")}
+                >
+                    Google
+                </Button>
+                <Button
+                    variant="contained"
+                    onClick={() => doStartLogin("github")}
+                    endIcon={<GitHubIcon />}
+                >
+                    GitHub
+                </Button>
+            </ButtonGroup>
         </Grid>
+        </CardContent>
     )
 };
 
