@@ -1,10 +1,12 @@
-import React, {FC, useContext, useState} from 'react'
+import React, { FC, useContext, useState } from 'react'
 import useEndpoint from "~/hooks/useEndpoint";
-import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import {NewsPostDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
+import { NewsPost } from "~/model/usergeneratedcontent/NewsPost";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Authority } from "~/enums/Authority";
+import { NewsPostDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
+import { Button, Divider, Grid, Typography } from '@material-ui/core';
+import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
 
 const NewsFeedPanel: FC = () => {
     const currentUser = useContext(CurrentUserContext);
@@ -25,9 +27,36 @@ const NewsFeedPanel: FC = () => {
 
     return (
         <div>
-            {(!wasCreateNewPostClicked) && currentUser.hasAuthority(Authority.NewsPostEditor) && (
-                <button onClick={() => setWasCreateNewPostClicked(true)}>Create new post</button>
-            )}
+            <Grid
+                container
+                direction="row"
+                alignItems="center"
+            >
+                <Grid item
+                    style={{ flexGrow: 1 }}
+                >
+                    <Typography
+                        variant="h3"
+                    >
+                        News
+                    </Typography>
+                </Grid>
+                {(!wasCreateNewPostClicked) && currentUser.hasAuthority(Authority.NewsPostEditor) && (
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            size="large"
+                            endIcon={<AddCircleOutlineOutlinedIcon />}
+                            onClick={() => setWasCreateNewPostClicked(true)}
+                        >
+                            Create new post
+                        </Button>
+                    </Grid>
+                )}
+            </Grid>
+            
+            <Divider />
 
             {wasCreateNewPostClicked && (
                 <NewsPostDisplayContainer
