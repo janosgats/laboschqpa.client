@@ -2,6 +2,7 @@ import React, {CSSProperties, FC, useState} from "react";
 import useEndpoint, {UsedEndpoint} from "~/hooks/useEndpoint";
 import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
 import {UserEmailAddress} from "~/model/UserEmailAddress";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 
 interface Overrides {
     ul: CSSProperties;
@@ -35,9 +36,9 @@ const EmailAddressesPanel: FC<Props> = (props) => {
             )}
             {usedCurrentEmailAddresses.data && (
                 <>
-                    <ul style={props.overrides?.ul ?? {}}>
-                        {usedCurrentEmailAddresses.data.map(address => <li key={address.id}>{address.email}</li>)}
-                    </ul>
+                    <List style={props.overrides?.ul ?? {}}>
+                        {usedCurrentEmailAddresses.data.map(address => <ListItem key={address.id}><ListItemText primary={address.email} /></ListItem>)}
+                    </List>
 
                     {!props.hideAddNewAddressButton && (
                         <button onClick={() => setAddNewAddressDialogOpen(true)}>Add new e-mail address</button>
