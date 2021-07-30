@@ -2,20 +2,24 @@ import React, {FC, useContext, useEffect, useState} from "react";
 import {useRouter} from "next/router";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Alert, AlertTitle} from '@material-ui/lab';
-import {Button, ButtonGroup, Dialog, DialogActions, DialogContent} from "@material-ui/core";
+import {Button, ButtonGroup, createStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, TextField, Theme} from "@material-ui/core";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import {TeamInfo} from "~/model/Team";
 import EventBus from "~/utils/EventBus";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import {teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM} from "~/enums/ApiErrors";
 import {TeamRole} from "~/enums/TeamRole";
+import { style } from "./styles/style";
 
 interface CreateNewTeamDialogProps {
     onClose: () => void;
     isOpen: boolean;
 }
 
+const useStyles = makeStyles((theme: Theme) => createStyles(style));
+
 const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
+
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -56,18 +60,27 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
     }
 
     return (
-        <Dialog open={props.isOpen} onClose={props.onClose}>
+        <Dialog open={props.isOpen} onClose={props.onClose} aria-labelledby="form-dialog-title">
+            <DialogTitle >Create Team</DialogTitle>
             <DialogContent>
-                <label>Team name: </label>
-                <input value={teamName} onChange={e => setTeamName(e.target.value)}/>
+                <DialogContent>
+                    <DialogContentText>
+                        To create a team you have to give a name to your team. After your team is created you will be the lead of that team.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        label="Team name"
+                        value={teamName}
+                        onChange={e => setTeamName(e.target.value)}
+                    />
+                </DialogContent>
             </DialogContent>
             <DialogActions>
                 <Button onClick={createNewTeam}
                         color="primary"
                         disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
-                    Create {teamName}
+                    Create my team
                 </Button>
-
                 <Button onClick={props.onClose} color="secondary">
                     Close
                 </Button>
@@ -77,6 +90,7 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
 };
 
 const NotTeamMemberBanner: FC = () => {
+    const classes = useStyles();
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -92,10 +106,10 @@ const NotTeamMemberBanner: FC = () => {
     if (isApplicant) {
         return (
             <>
-                <Alert severity="info">
+                <Alert variant="outlined" severity="info" className={classes.banner}>
                     <AlertTitle>You applied for a membership at {currentUser.getUserInfo()?.teamName}</AlertTitle>
                     <p>- the leaders of the team should review your application soon</p>
-                    <ButtonGroup variant="outlined" color="primary" aria-label="outlined primary button group">
+                    <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                         <Button onClick={() => router.push(`/teams/team/My?id=${currentUser.getUserInfo()?.teamId}`)}>
                             Check out {currentUser.getUserInfo()?.teamName}
                         </Button>
@@ -109,10 +123,10 @@ const NotTeamMemberBanner: FC = () => {
 
     return (
         <>
-            <Alert severity="info">
+            <Alert variant="outlined" severity="info" className={classes.banner}>
                 <AlertTitle>You are not a team member</AlertTitle>
                 <p>- which makes a few features unavailable for your solo self :/</p>
-                <ButtonGroup variant="outlined" color="primary" aria-label="outlined primary button group">
+                <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                     <Button onClick={() => router.push('/teams')}>Join a team</Button>
                     <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
                 </ButtonGroup>

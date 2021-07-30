@@ -1,9 +1,10 @@
-import React, {FC, useContext, useState} from "react";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Alert, AlertTitle} from '@material-ui/lab';
-import {Button, ButtonGroup, Dialog, DialogActions, DialogContent} from "@material-ui/core";
-import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
+import React, { FC, useContext, useState } from "react";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { Button, ButtonGroup, createStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, Theme, Typography } from "@material-ui/core";
+import { AddNewEmailAddressDialog } from "~/components/email/AddNewEmailAddressDialog";
 import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
+import { style } from "./styles/style";
 
 interface AskYourTeamLeadForHelpDialogProps {
     onClose: () => void;
@@ -11,25 +12,32 @@ interface AskYourTeamLeadForHelpDialogProps {
     isOpen: boolean;
 }
 
+const useStyles = makeStyles((theme: Theme) => createStyles(style));
+
 const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (props) => {
     return (
         <Dialog open={props.isOpen} onClose={props.onClose}>
+            <DialogTitle>Resolve email issues</DialogTitle>
             <DialogContent>
-                <p>
+                <DialogContentText>
                     To make sure you are really a QPA participant, we asked the Team Leads
                     to send us the e-mail addresses of the people in their team.
-                </p>
-                <p>
+                </DialogContentText>
+                <DialogContentText>
                     Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted!
                     If yes, you can easily add it to your account by clicking the below button.
                     If not, your Team Lead can still submit it.
-                </p>
-                <p style={{marginBottom: 0}}>Your current e-mail addresses:</p>
-                <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ul: {marginTop: 0}}}/>
+                </DialogContentText>
+                <DialogContentText style={{ marginBottom: 0 }}>
+                    <Typography variant="h6">
+                        Your current e-mail addresses:
+                    </Typography>
+                </DialogContentText>
+                <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ ul: { marginTop: 0 } }} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onSubmitNewAddressClicked}
-                        color="primary">
+                    color="primary">
                     Add new e-mail address
                 </Button>
 
@@ -42,6 +50,7 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
 };
 
 const NotAcceptedByEmailBanner: FC = () => {
+    const classes = useStyles();
     const currentUser = useContext(CurrentUserContext);
 
     const [isAddNewEmailDialogOpen, setAddNewEmailDialogOpen] = useState<boolean>(false);
@@ -54,22 +63,22 @@ const NotAcceptedByEmailBanner: FC = () => {
     }
 
     return (
-        <Alert severity="warning">
+        <Alert variant="outlined" severity="warning" className={classes.banner}>
             <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
             <p>- which makes you unable to see submissions of other users :/</p>
-            <ButtonGroup variant="outlined" color="primary" aria-label="outlined primary button group">
+            <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                 <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>
                     Click here to fix this
                 </Button>
             </ButtonGroup>
 
-            <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen}/>
+            <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
             <AskYourTeamLeadForHelpDialog onClose={() => setAskYourTeamLeadDialogOpen(false)}
-                                          isOpen={isAskYourTeamLeadDialogOpen}
-                                          onSubmitNewAddressClicked={() => {
-                                              setAskYourTeamLeadDialogOpen(false);
-                                              setAddNewEmailDialogOpen(true);
-                                          }}
+                isOpen={isAskYourTeamLeadDialogOpen}
+                onSubmitNewAddressClicked={() => {
+                    setAskYourTeamLeadDialogOpen(false);
+                    setAddNewEmailDialogOpen(true);
+                }}
             />
         </Alert>
     )
