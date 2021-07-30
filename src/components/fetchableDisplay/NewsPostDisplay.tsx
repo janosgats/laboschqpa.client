@@ -1,18 +1,20 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
+import React, { useContext, useEffect, useState } from 'react'
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Authority } from "~/enums/Authority";
+import { NewsPost } from "~/model/usergeneratedcontent/NewsPost";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
+import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, {Author} from "~/service/UserInfoService";
+import UserInfoService, { Author } from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
+import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
+import { Card, CardContent, CardHeader, IconButton } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -81,58 +83,68 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     return (
-        <>
-            <div style={{borderStyle: "solid", borderWidth: 2, padding: 10}}>
-
-                {(!isEdited)
+        <Card>
+            {(!isEdited)
                 && currentUser.hasAuthority(Authority.NewsPostEditor) && (
-                    <button onClick={() => setIsEdited(true)}>Edit</button>
-                )}
+                    <CardHeader
+                        action={
+                            <IconButton
+                                onClick={() => setIsEdited(true)}
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        }
 
+                    />
+                )
+            }
+
+            <CardContent>
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
-                                defaultValue={defaultContent}
-                                resetTrigger={resetTrigger}
-                                onChange={(data) => setContent(data)}
-                                usedAttachments={usedAttachments}
+                    defaultValue={defaultContent}
+                    resetTrigger={resetTrigger}
+                    onChange={(data) => setContent(data)}
+                    usedAttachments={usedAttachments}
                 />
+            </CardContent>
 
-                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
+            <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
 
-                {(!isEdited) && (
-                    <>
+            {(!isEdited) && (
+                <>
+                    <ul>
+                        <li>Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</li>
+                        <li>Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</li>
+                    </ul>
+                    {author ? (
                         <ul>
-                            <li>Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</li>
-                            <li>Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</li>
+                            <li>Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</li>
+                            <li>Last edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</li>
                         </ul>
-                        {author ? (
-                            <ul>
-                                <li>Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</li>
-                                <li>Last edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</li>
-                            </ul>
-                        ) : (
-                            <button onClick={fetchAuthor} disabled={isAuthorFetchingPending}>Show Author</button>
-                        )}
+                    ) : (
+                        <button onClick={fetchAuthor} disabled={isAuthorFetchingPending}>Show Author</button>
+                    )}
 
-                    </>
-                )}
+                </>
+            )}
 
-                {isEdited && (
-                    <>
+            {isEdited && (
+                <>
 
-                        {props.isCreatingNew && (
-                            <button onClick={doSave} disabled={props.isApiCallPending}>Create</button>
-                        )}
-                        {(!props.isCreatingNew) && (
-                            <>
-                                <button onClick={doSave} disabled={props.isApiCallPending}>Modify</button>
-                                <button onClick={doCancelEdit} disabled={props.isApiCallPending}>Cancel</button>
-                                <button onClick={doDelete} disabled={props.isApiCallPending}>Delete</button>
-                            </>
-                        )}
-                    </>
-                )}
-            </div>
-        </>
+                    {props.isCreatingNew && (
+                        <button onClick={doSave} disabled={props.isApiCallPending}>Create</button>
+                    )}
+                    {(!props.isCreatingNew) && (
+                        <>
+                            <button onClick={doSave} disabled={props.isApiCallPending}>Modify</button>
+                            <button onClick={doCancelEdit} disabled={props.isApiCallPending}>Cancel</button>
+                            <button onClick={doDelete} disabled={props.isApiCallPending}>Delete</button>
+                        </>
+                    )}
+                </>
+            )}
+
+        </Card>
     )
 }
 
