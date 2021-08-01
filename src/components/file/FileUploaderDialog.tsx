@@ -1,6 +1,7 @@
-import React, {FC, useState} from "react";
-import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
-import {Button, Dialog, DialogActions, DialogContent} from "@material-ui/core";
+import React, { FC, useState } from "react";
+import FileToUpload, { UploadedFileType } from "~/model/usergeneratedcontent/FileToUpload";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
+import SearchIcon from '@material-ui/icons/Search';
 
 interface Props {
     uploadedFileType: UploadedFileType;
@@ -23,16 +24,30 @@ const FileUploaderDialog: FC<Props> = (props) => {
     }
 
     return (
-        <Dialog open={props.isOpen} onClose={props.onClose}>
+        <Dialog 
+            open={props.isOpen} 
+            onClose={props.onClose}
+            maxWidth="sm"
+            fullWidth
+            >
+            <DialogTitle >Upload file</DialogTitle>
             <DialogContent>
-                <input type="file"
-                       onChange={onFileChange}
-                       {
-                           ...(props.uploadedFileType === UploadedFileType.IMAGE
-                               ? {accept: "image/*"}
-                               : {})
-                       }
-                />
+                <Button
+                    variant="outlined"
+                    component="label"
+                    startIcon={<SearchIcon />}
+                >
+                    Search file
+                    <input type="file"
+                        hidden
+                        onChange={onFileChange}
+                        {
+                        ...(props.uploadedFileType === UploadedFileType.IMAGE
+                            ? { accept: "image/*" }
+                            : {})
+                        }
+                    />
+                </Button>
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onClose} color="secondary">

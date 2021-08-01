@@ -1,17 +1,22 @@
-import React, {FC, useContext, useRef, useState} from 'react'
+import React, { FC, useContext, useRef, useState } from 'react'
 import BackupIcon from '@material-ui/icons/Backup'
-import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from "mui-rte";
+import MUIRichTextEditor, { TAsyncAtomicBlockResponse, TMUIRichTextEditorRef } from "mui-rte";
 import EventBus from "~/utils/EventBus";
-import {convertToRaw} from "draft-js";
-import {UsedAttachments} from "~/hooks/useAttachments";
+import { convertToRaw } from "draft-js";
+import { UsedAttachments } from "~/hooks/useAttachments";
 import FileUploaderDialog from "~/components/file/FileUploaderDialog";
-import {NOTIFICATION_TIMEOUT_LONG} from "~/components/eventDisplay/AppNotificationEventDisplay";
-import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
-import {ImageBlock} from "~/components/textEditor/imageBlock/ImageBlock";
-import EditorContextProvider, {EditorContext} from "~/context/EditorContextProvider";
-import {ImageAlignment, ImageBlockSpec} from "~/components/textEditor/imageBlock/ImageBlockTypes";
-import LinkDecorator, {LinkMatcherRegex} from "~/components/textEditor/LinkDecorator";
+import { NOTIFICATION_TIMEOUT_LONG } from "~/components/eventDisplay/AppNotificationEventDisplay";
+import FileToUpload, { UploadedFileType } from "~/model/usergeneratedcontent/FileToUpload";
+import { ImageBlock } from "~/components/textEditor/imageBlock/ImageBlock";
+import EditorContextProvider, { EditorContext } from "~/context/EditorContextProvider";
+import { ImageAlignment, ImageBlockSpec } from "~/components/textEditor/imageBlock/ImageBlockTypes";
+import LinkDecorator, { LinkMatcherRegex } from "~/components/textEditor/LinkDecorator";
+import { Box, makeStyles, Paper } from '@material-ui/core';
+import { style } from './styles/style';
 
+
+
+const useStyles = makeStyles(style);
 
 interface Props {
     isEdited: boolean;
@@ -50,6 +55,8 @@ function uploadImage(fileToUpload: FileToUpload, usedAttachments: UsedAttachment
 }
 
 const RichTextEditor: FC<Props> = (props) => {
+    const classes = useStyles();
+
     const editorContext = useContext(EditorContext);
 
     const ref = useRef<TMUIRichTextEditorRef>(null);
@@ -70,63 +77,65 @@ const RichTextEditor: FC<Props> = (props) => {
     return (
         <>
             <FileUploaderDialog uploadedFileType={UploadedFileType.IMAGE}
-                                onUploadInitiation={fileToUpload => {
-                                    handleFileUpload(fileToUpload);
-                                    setIsUploadImageModalOpen(false);
-                                }}
-                                isOpen={isUploadImageModalOpen}
-                                onClose={() => setIsUploadImageModalOpen(false)}
-            />
-            <MUIRichTextEditor
-                key={props.resetTrigger}
-                readOnly={editorContext.isMuiRteReadonly}
-                toolbar={props.isEdited}
-                defaultValue={props.defaultValue}
-                onChange={(state) => {
-                    if (props.onChange) {
-                        props.onChange(JSON.stringify(convertToRaw(state.getCurrentContent())));
-                    }
+                onUploadInitiation={fileToUpload => {
+                    handleFileUpload(fileToUpload);
+                    setIsUploadImageModalOpen(false);
                 }}
+                isOpen={isUploadImageModalOpen}
+                onClose={() => setIsUploadImageModalOpen(false)}
+            />
+            <Paper variant="outlined" elevation={3} className={classes.richTextEditorPaper}>
+                <MUIRichTextEditor
+                    key={props.resetTrigger}
+                    readOnly={editorContext.isMuiRteReadonly}
+                    toolbar={props.isEdited}
+                    defaultValue={props.defaultValue}
+                    onChange={(state) => {
+                        if (props.onChange) {
+                            props.onChange(JSON.stringify(convertToRaw(state.getCurrentContent())));
+                        }
+                    }}
 
-                label="Start typing or drop a file inside the editor..."
-                ref={ref}
-                decorators={[
-                    {
-                        component: LinkDecorator,
-                        regex: LinkMatcherRegex
-                    }
-                ]}
-                controls={[
-                    "title", "bold", "italic", "underline", "strikethrough",
-                    "bulletList", "numberList",
-                    "quote", "code", "highlight", "clear",
-                    "link", ...(enableImageUpload ? ["upload-image"] : []),
-                ]}
-                customControls={[
-                    {
-                        name: "upload-image",
-                        icon: <BackupIcon/>,
-                        type: "callback",
-                        onClick: (_editorState, _name, anchor) => {
-                            setIsUploadImageModalOpen(true);
+                    label="Start typing or drop a file inside the editor..."
+                    ref={ref}
+                    decorators={[
+                        {
+                            component: LinkDecorator,
+                            regex: LinkMatcherRegex
                         }
-                    },
-                    {
-                        name: "image-block",
-                        type: "atomic",
-                        atomicComponent: ImageBlock
-                    },
-                ]}
-                draftEditorProps={{
-                    handleDroppedFiles: (_selectionState, files) => {
-                        if (files.length && (files[0] as File).name !== undefined) {
-                            handleFileUpload(new FileToUpload(files[0] as File, UploadedFileType.ANY))
-                            return "handled"
+                    ]}
+                    controls={[
+                        "title", "bold", "italic", "underline", "strikethrough",
+                        "bulletList", "numberList",
+                        "quote", "code", "highlight", "clear",
+                        "link", ...(enableImageUpload ? ["upload-image"] : []),
+                    ]}
+                    customControls={[
+                        {
+                            name: "upload-image",
+                            icon: <BackupIcon />,
+                            type: "callback",
+                            onClick: (_editorState, _name, anchor) => {
+                                setIsUploadImageModalOpen(true);
+                            }
+                        },
+                        {
+                            name: "image-block",
+                            type: "atomic",
+                            atomicComponent: ImageBlock
+                        },
+                    ]}
+                    draftEditorProps={{
+                        handleDroppedFiles: (_selectionState, files) => {
+                            if (files.length && (files[0] as File).name !== undefined) {
+                                handleFileUpload(new FileToUpload(files[0] as File, UploadedFileType.ANY))
+                                return "handled"
+                            }
+                            return "not-handled"
                         }
-                        return "not-handled"
-                    }
-                }}
-            />
+                    }}
+                />
+            </Paper>
         </>
     )
 };
@@ -134,7 +143,7 @@ const RichTextEditor: FC<Props> = (props) => {
 const ContextWrappedRichTextEditor: FC<Props> = (props) => {
     return (
         <EditorContextProvider areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
-            <RichTextEditor {...props}/>
+            <RichTextEditor {...props} />
         </EditorContextProvider>
     )
 }

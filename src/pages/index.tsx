@@ -14,8 +14,7 @@ const Index: NextPage = () => {
 
             <NotTeamMemberBanner/>
             <NotAcceptedByEmailBanner/>
-
-            <h1>News</h1>
+            
             <NewsFeedPanel/>
 
         </div>
