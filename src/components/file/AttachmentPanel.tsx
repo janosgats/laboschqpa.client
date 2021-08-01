@@ -1,10 +1,18 @@
-import React, {FC, useState} from "react";
-import {UsedAttachments} from "~/hooks/useAttachments";
+import React, { FC, useState } from "react";
+import { UsedAttachments } from "~/hooks/useAttachments";
 import useEndpoint from "~/hooks/useEndpoint";
-import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
+import FileToUpload, { UploadedFileType } from "~/model/usergeneratedcontent/FileToUpload";
 import FileUploaderDialog from "~/components/file/FileUploaderDialog";
 import FileInfoModal from "~/components/file/FileInfoModal";
-
+import { Button, CardContent, CircularProgress, Collapse, createStyles, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, makeStyles, Theme, Tooltip, Typography } from "@material-ui/core";
+import { ExpandLess, ExpandMore, FastfoodOutlined, ReportRounded } from "@material-ui/icons";
+import AttachmentIcon from '@material-ui/icons/Attachment';
+import AttachFileOutlinedIcon from '@material-ui/icons/AttachFileOutlined';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import styles from './styles/attachmentPanelStyle';
+import ClearIcon from '@material-ui/icons/Clear';
 interface AttachmentInfo {
     fileId: number;
     fileName: string;
@@ -19,7 +27,10 @@ interface Props {
     onlyAllowUploadedFileType?: UploadedFileType;
 }
 
+const useStyles = makeStyles((theme: Theme) => createStyles(styles));
+
 const AttachmentPanel: FC<Props> = (props) => {
+    const classes = useStyles();
     const [isFileUploaderShown, setIsFileUploaderShown] = useState<boolean>(false);
     const [fileIdToShowInInfoModal, setFileIdToShowInInfoModal] = useState<number>(null);
 
@@ -38,7 +49,7 @@ const AttachmentPanel: FC<Props> = (props) => {
     function removeAttachment(id: number) {
         const confirmationResult
             = confirm("Sure? If you remove the attachment, it will be deleted. " +
-            "People won't see the file even if you link it into the post as an image.");
+                "People won't see the file even if you link it into the post as an image.");
 
         if (confirmationResult) {
             props.usedAttachments.removeAttachment(id);
@@ -48,7 +59,7 @@ const AttachmentPanel: FC<Props> = (props) => {
     function cancelAttachmentUpload(attachmentUnderUpload: FileToUpload) {
         const confirmationResult
             = confirm("Sure? If you cancel the upload, the attachment, it will be deleted. " +
-            "People won't see the file even if you link it into the post as an image.");
+                "People won't see the file even if you link it into the post as an image.");
 
         if (confirmationResult) {
             props.usedAttachments.cancelAttachmentUpload(attachmentUnderUpload);
@@ -60,84 +71,125 @@ const AttachmentPanel: FC<Props> = (props) => {
         setIsFileUploaderShown(false);
     }
 
+    const [isAttachmentsDisplayed, setIsAttachmentsDisplayed] = useState(false);
     return (
-        <div style={{borderStyle: 'dashed', borderColor: 'red', borderWidth: 1}}>
-            <h3>Attachments</h3>
-            <table>
-                <tbody>
-                {(!usedEndpoint.data) && usedEndpoint.pending && (
-                    <tr>
-                        <td>
-                            <p>Pending...</p>
-                        </td>
-                    </tr>
-                )}
-                {usedEndpoint.failed && (
-                    <tr>
-                        <td>
-                            <p>Couldn't fetch attachments :'(</p>
-                            <button onClick={() => usedEndpoint.reloadEndpoint()}>Retry</button>
-                        </td>
-                    </tr>
-                )}
-                {(!usedEndpoint.failed) && usedEndpoint.data && (
-                    <>
-                        {
-                            usedEndpoint.data.map(attachmentInfo => {
-                                return (
-                                    <tr key={attachmentInfo.fileId}>
-                                        <td>
-                                            <p>{attachmentInfo.fileName}</p>
-                                        </td>
-                                        <td>
-                                            <button
-                                                onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>More
-                                            </button>
-                                        </td>
-                                        {props.isEdited && (
-                                            <td>
-                                                <button onClick={() => removeAttachment(attachmentInfo.fileId)}>Remove
-                                                </button>
-                                            </td>
-                                        )}
-                                    </tr>
-                                );
-                            })
-                        }
-                    </>
-                )}
-
-                {props.usedAttachments.attachmentsUnderUpload.map(fileUnderUpload => {
-                    return (
-                        <tr key={fileUnderUpload.key}>
-                            <td>
-                                <p>{fileUnderUpload.getFileName()}</p>
-                            </td>
-                            <td>
-                                Uploading...
-                            </td>
-                            <td>
-                                <button onClick={() => cancelAttachmentUpload(fileUnderUpload)}>Cancel</button>
-                            </td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-            </table>
-            {fileIdToShowInInfoModal && (
-                <FileInfoModal fileId={fileIdToShowInInfoModal}/>
+        <CardContent>
+            {(!usedEndpoint.data) && usedEndpoint.pending && (
+                <p>Pending... TODO SPINNER</p>
             )}
+            {usedEndpoint.failed && (
+                <>
+                    <p>Couldn't fetch attachments :'(</p>
+                    <button onClick={() => usedEndpoint.reloadEndpoint()}>Retry</button>
+                </>
+            )}
+            {(!usedEndpoint.failed) && usedEndpoint.data && (
+                <>
+                    {usedEndpoint.data.length > 0 ?
+                        (
+                            <>
+                                <List>
+                                    <ListItem
+                                        button
+                                        onClick={() => { setIsAttachmentsDisplayed(!isAttachmentsDisplayed) }}
+                                    >
+                                        <ListItemIcon>
+                                            <AttachmentIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Attachments" />
+                                        {isAttachmentsDisplayed ? <ExpandLess /> : <ExpandMore />}
+                                    </ListItem>
+                                </List>
+                                <Collapse in={isAttachmentsDisplayed} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding>
+                                        {
+                                            usedEndpoint.data.map(attachmentInfo => {
+                                                return (
+                                                    <ListItem>
+                                                        <ListItemAvatar>
+                                                            <AttachFileOutlinedIcon />
+                                                        </ListItemAvatar>
+                                                        <ListItemText primary={attachmentInfo.fileName} />
+                                                        <ListItemSecondaryAction>
+                                                            <IconButton
+                                                                onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}
+                                                            >
+                                                                <MoreHorizIcon />
+                                                            </IconButton>
+                                                            {props.isEdited && (
+                                                                <IconButton
+                                                                    onClick={() => removeAttachment(attachmentInfo.fileId)}
+                                                                >
+                                                                    <RemoveCircleOutlineIcon />
+                                                                </IconButton>
+                                                            )}
+                                                        </ListItemSecondaryAction>
+                                                    </ListItem>
+                                                );
+                                            })
+                                        }
+                                    </List>
+                                </Collapse>
+                            </>
+                        ) : null
+                    }
+                </>
+            )}
+
             {props.isEdited && (
                 <>
-                    <button onClick={() => setIsFileUploaderShown(true)}>Add attachment</button>
+                    <Grid
+                        container
+                        justify="center"
+                        className={classes.buttonGrid}
+                    >
+                        <Button
+                            variant="outlined"
+                            startIcon={<AddOutlinedIcon />}
+                            endIcon={<AddOutlinedIcon />}
+                            onClick={() => setIsFileUploaderShown(true)}
+                        >
+                            Add attachment
+                        </Button>
+                    </Grid>
+
                     <FileUploaderDialog uploadedFileType={props.onlyAllowUploadedFileType ?? UploadedFileType.ANY}
-                                        onUploadInitiation={handleUploadInitiation}
-                                        isOpen={isFileUploaderShown}
-                                        onClose={() => setIsFileUploaderShown(false)}
+                        onUploadInitiation={handleUploadInitiation}
+                        isOpen={isFileUploaderShown}
+                        onClose={() => setIsFileUploaderShown(false)}
                     />
                 </>
             )}
-        </div>
+
+            {props.usedAttachments.attachmentsUnderUpload.map(fileUnderUpload => {
+                return (
+                    <Grid
+                        container
+                        alignItems="center"
+                        spacing={1}
+                    >
+                        <Typography variant="body1">
+                            {fileUnderUpload.getFileName()}
+                        </Typography>
+                        <CircularProgress />
+                        <Tooltip
+                            title="Cancel upload"
+                        >
+                            <IconButton
+                                onClick={() => cancelAttachmentUpload(fileUnderUpload)}
+                            >
+                                <ClearIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                );
+            })}
+
+            {fileIdToShowInInfoModal && (
+                <FileInfoModal fileId={fileIdToShowInInfoModal} />
+            )}
+            <Divider variant="middle" />
+        </CardContent>
     )
 };
 

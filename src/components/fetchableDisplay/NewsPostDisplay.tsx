@@ -13,15 +13,28 @@ import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Card, CardContent, CardHeader, IconButton } from '@material-ui/core';
+import { Avatar, Card, CardActions, CardContent, CardHeader, Collapse, createStyles, Grid, IconButton, makeStyles, Theme, Tooltip, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import DescriptionIcon from '@material-ui/icons/Description';
+import { styles } from './styles/NewsPostDisplayStyle';
 
 export interface SaveNewsPostCommand {
     content: string;
     attachments: number[];
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles(styles)
+)
+
 const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props) => {
+
+    const classes = useStyles();
+
     const defaultContent = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.content;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
@@ -34,6 +47,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
     const [author, setAuthor] = useState<Author>();
     const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
+    const [showAuthor, setShowAuthor] = useState<boolean>(false);
 
     useEffect(() => {
         setContent(defaultContent);
@@ -75,18 +89,43 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     function fetchAuthor() {
-        setIsAuthorFetchingPending(true);
+        if (showAuthor) {
+            return setShowAuthor(false);
+        }
+
+        setShowAuthor(true);
+
+        if (author) return;
         UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId, false)
-            .then(value => setAuthor(value))
+            .then((value) => {
+                setAuthor(value)
+            })
             .catch(() => EventBus.notifyError("Error while loading Author"))
             .finally(() => setIsAuthorFetchingPending(false));
     }
 
+
     return (
-        <Card>
+        <Card className={classes.cardRoot} >
+            {!currentUser.hasAuthority(Authority.NewsPostEditor) && (
+                <CardHeader
+                    className={classes.cardHeader}
+                    avatar={
+                        <Avatar>
+                            <DescriptionIcon />
+                        </Avatar>
+                    }
+                />
+            )}
             {(!isEdited)
                 && currentUser.hasAuthority(Authority.NewsPostEditor) && (
                     <CardHeader
+                        className={classes.cardHeader}
+                        avatar={
+                            <Avatar>
+                                <DescriptionIcon />
+                            </Avatar>
+                        }
                         action={
                             <IconButton
                                 onClick={() => setIsEdited(true)}
@@ -94,7 +133,18 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                                 <EditIcon />
                             </IconButton>
                         }
-
+                    />
+                )
+            }
+            {(isEdited)
+                && currentUser.hasAuthority(Authority.NewsPostEditor) && (
+                    <CardHeader
+                        className={classes.cardHeader}
+                        avatar={
+                            <Avatar>
+                                <DescriptionIcon />
+                            </Avatar>
+                        }
                     />
                 )
             }
@@ -111,37 +161,83 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
             <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
 
             {(!isEdited) && (
-                <>
-                    <ul>
-                        <li>Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</li>
-                        <li>Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</li>
-                    </ul>
-                    {author ? (
-                        <ul>
-                            <li>Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</li>
-                            <li>Last edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</li>
-                        </ul>
-                    ) : (
-                        <button onClick={fetchAuthor} disabled={isAuthorFetchingPending}>Show Author</button>
-                    )}
+                <CardContent className={classes.cardFooter}>
+                    
+                        {props.existingEntity.creationTime === props.existingEntity.editTime ?
+                            (
+                                
+                                    <Typography variant="caption">Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
+                                
+                            )
+                            :
+                            (
+                                
+                                    <Typography variant="caption">Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
+                                
+                            )
+                        }
+                        <Tooltip title="Show Author" leaveDelay={300}>
+                            <IconButton
+                                aria-label="Show Author"
+                                onClick={() => fetchAuthor()}
+                                disabled={isAuthorFetchingPending}
+                            >
+                                <InfoOutlinedIcon />
+                            </IconButton>
+                        </Tooltip>
+                    
 
-                </>
+                    {author && (
+                        <Collapse in={showAuthor} timeout="auto" unmountOnExit>
+                                <Grid
+                                     container
+                                     direction="row"
+                                     justify="space-between"
+                                     alignItems="flex-start"
+                                    >
+                                    <Typography  variant="caption">Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</Typography>
+                                    <Typography variant="caption">Last edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</Typography>
+                                </Grid>
+                        </Collapse>
+                    )}
+                </CardContent>
             )}
 
             {isEdited && (
-                <>
-
-                    {props.isCreatingNew && (
-                        <button onClick={doSave} disabled={props.isApiCallPending}>Create</button>
-                    )}
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                >
+                    <Tooltip title="Save">
+                        <IconButton
+                            onClick={doSave}
+                            disabled={props.isApiCallPending}
+                        >
+                            <SaveOutlinedIcon />
+                        </IconButton>
+                    </Tooltip>
                     {(!props.isCreatingNew) && (
                         <>
-                            <button onClick={doSave} disabled={props.isApiCallPending}>Modify</button>
-                            <button onClick={doCancelEdit} disabled={props.isApiCallPending}>Cancel</button>
-                            <button onClick={doDelete} disabled={props.isApiCallPending}>Delete</button>
+                            <Tooltip title="Delete">
+                                <IconButton
+                                    onClick={doDelete}
+                                    disabled={props.isApiCallPending}>
+                                    <DeleteOutlineOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Cancel">
+                                <IconButton
+                                    onClick={doCancelEdit}
+                                    disabled={props.isApiCallPending}>
+                                    <ClearOutlinedIcon />
+                                </IconButton>
+                            </Tooltip>
                         </>
                     )}
-                </>
+
+                </Grid>
             )}
 
         </Card>
