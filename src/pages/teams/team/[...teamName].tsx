@@ -333,16 +333,19 @@ const Index: NextPage = () => {
 
                             </>
                         )}
-                        {isViewedByMemberOrLeaderOfTeam && (
-                            <button onClick={() => submitLeave()}>Leave team</button>
-                        )}
+
                         {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
                             <button onClick={() => submitApply()}>Join team</button>
                         )}
-                        {currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
+
+                        {isViewedByMemberOrLeaderOfTeam && (
+                            <button onClick={() => submitLeave()}>Leave team</button>
+                        )}
+                        {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id
+                        && currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
                             <button onClick={() => submitCancelApplication()}>Cancel application</button>
                         )}
-                        {currentUser.getUserInfo()?.teamRole === TeamRole.LEADER && (
+                        {isViewedByLeaderOfTeam && (
                             <button onClick={() => submitResignFromLeadership()}>Resign from leadership</button>
                         )}
                     </div>
