@@ -186,10 +186,8 @@ const SpeedDrinkingDisplay: FetchableDisplay<
             ) : (
               <>
                 {DateTimeFormatter.toDay(props.existingEntity.creationTime)}
-                {author ? (
+                {author && (
                   <button onClick={() => setIsMetaInfoShown(true)}>More</button>
-                ) : (
-                  {}
                 )}
               </>
             )}
