@@ -51,13 +51,13 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 <MUITableHead>
                   <MUITableRow>
                     <MUITableCell>#</MUITableCell>
-                    <MUITableCell>category</MUITableCell>
-                    <MUITableCell>name</MUITableCell>
-                    <MUITableCell>team</MUITableCell>
-                    <MUITableCell>time</MUITableCell>
-                    <MUITableCell>note</MUITableCell>
-                    <MUITableCell>when</MUITableCell>
-                    <MUITableCell>edit</MUITableCell>
+                    <MUITableCell>Category</MUITableCell>
+                    <MUITableCell>Name</MUITableCell>
+                    <MUITableCell>Team</MUITableCell>
+                    <MUITableCell>Time</MUITableCell>
+                    <MUITableCell>Note</MUITableCell>
+                    <MUITableCell>When</MUITableCell>
+                    <MUITableCell>Edit</MUITableCell>
                   </MUITableRow>
                 </MUITableHead>
                 {newlyCreatedSpeedDrinkingIds.map((id, index) => {
@@ -115,14 +115,14 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
           <MUITable>
             <MUITableHead>
               <MUITableRow>
-                <MUITableCell>#</MUITableCell>
-                <MUITableCell>name</MUITableCell>
-                <MUITableCell>team</MUITableCell>
-                <MUITableCell>time</MUITableCell>
-                <MUITableCell>note</MUITableCell>
-                <MUITableCell>when</MUITableCell>
+              <MUITableCell>#</MUITableCell>
+                    <MUITableCell>Name</MUITableCell>
+                    <MUITableCell>Team</MUITableCell>
+                    <MUITableCell>Time</MUITableCell>
+                    <MUITableCell>Note</MUITableCell>
+                    <MUITableCell>When</MUITableCell>
                 {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
-                  <MUITableCell>edit</MUITableCell>
+                  <MUITableCell>Edit</MUITableCell>
                 )}
               </MUITableRow>
             </MUITableHead>
