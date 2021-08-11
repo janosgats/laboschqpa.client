@@ -15,8 +15,7 @@ import {
 import { SpeedDrinking } from "~/model/usergeneratedcontent/SpeedDrinking";
 import { isValidNumber } from "~/utils/CommonValidators";
 import SpeedDrinkingEditor from "~/components/fetchableDisplay/ui/SpeedDrinkingEditor";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
+import { Button, TableHead, TableCell } from "@material-ui/core";
 
 export interface SaveSpeedDrinkingCommand {
   drinkerUserId: number;
@@ -175,26 +174,40 @@ const SpeedDrinkingDisplay: FetchableDisplay<
                     </li>
                   </ul>
                 ) : (
-                  <button
+                  <Button
+                    variant="contained"
+                    size="small"
                     onClick={fetchAuthor}
                     disabled={isAuthorFetchingPending}
                   >
                     Show Author
-                  </button>
+                  </Button>
                 )}
               </>
             ) : (
               <>
                 {DateTimeFormatter.toDay(props.existingEntity.creationTime)}
                 {author && (
-                  <button onClick={() => setIsMetaInfoShown(true)}>More</button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => setIsMetaInfoShown(true)}
+                  >
+                    More
+                  </Button>
                 )}
               </>
             )}
           </TableCell>
           {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
             <TableCell>
-              <button onClick={() => setIsEdited(true)}>Edit</button>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => setIsEdited(true)}
+              >
+                Edit
+              </Button>
             </TableCell>
           )}
         </TableHead>
