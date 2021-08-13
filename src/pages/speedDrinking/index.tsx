@@ -1,11 +1,10 @@
 import Head from "next/head";
-import { NextPage } from "next";
-import React, { useContext, useState } from "react";
-import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
+import {NextPage} from "next";
+import React, {useState} from "react";
+import {SpeedDrinkingCategory} from "~/enums/SpeedDrinkingCategory";
 import SpeedDrinkingPanel from "~/components/panel/SpeedDrinkingPanel";
 import SpeedDrinkingCategorySelector from "~/components/selector/SpeedDrinkingCategorySelector";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
+import {createStyles, makeStyles, Theme} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -18,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) => {
 const Index: NextPage = () => {
   const classes = useStyles();
 
-  const currentUser = useContext(CurrentUserContext);
   const [filteredCategory, setFilteredCategory] =
     useState<SpeedDrinkingCategory>(SpeedDrinkingCategory.BEER);
 
@@ -34,9 +32,7 @@ const Index: NextPage = () => {
         />
       </div>
 
-      <div className={classes.table}>
         <SpeedDrinkingPanel filteredCategory={filteredCategory} />
-      </div>
     </div>
   );
 };
