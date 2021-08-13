@@ -11,6 +11,7 @@ import {
     auth_AUTH_EXTERNAL_ACCOUNT_GOT_FROM_OAUTH2_RESPONSE_BELONGS_TO_ANOTHER_ACCOUNT,
     auth_CANNOT_FIND_EXISTING_ACCOUNT_TO_LOG_IN
 } from "~/enums/ApiErrors";
+import {Button, ButtonGroup, Typography} from "@material-ui/core";
 
 
 const nextPage: NextPage = () => {
@@ -106,9 +107,12 @@ const nextPage: NextPage = () => {
             )}
             {isCannotFindExistingAccountToLogIn && (
                 <>
-                    <h3>Cannot find existing account</h3>
-                    <button onClick={() => router.push('/')}>Try another login method</button>
-                    <button onClick={() => createNewAccount()}>Create new account</button>
+                    <Typography variant="h5">Cannot find existing Qpa account</Typography>
+                    <ButtonGroup size="large" color="inherit" variant="contained"
+                                 aria-label="large outlined primary button group">
+                        <Button color='primary' onClick={() => createNewAccount()}>Create new account</Button>
+                        <Button onClick={() => router.push('/')}>Try another login method</Button>
+                    </ButtonGroup>
                 </>
             )}
             {isAccountCreationInProgress && (
