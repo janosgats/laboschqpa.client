@@ -14,7 +14,7 @@ import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import { AccessibleRiddle } from "~/model/usergeneratedcontent/AccessibleRiddle";
 import Image from "~/components/image/Image";
-import { dialogDtyles } from "~/styles/dialog-styles";
+import { dialogStyles } from "~/styles/dialog-styles";
 import { Label } from "@material-ui/icons";
 
 interface RiddleSubmitSolutionResponse {
@@ -23,9 +23,9 @@ interface RiddleSubmitSolutionResponse {
   wasAlreadySolved: boolean;
 }
 
-const useStyles = makeStyles((theme: Theme) => {
-  return createStyles(dialogDtyles);
-});
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles(dialogStyles)
+)
 
 interface Props {
   onClose: (shouldReloadRiddleList: boolean) => void;

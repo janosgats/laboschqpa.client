@@ -34,7 +34,7 @@ const Index: NextPage = () => {
         />
       </div>
 
-      <div className={classes.table}>
+      <div>
         <SpeedDrinkingPanel filteredCategory={filteredCategory} />
       </div>
     </div>

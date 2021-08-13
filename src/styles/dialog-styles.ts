@@ -1,10 +1,12 @@
-export const dialogDtyles = {
+export const dialogStyles={
   dialogTitle: {
-    textAlign: "center",
+    display: "flex",
+    justifyContent: "center"
   },
   containerFlexCenter: {
     width: "100%",
-    textAlign: "center",
+    display: "flex",
+    justifyContent: "center"
   },
   submitContainer: {
     width: "100%",
