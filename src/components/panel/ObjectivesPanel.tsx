@@ -22,7 +22,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
     const usedEndpoint = useEndpoint<Objective[]>({
         conf: {
-            url: "/api/up/server/api/objective/listWithAttachments",
+            url: "/api/up/server/api/objective/listForDisplay",
             method: "post",
             data: {
                 objectiveTypes: props.filteredObjectiveTypes

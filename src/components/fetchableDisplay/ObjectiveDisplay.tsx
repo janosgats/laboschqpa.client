@@ -10,7 +10,7 @@ import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
-import {ObjectiveType} from "~/enums/ObjectiveType";
+import {ObjectiveType, objectiveTypeData} from "~/enums/ObjectiveType";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
 import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
@@ -18,6 +18,8 @@ import Scorer from "~/components/Scorer";
 import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
+import {ListItem, ListItemIcon, Typography} from "@material-ui/core";
+
 
 export interface SaveObjectiveCommand {
     title: string;
@@ -29,11 +31,17 @@ export interface SaveObjectiveCommand {
     attachments: number[];
 }
 
+function getDefaultDeadline(): Date {
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+    return date;
+}
+
 const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (props) => {
     const defaultTitle = props.isCreatingNew ? '' : props.existingEntity.title;
     const defaultDescription = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.description;
     const defaultSubmittable = props.isCreatingNew ? true : props.existingEntity.submittable;
-    const defaultDeadline = props.isCreatingNew ? new Date() : getSurelyDate(props.existingEntity.deadline);
+    const defaultDeadline = props.isCreatingNew ? getDefaultDeadline() : getSurelyDate(props.existingEntity.deadline);
     const defaultHideSubmissionsBefore = props.isCreatingNew ? null : getSurelyDate(props.existingEntity.hideSubmissionsBefore);
     const defaultObjectiveType = props.isCreatingNew ? ObjectiveType.MAIN_OBJECTIVE : props.existingEntity.objectiveType;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
@@ -126,9 +134,14 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
     }
 
+    const observerTeamHasScore = props.existingEntity && props.existingEntity.observerTeamScore > 0;
+
     return (
         <>
-            <div style={{borderStyle: "solid", borderWidth: 2, padding: 10}}>
+            <div style={{
+                borderStyle: "solid", borderWidth: 2, padding: 10,
+                backgroundColor: observerTeamHasScore ? "green" : "yellow"
+            }}>
 
                 {(!isEdited)
                 && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
@@ -145,8 +158,23 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                         <input value={title} onChange={(e) => setTitle(e.target.value)}/>
                         <br/>
                     </>
-                ) : (
-                    <h2>{title}</h2>
+                ) : (<>
+                        <ListItem>
+                            {(objectiveTypeData[props.existingEntity.objectiveType] && (
+                                <ListItemIcon>
+                                    {
+                                        React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon,
+                                            {style: {width: 40, height: 40}})
+                                    }
+                                </ListItemIcon>
+                            ))}
+                            <Typography variant="h4">{title}</Typography>
+                        </ListItem>
+                    </>
+                )}
+
+                {observerTeamHasScore && (
+                    <Typography variant="subtitle1">Your team's score: {props.existingEntity.observerTeamScore}</Typography>
                 )}
 
                 <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}

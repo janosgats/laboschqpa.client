@@ -1,14 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import EventDisplayContainer from "~/components/eventDisplay/EventDisplayContainer";
 import CurrentUserProvider from "~/context/CurrentUserProvider";
 import NavBar from "~/components/nav/NavBar";
 import Head from "next/head";
-import { Container, createMuiTheme, Grid, Paper, ThemeProvider } from '@material-ui/core';
-import { useState } from 'react';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core';
 
 function MyApp({ Component, pageProps }): JSX.Element {
 
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useState(false);
 
     const theme = createMuiTheme({
         palette: {
