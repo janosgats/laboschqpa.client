@@ -1,24 +1,16 @@
-import React, { FC } from "react";
+import React, {FC} from "react";
 import UserNameFormatter from "~/utils/UserNameFormatter";
-import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
-import { isValidNumber } from "~/utils/CommonValidators";
+import {SpeedDrinkingCategory} from "~/enums/SpeedDrinkingCategory";
+import {isValidNumber} from "~/utils/CommonValidators";
 import useEndpoint from "~/hooks/useEndpoint";
-import { UserInfo } from "~/model/UserInfo";
+import {UserInfo} from "~/model/UserInfo";
 import SpeedDrinkingCategorySelector from "~/components/selector/SpeedDrinkingCategorySelector";
-import { Autocomplete } from "@material-ui/lab";
-import {
-  Button,
-  createStyles,
-  Dialog,
-  DialogContent,
-  makeStyles,
-  TextField,
-  Theme,
-} from "@material-ui/core";
-import { dialogStyles } from "~/styles/dialog-styles";
-import { Label } from "@material-ui/icons";
+import {Autocomplete} from "@material-ui/lab";
+import {Button, createStyles, Dialog, DialogContent, makeStyles, TextField, Theme,} from "@material-ui/core";
+import {dialogStyles} from "~/styles/dialog-styles";
 
 interface Props {
+  isOpen: boolean;
   isCreatingNew: boolean;
   isApiCallPending: boolean;
 
@@ -59,11 +51,8 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
   const fetchedUsers = usedEndpointUsers.data;
 
   return (
-    <Dialog open={props.isCreatingNew} onClose={() => props.onCancel()}>
+    <Dialog open={props.isOpen} onClose={() => props.onCancel()}>
       <DialogContent className={classes.dialogContainer}>
-        {/* <p>TODO: This should be a modal</p> */}
-        {/* <button onClick={() => props.onCancel()}>Close modal</button>
-        <br /> */}
         <>
           {usedEndpointUsers.pending && <p>Pending...</p>}
 
@@ -113,6 +102,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                 style={{ margin: "20px 0 10px 0" }}
                 variant="outlined"
                 type="number"
+                inputProps={{step: 0.01}}
                 value={props.time}
                 onChange={(e) =>
                   props.setTime(Number.parseFloat(e.target.value))
