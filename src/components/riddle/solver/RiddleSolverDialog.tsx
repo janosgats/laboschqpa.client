@@ -197,8 +197,9 @@ const RiddleSolverDialog: FC<Props> = (props) => {
           </>
         )}
       </DialogContent>
-      <DialogActions>
+      <DialogActions style={{padding: '24px'}}>
         <Button
+        
           variant="contained"
           onClick={() => props.onClose(shouldReloadRiddleList)}
           color="secondary"
