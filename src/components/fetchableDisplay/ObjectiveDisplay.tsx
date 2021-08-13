@@ -184,7 +184,48 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
           backgroundColor: observerTeamHasScore ? "green" : "yellow",
         }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            {isEdited && (
+              <ObjectiveTypeSelector
+                value={objectiveType}
+                onChange={setObjectiveType}
+              />
+            )}
+
+            {isEdited ? (
+              <>
+                <label>Title: </label>
+                <input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+                <br />
+              </>
+            ) : (
+              <>
+                <ListItem style={{ width: "fit-content" }}>
+                  {objectiveTypeData[props.existingEntity.objectiveType] && (
+                    <ListItemIcon>
+                      {React.createElement(
+                        objectiveTypeData[props.existingEntity.objectiveType]
+                          .icon,
+                        { style: { width: 20, height: 20 } }
+                      )}
+                    </ListItemIcon>
+                  )}
+                  <Typography variant="h5">{title}</Typography>
+                </ListItem>
+              </>
+            )}
+          </div>
+
           {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
             <Button
               size="small"
@@ -257,35 +298,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
             </>
           )}
         </div>
-
-        {isEdited && (
-          <ObjectiveTypeSelector
-            value={objectiveType}
-            onChange={setObjectiveType}
-          />
-        )}
-
-        {isEdited ? (
-          <>
-            <label>Title: </label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            <br />
-          </>
-        ) : (
-          <>
-            <ListItem>
-              {objectiveTypeData[props.existingEntity.objectiveType] && (
-                <ListItemIcon>
-                  {React.createElement(
-                    objectiveTypeData[props.existingEntity.objectiveType].icon,
-                    { style: { width: 40, height: 40 } }
-                  )}
-                </ListItemIcon>
-              )}
-              <Typography variant="h4">{title}</Typography>
-            </ListItem>
-          </>
-        )}
 
         {observerTeamHasScore && (
           <Typography variant="subtitle1">

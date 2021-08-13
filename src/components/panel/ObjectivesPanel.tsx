@@ -8,7 +8,7 @@ import { ObjectiveDisplayContainer } from "~/components/fetchableDisplay/Fetchab
 import useInfiniteScroller, {
   InfiniteScroller,
 } from "~/hooks/useInfiniteScroller";
-import { Button } from "@material-ui/core";
+import { Button  } from "@material-ui/core";
 
 interface Props {
   filteredObjectiveTypes: ObjectiveType[];
