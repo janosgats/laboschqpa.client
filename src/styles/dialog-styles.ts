@@ -1,9 +1,11 @@
 export const dialogStyles = {
     dialogTitle: {
+        display: "flex",
         justifyContent: "center",
     },
     containerFlexCenter: {
         width: "100%",
+        display: "flex",
         justifyContent: "center",
     },
     submitContainer: {
