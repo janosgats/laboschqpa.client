@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, {FC, useEffect, useState} from "react";
 import {
   Button,
   createStyles,
@@ -9,13 +9,12 @@ import {
   TextField,
   Theme,
 } from "@material-ui/core";
-import useEndpoint, { UsedEndpoint } from "~/hooks/useEndpoint";
+import useEndpoint, {UsedEndpoint} from "~/hooks/useEndpoint";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import { AccessibleRiddle } from "~/model/usergeneratedcontent/AccessibleRiddle";
+import {AccessibleRiddle} from "~/model/usergeneratedcontent/AccessibleRiddle";
 import Image from "~/components/image/Image";
-import { dialogDtyles } from "~/styles/dialog-styles";
-import { Label } from "@material-ui/icons";
+import {dialogStyles} from "~/styles/dialog-styles";
 
 interface RiddleSubmitSolutionResponse {
   isGivenSolutionCorrect: boolean;
@@ -24,7 +23,7 @@ interface RiddleSubmitSolutionResponse {
 }
 
 const useStyles = makeStyles((theme: Theme) => {
-  return createStyles(dialogDtyles);
+  return createStyles(dialogStyles);
 });
 
 interface Props {
