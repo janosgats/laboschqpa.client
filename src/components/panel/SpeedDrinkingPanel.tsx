@@ -6,14 +6,8 @@ import { SpeedDrinkingDisplayContainer } from "~/components/fetchableDisplay/Fet
 import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
 import { SpeedDrinking } from "~/model/usergeneratedcontent/SpeedDrinking";
 
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
 import MUIPaper from "@material-ui/core/Paper";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableFooter from "@material-ui/core/TableFooter";
-import { Button } from "@material-ui/core";
+import { Button, Table, TableRow, TableHead, TableCell } from "@material-ui/core";
 
 interface Props {
   filteredCategory: SpeedDrinkingCategory;
