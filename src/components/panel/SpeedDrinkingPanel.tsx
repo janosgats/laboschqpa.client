@@ -6,11 +6,14 @@ import { SpeedDrinkingDisplayContainer } from "~/components/fetchableDisplay/Fet
 import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
 import { SpeedDrinking } from "~/model/usergeneratedcontent/SpeedDrinking";
 
-import MUITable from "@material-ui/core/Table";
-import MUITableCell from "@material-ui/core/TableCell";
+import Table from "@material-ui/core/Table";
+import TableCell from "@material-ui/core/TableCell";
 import MUIPaper from "@material-ui/core/Paper";
-import MUITableHead from "@material-ui/core/TableHead";
-import MUITableRow from "@material-ui/core/TableRow";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TablePagination from "@material-ui/core/TablePagination";
+import TableFooter from "@material-ui/core/TableFooter";
+import { Button } from "@material-ui/core";
 
 interface Props {
   filteredCategory: SpeedDrinkingCategory;
@@ -46,20 +49,20 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
 
           {(isCreatingNewDisplayShown ||
             newlyCreatedSpeedDrinkingIds.length > 0) && (
-            <MUIPaper>
-              <MUITable>
-                <MUITableHead>
-                  <MUITableRow>
-                    <MUITableCell>#</MUITableCell>
-                    <MUITableCell>Category</MUITableCell>
-                    <MUITableCell>Name</MUITableCell>
-                    <MUITableCell>Team</MUITableCell>
-                    <MUITableCell>Time</MUITableCell>
-                    <MUITableCell>Note</MUITableCell>
-                    <MUITableCell>When</MUITableCell>
-                    <MUITableCell>Edit</MUITableCell>
-                  </MUITableRow>
-                </MUITableHead>
+            <MUIPaper >
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Team</TableCell>
+                    <TableCell>Time</TableCell>
+                    <TableCell>Note</TableCell>
+                    <TableCell>When</TableCell>
+                    <TableCell>Edit</TableCell>
+                  </TableRow>
+                </TableHead>
                 {newlyCreatedSpeedDrinkingIds.map((id, index) => {
                   return (
                     <SpeedDrinkingDisplayContainer
@@ -76,7 +79,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                   );
                 })}
                 {isCreatingNewDisplayShown && (
-                  <MUITableRow>
+                  <TableRow>
                     <SpeedDrinkingDisplayContainer
                       shouldCreateNew={true}
                       displayExtraProps={{
@@ -95,15 +98,15 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                         setIsCreatingNewDisplayShown(false)
                       }
                     />
-                  </MUITableRow>
+                  </TableRow>
                 )}
-              </MUITable>
+              </Table>
             </MUIPaper>
           )}
           {!isCreatingNewDisplayShown && (
-            <button onClick={() => setIsCreatingNewDisplayShown(true)}>
+            <Button size="small" variant="contained"  onClick={() => setIsCreatingNewDisplayShown(true)}>
               Record new time
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -112,20 +115,20 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
       {usedEndpoint.failed && <p>Couldn't load news :'(</p>}
       {usedEndpoint.data && (
         <MUIPaper>
-          <MUITable>
-            <MUITableHead>
-              <MUITableRow>
-              <MUITableCell>#</MUITableCell>
-                    <MUITableCell>Name</MUITableCell>
-                    <MUITableCell>Team</MUITableCell>
-                    <MUITableCell>Time</MUITableCell>
-                    <MUITableCell>Note</MUITableCell>
-                    <MUITableCell>When</MUITableCell>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Team</TableCell>
+                <TableCell>Time</TableCell>
+                <TableCell>Note</TableCell>
+                <TableCell>When</TableCell>
                 {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
-                  <MUITableCell>Edit</MUITableCell>
+                  <TableCell>Edit</TableCell>
                 )}
-              </MUITableRow>
-            </MUITableHead>
+              </TableRow>
+            </TableHead>
             {usedEndpoint.data.map((speedDrinking, index) => {
               return (
                 <SpeedDrinkingDisplayContainer
@@ -141,7 +144,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 />
               );
             })}
-          </MUITable>
+          </Table>
         </MUIPaper>
       )}
     </div>
