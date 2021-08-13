@@ -5,6 +5,8 @@ import {isValidNumber} from "~/utils/CommonValidators";
 import useEndpoint from "~/hooks/useEndpoint";
 import {UserInfo} from "~/model/UserInfo";
 import SpeedDrinkingCategorySelector from "~/components/selector/SpeedDrinkingCategorySelector";
+import {Autocomplete} from "@material-ui/lab";
+import {TextField} from "@material-ui/core";
 
 interface Props {
     isCreatingNew: boolean;
@@ -24,11 +26,18 @@ interface Props {
     setNote: React.Dispatch<React.SetStateAction<string>>;
 }
 
+function getSelectorOptionLabelForUser(userInfo: UserInfo): string {
+    let prefix = "";
+    if (userInfo.teamName) {
+        prefix = userInfo.teamName + ': ';
+    }
+    return prefix + UserNameFormatter.getBasicDisplayName(userInfo)
+}
 
 const SpeedDrinkingEditor: FC<Props> = (props) => {
     const usedEndpointUsers = useEndpoint<UserInfo[]>({
         conf: {
-            url: "/api/up/server/api/user/listAll",
+            url: "/api/up/server/api/user/listAllWithTeamName",
         },
     });
     const fetchedUsers = usedEndpointUsers.data;
@@ -56,25 +65,18 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
 
                 {fetchedUsers && (
                     <>
-                        <label>Drinker: </label>
-                        <select value={props.drinkerUserId}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    if (isValidNumber(val)) {
-                                        props.setDrinkerUserId(Number.parseInt(val));
-                                    }
-                                }}>
-
-                            <option>Select a user...</option>
-                            {fetchedUsers.map(user => {
-                                return (
-                                    <option key={user.userId} value={user.userId}>
-                                        {UserNameFormatter.getBasicDisplayName(user)}
-                                    </option>
-                                );
-                            })}
-                        </select>
                         <br/>
+                        <Autocomplete
+                            options={fetchedUsers}
+                            getOptionLabel={(userInfo) => getSelectorOptionLabelForUser(userInfo)}
+                            renderInput={(params) => <TextField {...params} label="Drinker:" variant="outlined"/>}
+                            value={fetchedUsers.filter(u => u.userId === props.drinkerUserId)[0]}
+                            onChange={(e, val: UserInfo) => {
+                                if (val && isValidNumber(val.userId)) {
+                                    props.setDrinkerUserId(val.userId);
+                                }
+                            }}
+                        />
 
                         <SpeedDrinkingCategorySelector value={props.category} onChange={props.setCategory}/>
 
