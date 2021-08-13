@@ -6,7 +6,7 @@ import {ObjectiveType} from "~/enums/ObjectiveType";
 
 const Index: NextPage = () => {
     const [filteredObjectiveTypes, setFilteredObjectiveTypes]
-        = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE, ObjectiveType.PRE_WEEK_TASK]));
+        = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE, ObjectiveType.PRE_WEEK_TASK, ObjectiveType.ACHIEVEMENT]));
 
     function updateFilteredObjectiveTypes(type: ObjectiveType, shouldDisplay: boolean) {
         if (shouldDisplay) {
@@ -32,6 +32,11 @@ const Index: NextPage = () => {
             <input type="checkbox"
                    checked={filteredObjectiveTypes.has(ObjectiveType.PRE_WEEK_TASK)}
                    onChange={e => updateFilteredObjectiveTypes(ObjectiveType.PRE_WEEK_TASK, e.target.checked)}/>
+            <br/>
+            <label>Show achievements: </label>
+            <input type="checkbox"
+                   checked={filteredObjectiveTypes.has(ObjectiveType.ACHIEVEMENT)}
+                   onChange={e => updateFilteredObjectiveTypes(ObjectiveType.ACHIEVEMENT, e.target.checked)}/>
             <br/>
 
             <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)}/>
