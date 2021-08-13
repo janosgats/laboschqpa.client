@@ -1,10 +1,22 @@
-import React, { FC, useContext, useState } from "react";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { Button, ButtonGroup, createStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, Theme, Typography } from "@material-ui/core";
-import { AddNewEmailAddressDialog } from "~/components/email/AddNewEmailAddressDialog";
+import React, {FC, useContext, useState} from "react";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Alert, AlertTitle} from '@material-ui/lab';
+import {
+    Button,
+    ButtonGroup,
+    createStyles,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    makeStyles,
+    Theme,
+    Typography
+} from "@material-ui/core";
+import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
 import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
-import { style } from "./styles/style";
+import {style} from "./styles/style";
 
 interface AskYourTeamLeadForHelpDialogProps {
     onClose: () => void;
@@ -56,7 +68,8 @@ const NotAcceptedByEmailBanner: FC = () => {
     const [isAddNewEmailDialogOpen, setAddNewEmailDialogOpen] = useState<boolean>(false);
     const [isAskYourTeamLeadDialogOpen, setAskYourTeamLeadDialogOpen] = useState<boolean>(false);
 
-    const displayBanner = currentUser.getUserInfo() && !currentUser.getUserInfo().isAcceptedByEmail;
+    //TODO:  remove "false &&" after GTB
+    const displayBanner = false && currentUser.getUserInfo() && !currentUser.getUserInfo().isAcceptedByEmail;
 
     if (!displayBanner) {
         return <></>;
