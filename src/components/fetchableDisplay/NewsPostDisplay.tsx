@@ -1,26 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
-import { NewsPost } from "~/model/usergeneratedcontent/NewsPost";
+import React, {useContext, useEffect, useState} from 'react'
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
+import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
+import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, { Author } from "~/service/UserInfoService";
+import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Avatar, Card, CardActions, CardContent, CardHeader, Collapse, createStyles, Grid, IconButton, makeStyles, Theme, Tooltip, Typography } from '@material-ui/core';
+import {
+    Avatar,
+    Card,
+    CardContent,
+    CardHeader,
+    Collapse,
+    createStyles,
+    Grid,
+    IconButton,
+    makeStyles,
+    Theme,
+    Tooltip,
+    Typography
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { styles } from './styles/NewsPostDisplayStyle';
+import {styles} from './styles/NewsPostDisplayStyle';
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -162,20 +175,16 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
             {(!isEdited) && (
                 <CardContent className={classes.cardFooter}>
-                    
-                        {props.existingEntity.creationTime === props.existingEntity.editTime ?
-                            (
-                                
-                                    <Typography variant="caption">Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
-                                
-                            )
-                            :
-                            (
-                                
-                                    <Typography variant="caption">Last edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
-                                
-                            )
-                        }
+
+                    {props.existingEntity.creationTime === props.existingEntity.editTime ? (
+                        <Typography variant="caption">
+                            Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
+                        </Typography>
+                    ) : (
+                        <Typography variant="caption">
+                            Edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                        </Typography>
+                    )}
                         <Tooltip title="Show Author" leaveDelay={300}>
                             <IconButton
                                 aria-label="Show Author"
@@ -185,7 +194,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                                 <InfoOutlinedIcon />
                             </IconButton>
                         </Tooltip>
-                    
+
 
                     {author && (
                         <Collapse in={showAuthor} timeout="auto" unmountOnExit>
@@ -196,7 +205,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                                      alignItems="flex-start"
                                     >
                                     <Typography  variant="caption">Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</Typography>
-                                    <Typography variant="caption">Last edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</Typography>
+                                    <Typography variant="caption">Edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</Typography>
                                 </Grid>
                         </Collapse>
                     )}

@@ -1,14 +1,11 @@
-import React, { FC } from "react";
-import { isValidNumber } from "~/utils/CommonValidators";
-import {
-  SpeedDrinkingCategory,
-  speedDrinkingCategoryData,
-} from "~/enums/SpeedDrinkingCategory";
+import React, {FC} from "react";
+import {isValidNumber} from "~/utils/CommonValidators";
+import {SpeedDrinkingCategory, speedDrinkingCategoryData,} from "~/enums/SpeedDrinkingCategory";
 import Select from "@material-ui/core/Select";
 import MUIPaper from "@material-ui/core/Paper";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 
 interface Props {
   value: SpeedDrinkingCategory;
@@ -35,8 +32,8 @@ const SpeedDrinkingCategorySelector: FC<Props> = (props) => {
         className={classes.categorySelect}
         onChange={(e) => {
           const val = e.target.value;
-          if (isValidNumber(val)) {
-            props.onChange(Number.parseInt(val) as SpeedDrinkingCategory);
+          if (isValidNumber(val as string)) {
+            props.onChange(Number.parseInt(val as string) as SpeedDrinkingCategory);
           }
         }}
       >
