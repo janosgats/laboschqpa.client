@@ -184,15 +184,79 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
           backgroundColor: observerTeamHasScore ? "green" : "yellow",
         }}
       >
-        {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-          <Button
-            size="small"
-            variant="contained"
-            onClick={() => setIsEdited(true)}
-          >
-            Edit
-          </Button>
-        )}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => setIsEdited(true)}
+            >
+              Edit
+            </Button>
+          )}
+
+          {!isEdited && (
+            <>
+              {submittable &&
+                isBeforeSubmissionDeadline() &&
+                currentUser.isMemberOrLeaderOfAnyTeam() && (
+                  <Button
+                    size="small"
+                    variant="contained"
+                    style={{ marginRight: "16px" }}
+                    onClick={() => setIsSubmissionDisplayOpen(true)}
+                  >
+                    Submit
+                  </Button>
+                )}
+              {currentUser.hasAuthority(Authority.TeamScorer) && (
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={() => setIsScorerOpen(true)}
+                >
+                  Score
+                </Button>
+              )}
+
+              {isSubmissionDisplayOpen && (
+                <div style={{ borderStyle: "solid", borderColor: "green" }}>
+                  {/* <p>TODO: This should be a modal</p>
+                   */}
+                  <Dialog open={isSubmissionDisplayOpen} maxWidth="xl">
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      style={{ width: "fit-content", alignSelf: "flex-end" }}
+                      onClick={() => setIsSubmissionDisplayOpen(false)}
+                    >
+                      X
+                    </Button>
+                    <SubmissionDisplayContainer
+                      shouldCreateNew={true}
+                      displayExtraProps={{
+                        creationObjectiveId: props.existingEntity.id,
+                        creationObjectiveTitle: props.existingEntity.title,
+                        creationTeamName:
+                          currentUser.getUserInfo() &&
+                          currentUser.getUserInfo().teamName,
+                        showObjectiveTitle: true,
+                        showTeamName: !!currentUser.getUserInfo(),
+                      }}
+                    />
+                  </Dialog>
+                </div>
+              )}
+
+              <Dialog open={isScorerOpen}>
+                <Scorer
+                  defaultObjectiveId={props.existingEntity.id}
+                  onClose={() => setIsScorerOpen(false)}
+                />
+              </Dialog>
+            </>
+          )}
+        </div>
 
         {isEdited && (
           <ObjectiveTypeSelector
@@ -250,14 +314,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
           </>
         )}
 
-        <label>Deadline: </label>
-        <TempDatetimePicker
-          value={deadline}
-          onChange={setDeadline}
-          disabled={!isEdited}
-        />
-        <br />
-
         {isEdited && (
           <>
             <label>
@@ -289,102 +345,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
           usedAttachments={usedAttachments}
           isEdited={isEdited}
         />
-
-        {!isEdited && (
-          <>
-            {submittable &&
-              isBeforeSubmissionDeadline() &&
-              currentUser.isMemberOrLeaderOfAnyTeam() && (
-                <Button
-                  size="small"
-                  variant="contained"
-                  style={{ marginRight: "16px" }}
-                  onClick={() => setIsSubmissionDisplayOpen(true)}
-                >
-                  Submit
-                </Button>
-              )}
-            {currentUser.hasAuthority(Authority.TeamScorer) && (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={() => setIsScorerOpen(true)}
-              >
-                Score
-              </Button>
-            )}
-
-            {isSubmissionDisplayOpen && (
-              <div style={{ borderStyle: "solid", borderColor: "green" }}>
-                {/* <p>TODO: This should be a modal</p>
-                 */}
-                <Dialog open={isSubmissionDisplayOpen} maxWidth="xl">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    style={{ width: "fit-content", alignSelf: "flex-end" }}
-                    onClick={() => setIsSubmissionDisplayOpen(false)}
-                  >
-                    X
-                  </Button>
-                  <SubmissionDisplayContainer
-                    shouldCreateNew={true}
-                    displayExtraProps={{
-                      creationObjectiveId: props.existingEntity.id,
-                      creationObjectiveTitle: props.existingEntity.title,
-                      creationTeamName:
-                        currentUser.getUserInfo() &&
-                        currentUser.getUserInfo().teamName,
-                      showObjectiveTitle: true,
-                      showTeamName: !!currentUser.getUserInfo(),
-                    }}
-                  />
-                </Dialog>
-              </div>
-            )}
-
-            {isScorerOpen && (
-              <Scorer
-                defaultObjectiveId={props.existingEntity.id}
-                onClose={() => setIsScorerOpen(false)}
-              />
-            )}
-
-            <ul>
-              <li>
-                Created:{" "}
-                {DateTimeFormatter.toFullBasic(
-                  props.existingEntity.creationTime
-                )}
-              </li>
-              <li>
-                Last edited:{" "}
-                {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
-              </li>
-            </ul>
-            {author ? (
-              <ul>
-                <li>
-                  Created by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.creator)}
-                </li>
-                <li>
-                  Last edited by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.editor)}
-                </li>
-              </ul>
-            ) : (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={fetchAuthor}
-                disabled={isAuthorFetchingPending}
-              >
-                Show Author
-              </Button>
-            )}
-          </>
-        )}
 
         {isEdited && (
           <>

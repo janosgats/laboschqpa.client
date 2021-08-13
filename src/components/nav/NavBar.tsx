@@ -91,9 +91,9 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
     const Links: LinkParams[] = [
         { href: "/", displayName: "Home", authority: Authority.User, icon: 'home' },
-        { href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' },
+        // { href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' },
         { href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' },
-        { href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' },
+        // { href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' },
         { href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' },
         { href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' },
         { href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' },
