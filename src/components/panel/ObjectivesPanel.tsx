@@ -6,6 +6,7 @@ import {ObjectiveType} from "~/enums/ObjectiveType";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
 import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
+import { Button } from '@material-ui/core';
 
 interface Props {
     filteredObjectiveTypes: ObjectiveType[];
@@ -41,7 +42,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     return (
         <div>
             {(!wasCreateNewObjectiveClicked) && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                <button onClick={() => setWasCreateNewPostClicked(true)}>Create new objective</button>
+                <Button size="small" variant="contained" onClick={() => setWasCreateNewPostClicked(true)}>Create new objective</Button>
             )}
 
             {wasCreateNewObjectiveClicked && (
@@ -70,9 +71,9 @@ const ObjectivesPanel: FC<Props> = (props) => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <button onClick={() => infiniteScroller.increaseShownCount(5)}>
+                        <Button size="small" variant="contained" onClick={() => infiniteScroller.increaseShownCount(5)}>
                             &darr;&darr; Show more &darr;&darr;
-                        </button>
+                        </Button>
                     )}
                 </>
             )}
