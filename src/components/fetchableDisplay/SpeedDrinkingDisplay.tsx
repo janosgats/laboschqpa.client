@@ -56,7 +56,7 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
         setTime(defaultTime);
         setCategory(defaultCategory);
         setNote(defaultNote);
-    }, [props.existingEntity]);
+    }, [props.existingEntity ?? '']);
 
     function composeSaveSpeedDrinkingCommand(): SaveSpeedDrinkingCommand {
         return {
@@ -111,7 +111,7 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                 {props.showCategory && (
                     <TableCell>
                         {
-                            speedDrinkingCategoryData[props.existingEntity.category]
+                            speedDrinkingCategoryData[props.existingEntity?.category ?? SpeedDrinkingCategory.BEER]
                                 .displayName
                         }
                     </TableCell>
@@ -119,17 +119,17 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                 {props.showName && (
                     <TableCell>
                         {UserNameFormatter.getBasicDisplayName({
-                            firstName: props.existingEntity.drinkerFirstName,
-                            lastName: props.existingEntity.drinkerLastName,
-                            nickName: props.existingEntity.drinkerNickName,
+                            firstName: props.existingEntity?.drinkerFirstName,
+                            lastName: props.existingEntity?.drinkerLastName,
+                            nickName: props.existingEntity?.drinkerNickName,
                         })}
                     </TableCell>
                 )}
                 {props.showTeam && (
-                    <TableCell>{props.existingEntity.drinkerTeamName}</TableCell>
+                    <TableCell>{props.existingEntity?.drinkerTeamName ?? null}</TableCell>
                 )}
-                <TableCell>{props.existingEntity.time}</TableCell>
-                <TableCell>{props.existingEntity.note}</TableCell>
+                <TableCell>{props.existingEntity?.time ?? null}</TableCell>
+                <TableCell>{props.existingEntity?.note ?? null}</TableCell>
                 <TableCell>
                     {isMetaInfoShown ? (
                         <>
@@ -137,13 +137,13 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                                 <li>
                                     Created:{" "}
                                     {DateTimeFormatter.toFullBasic(
-                                        props.existingEntity.creationTime
+                                        props.existingEntity?.creationTime ?? null
                                     )}
                                 </li>
                                 <li>
                                     Last edited:{" "}
                                     {DateTimeFormatter.toFullBasic(
-                                        props.existingEntity.editTime
+                                        props.existingEntity?.editTime ?? null
                                     )}
                                 </li>
                             </ul>
@@ -171,7 +171,7 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                         </>
                     ) : (
                         <>
-                            {DateTimeFormatter.toDay(props.existingEntity.creationTime)}
+                            {DateTimeFormatter.toDay(props.existingEntity?.creationTime ?? null)}
                             {author && (
                                 <Button
                                     variant="contained"
