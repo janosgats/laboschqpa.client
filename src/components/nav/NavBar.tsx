@@ -90,15 +90,15 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
 
     const Links: LinkParams[] = [
-        { href: "/", displayName: "Home", authority: Authority.User, icon: 'home' },
+        { href: "/", displayName: "Kezdőlap", authority: Authority.User, icon: 'home' },
         // { href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' },
-        { href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' },
+        { href: "/teams", displayName: "Csapatok", authority: Authority.User, icon: 'group' },
         // { href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' },
-        { href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' },
-        { href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' },
-        { href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' },
-        { href: "/speedDrinking", displayName: "Speed Drinking", authority: Authority.User, icon: 'sports_bar' },
-        { href: "/riddles", displayName: "Riddles", authority: Authority.User, icon: 'quiz' },
+        { href: "/news", displayName: "Hírek", authority: Authority.User, icon: 'feed' },
+        { href: "/objectives", displayName: "Achívementek", authority: Authority.User, icon: 'assignment' },
+        { href: "/submissions", displayName: "Beadások", authority: Authority.User, icon: 'assignment_turned_in' },
+        { href: "/speedDrinking", displayName: "Sörmérés", authority: Authority.User, icon: 'sports_bar' },
+        { href: "/riddles", displayName: "Riddleök", authority: Authority.User, icon: 'quiz' },
         { href: "/riddleEditor", displayName: "Riddle Editor", authority: Authority.RiddleEditor, icon: 'mode' },
         { href: "/acceptedEmails", displayName: "Accepted Emails", authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read' },
         { href: "/admin", displayName: "Admin", authority: Authority.Admin, icon: 'admin_panel_settings' },
