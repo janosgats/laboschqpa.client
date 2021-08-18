@@ -1,8 +1,8 @@
-import React, {CSSProperties, FC, useState} from "react";
-import useEndpoint, {UsedEndpoint} from "~/hooks/useEndpoint";
-import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
-import {UserEmailAddress} from "~/model/UserEmailAddress";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import React, { CSSProperties, FC, useState } from "react";
+import useEndpoint, { UsedEndpoint } from "~/hooks/useEndpoint";
+import { AddNewEmailAddressDialog } from "~/components/email/AddNewEmailAddressDialog";
+import { UserEmailAddress } from "~/model/UserEmailAddress";
+import { Button, Grid, List, ListItem, ListItemText } from "@material-ui/core";
 
 interface Overrides {
     ul: CSSProperties;
@@ -23,7 +23,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
     });
 
     return (
-        <div>
+        <Grid>
             {usedCurrentEmailAddresses.pending && (
                 <p>TODO: Display a spinner here</p>
             )}
@@ -36,20 +36,27 @@ const EmailAddressesPanel: FC<Props> = (props) => {
             )}
             {usedCurrentEmailAddresses.data && (
                 <>
-                    <List style={props.overrides?.ul ?? {}}>
-                        {usedCurrentEmailAddresses.data.map(address => <ListItem key={address.id}><ListItemText primary={address.email} /></ListItem>)}
-                    </List>
+                    <Grid item>
+                        <List style={props.overrides?.ul ?? {}}>
+                            {usedCurrentEmailAddresses.data.map(address => <ListItem key={address.id}><ListItemText primary={address.email} /></ListItem>)}
+                        </List>
+                    </Grid>
+                    <Grid 
+                        container
+                        justify="flex-end"
+                    >
 
-                    {!props.hideAddNewAddressButton && (
-                        <button onClick={() => setAddNewAddressDialogOpen(true)}>Add new e-mail address</button>
-                    )}
+                        {!props.hideAddNewAddressButton && (
+                            <Button variant="outlined" color="inherit" onClick={() => setAddNewAddressDialogOpen(true)}>E-mail cím hozzáadása</Button>
+                        )}
+                    </Grid>
                 </>
             )}
             {isAddNewAddressDialogOpen && (
                 <AddNewEmailAddressDialog isOpen={isAddNewAddressDialogOpen}
-                                          onClose={() => setAddNewAddressDialogOpen(false)}/>
+                    onClose={() => setAddNewAddressDialogOpen(false)} />
             )}
-        </div>
+        </Grid>
     );
 };
 

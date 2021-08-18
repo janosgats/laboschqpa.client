@@ -81,11 +81,11 @@ const LoginForm: FC<Props> = (props) => {
         >
             {props.addLoginMethod ? (
                 <Grid item xs={12}>
-                    <Typography variant="h5">Add a new login method</Typography>
+                    <Typography variant="h5">Új bejelentkezésimód hozzáadása</Typography>
                 </Grid>
             ) : (
                 <Grid item xs={12}>
-                    <Typography variant="h5">Choose a login method</Typography>
+                    <Typography variant="h5">Válasz bejelentkezésimódot</Typography>
                 </Grid>
             )}
             <ButtonGroup variant="contained" color="primary">
