@@ -1,15 +1,19 @@
 import Head from 'next/head'
-import {NextPage} from "next";
-import React, {FC, useContext, useState} from "react";
+import { NextPage } from "next";
+import React, { FC, useContext, useState } from "react";
 import useEndpoint from "~/hooks/useEndpoint";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import UserNameFormatter from "~/utils/UserNameFormatter";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import {UserInfo} from "~/model/UserInfo";
+import { UserInfo } from "~/model/UserInfo";
 import LoginForm from "~/components/join/LoginForm";
 import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
+import { Avatar, Button, Divider, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Tooltip, Typography } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import CloseIcon from '@material-ui/icons/Close';
 
 const Index: NextPage = () => {
     const router = useRouter();
@@ -69,42 +73,88 @@ const Index: NextPage = () => {
             )}
 
             {userInfo && (
-                <div>
-                    {isViewingOwnProfile && (
-                        <LoginForm addLoginMethod={true}/>
-                    )}
-                    {isViewingOwnProfile && (
-                        <EmailAddressesPanel/>
-                    )}
+                <Paper>
+                    <Grid
+                        container
+                        direction="column"
+                        alignItems="stretch"
+                    >
+                        <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="center"
+                            spacing={2}
+                        >
+                            {!userInfoEditorOpen && (
 
-                    <h2>{UserNameFormatter.getFullName(userInfo)}</h2>
-                    <h4>{UserNameFormatter.getNickName(userInfo)}</h4>
-                    <img src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)}/>
-                    <ul>
-                        {
-                            userInfo.authorities.map(value => <li key={value}>{value}</li>)
-                        }
-                    </ul>
-                    {isViewingOwnProfile && (
-                        <div>
-                            <button onClick={() => setUserInfoEditorOpen(true)}>Edit info</button>
-
-                            {userInfoEditorOpen && (
                                 <>
-                                    <h3>Edit</h3>
-                                    <UserInfoEditor
-                                        defaultNames={{
-                                            firstName: userInfo.firstName,
-                                            lastName: userInfo.lastName,
-                                            nickName: userInfo.nickName,
-                                        }}
-                                        onSubmit={submitEditedUserInfo}
-                                        onCancel={() => setUserInfoEditorOpen(false)}/>
+                                    <Grid item>
+                                        <Avatar src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)} />
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="h3">{UserNameFormatter.getNickName(userInfo) !== 'N/A' && UserNameFormatter.getNickName(userInfo) !== null ? (UserNameFormatter.getNickName(userInfo)) : null} </Typography>
+                                    </Grid>
+                                    <Grid item >
+                                        <Typography variant="h4">{UserNameFormatter.getFullName(userInfo)}</Typography>
+                                    </Grid>
+                                    {isViewingOwnProfile && (
+                                        <Grid>
+                                            <Tooltip title="Adatok módosítása" arrow>
+                                                <IconButton onClick={() => setUserInfoEditorOpen(true)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    )}
                                 </>
                             )}
-                        </div>
-                    )}
-                </div>
+                            {isViewingOwnProfile && (
+                                <Grid item>
+                                    {userInfoEditorOpen && (
+                                        <>
+
+                                            <UserInfoEditor
+                                                defaultNames={{
+                                                    firstName: userInfo.firstName,
+                                                    lastName: userInfo.lastName,
+                                                    nickName: userInfo.nickName,
+                                                }}
+                                                onSubmit={submitEditedUserInfo}
+                                                onCancel={() => setUserInfoEditorOpen(false)} />
+                                        </>
+                                    )}
+                                </Grid>
+                            )}
+
+
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="h5">Jogosultságok: </Typography>
+                            <Divider variant="fullWidth" />
+                        </Grid>
+                        <Grid item>
+                            <List>
+                                {
+                                    userInfo.authorities.map(value => (<>   <ListItem key={value}> <ListItemText primary={value} /> </ListItem> <Divider variant="middle" /> </>))
+                                }
+                            </List>
+                        </Grid>
+                        {isViewingOwnProfile && (
+                            <Grid item>
+                                <Typography>
+                                    Használatban lévő email címek
+                                </Typography>
+                                <Divider/>
+                                <EmailAddressesPanel />
+                            </Grid>
+                        )}
+                        {isViewingOwnProfile && (
+                            <Grid>
+                                <LoginForm addLoginMethod={true} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </Paper>
             )}
 
         </div>
@@ -123,7 +173,7 @@ interface UserNamesEditorProps {
     onCancel: () => void
 }
 
-const UserInfoEditor: FC<UserNamesEditorProps> = ({defaultNames, onSubmit, onCancel}) => {
+const UserInfoEditor: FC<UserNamesEditorProps> = ({ defaultNames, onSubmit, onCancel }) => {
     const [firstName, setFirstName] = useState<string>(defaultNames.firstName);
     const [lastName, setLastName] = useState<string>(defaultNames.lastName);
     const [nickName, setNickName] = useState<string>(defaultNames.nickName);
@@ -137,17 +187,30 @@ const UserInfoEditor: FC<UserNamesEditorProps> = ({defaultNames, onSubmit, onCan
     }
 
     return (
-        <>
-            <span>First name:</span>
-            <input value={firstName} onChange={e => setFirstName(e.target.value)}/>
-            <span>Last name:</span>
-            <input value={lastName} onChange={e => setLastName(e.target.value)}/>
-            <span>Nick name:</span>
-            <input value={nickName} onChange={e => setNickName(e.target.value)}/>
-
-            <button onClick={() => onSubmit(composeUserNamesDto())}>Save changes</button>
-            <button onClick={() => onCancel()}>Cancel</button>
-        </>
+        <Grid
+            container
+            direction="row"
+            alignItems="center"
+        >
+            <Grid item xs={12}>
+                <Typography variant="h4">Adatok módosítása</Typography>
+            </Grid>
+            <Grid item sm={3} xs={12} >
+                <TextField variant="outlined" id="firstNameInputBox" label="Keresztnév" value={firstName} onChange={e => setFirstName(e.target.value)} />
+            </Grid>
+            <Grid item sm={3} xs={12} >
+                <TextField variant="outlined" id="firstNameInputBox" label="Vezetéknév" value={lastName} onChange={e => setLastName(e.target.value)} />
+            </Grid>
+            <Grid item sm={3} xs={12} >
+                <TextField variant="outlined" id="firstNameInputBox" label="Becenév" value={nickName} onChange={e => setNickName(e.target.value)} />
+            </Grid>
+            <Grid item sm={1} xs={6} >
+                <Tooltip title="Mentés"><IconButton onClick={() => onSubmit(composeUserNamesDto())}><SaveIcon /></IconButton></Tooltip>
+            </Grid>
+            <Grid item sm={1} xs={6} >
+                <Tooltip title="Mégsem"><IconButton onClick={() => onCancel()}><CloseIcon /></IconButton></Tooltip>
+            </Grid>
+        </Grid>
     );
 };
 
