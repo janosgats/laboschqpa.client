@@ -1,19 +1,20 @@
 import Head from 'next/head'
-import {NextPage} from "next";
-import React, {useContext, useEffect, useState} from "react";
+import { NextPage } from "next";
+import React, { useContext, useEffect, useState } from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import Link from "next/link";
-import {useRouter} from "next/router";
-import {TeamRole, teamRoleData} from "~/enums/TeamRole";
+import { useRouter } from "next/router";
+import { TeamRole, teamRoleData } from "~/enums/TeamRole";
 import UserNameFormatter from "~/utils/UserNameFormatter";
-import {UserNameContainer} from "~/model/UserInfo";
-import {TeamInfo} from "~/model/Team";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import { UserNameContainer } from "~/model/UserInfo";
+import { TeamInfo } from "~/model/Team";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import {teamLifecycle_THERE_IS_NO_OTHER_LEADER} from "~/enums/ApiErrors";
+import { teamLifecycle_THERE_IS_NO_OTHER_LEADER } from "~/enums/ApiErrors";
 import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
+import { Avatar, Grid, List, ListItem, ListItemAvatar, ListItemSecondaryAction, ListItemText, Paper, Typography } from '@material-ui/core';
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -289,148 +290,167 @@ const Index: NextPage = () => {
     }
 
     return (
-        <div>
+        <>
             <Head>
                 <title>{usedTeamInfo.data ? usedTeamInfo.data.name + ' ' : 'Qpa '} Team</title>
             </Head>
-
-            <NotTeamMemberBanner/>
-
-            {
-                usedTeamInfo.pending && (
-                    <p>Pending...</p>
-                )
-            }
-
-            {
-                usedTeamInfo.data && (
-                    <div>
-
-                        {isEditing ? (
-                            <>
-                                <input value={editedTeamName} onChange={e => setEditedTeamName(e.target.value)}/>
-                            </>
-                        ) : (
-                            <>
-                                <h2>{usedTeamInfo.data.name}</h2>
-                            </>
-                        )}
-
-                        {usedTeamInfo.data.archived ? <h3>Archive</h3> : null}
-
-                        {isViewedByLeaderOfTeam && (
-                            <>
-                                {isEditing ? (
-                                    <>
-                                        <button onClick={() => submitEdit()}>Save</button>
-                                        <button onClick={() => setIsEditing(false)}>Cancel</button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <button onClick={() => setIsEditing(true)}>Edit Team</button>
-                                    </>
-                                )}
-
-                            </>
-                        )}
-
-                        {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
-                            <button onClick={() => submitApply()}>Join team</button>
-                        )}
-
-                        {isViewedByMemberOrLeaderOfTeam && (
-                            <button onClick={() => submitLeave()}>Leave team</button>
-                        )}
-                        {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id
-                        && currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
-                            <button onClick={() => submitCancelApplication()}>Cancel application</button>
-                        )}
-                        {isViewedByLeaderOfTeam && (
-                            <button onClick={() => submitResignFromLeadership()}>Resign from leadership</button>
-                        )}
-                    </div>
-                )
-            }
-
-            {isViewedByLeaderOfTeam && (
-                <>
-                    <h2>Applicants</h2>
-                    {usedTeamApplicants.pending && (
+            <Paper>
+                <NotTeamMemberBanner />
+                {
+                    usedTeamInfo.pending && (
                         <p>Pending...</p>
-                    )}
+                    )
+                }
 
-                    {usedTeamApplicants.failed && (
-                        <p>Couldn't load applicants :'(</p>
-                    )}
+                {
+                    usedTeamInfo.data && (
+                        <div>
 
-                    {usedTeamApplicants.data && (
-                        usedTeamApplicants.data.map(applicant => {
-                            const basicDisplayName = UserNameFormatter.getBasicDisplayName(applicant);
-                            return (
-                                <div key={applicant.userId}>
-                                    <Link
-                                        href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}>
-                                        <a>
-                                            <span>{basicDisplayName} (Applicant)</span>
-                                            <img src={applicant.profilePicUrl} alt={basicDisplayName}/>
-                                        </a>
-                                    </Link>
-                                    <button onClick={() => submitApproveApplication(applicant.userId)}>Approve</button>
-                                    <button onClick={() => submitDeclineApplication(applicant.userId)}>Decline</button>
-                                </div>
-                            );
-                        })
-                    )}
-                </>
-            )}
-
-            <h2>Members</h2>
-            {usedTeamMembers.pending && (
-                <p>Pending...</p>
-            )}
-
-            {usedTeamMembers.failed && (
-                <p>Couldn't load members :'(</p>
-            )}
-
-            {usedTeamMembers.data &&
-            usedTeamMembers.data.map((member, index) => {
-                    const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
-                    return (
-                        <div key={member.userId}>
-                            <Link
-                                href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
-                                <a>
-                                    <span>{
-                                        basicDisplayName
-                                        + (member.teamRole === TeamRole.LEADER
-                                            ? ` (${teamRoleData[member.teamRole].displayName})`
-                                            : ' ')
-                                    }
-                                    </span>
-                                    <img src={member.profilePicUrl} alt={basicDisplayName}/>
-                                </a>
-                            </Link>
-                            {isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
+                            {isEditing ? (
                                 <>
-                                    <button onClick={() => submitKick(member.userId)}>Kick</button>
-                                    {member.teamRole === TeamRole.MEMBER && (
-                                        <button onClick={() => submitGiveLeaderRights(member.userId)}>
-                                            Give leader rights
-                                        </button>
-                                    )}
-                                    {member.teamRole === TeamRole.LEADER && (
-                                        <button onClick={() => submitTakeAwayLeaderRights(member.userId)}>
-                                            Take away leader rights
-                                        </button>
-                                    )}
+                                    <input value={editedTeamName} onChange={e => setEditedTeamName(e.target.value)} />
+                                </>
+                            ) : (
+                                <>
+                                    <h2>{usedTeamInfo.data.name}</h2>
                                 </>
                             )}
+
+                            {usedTeamInfo.data.archived ? <h3>Archive</h3> : null}
+
+                            {isViewedByLeaderOfTeam && (
+                                <>
+                                    {isEditing ? (
+                                        <>
+                                            <button onClick={() => submitEdit()}>Save</button>
+                                            <button onClick={() => setIsEditing(false)}>Cancel</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button onClick={() => setIsEditing(true)}>Edit Team</button>
+                                        </>
+                                    )}
+
+                                </>
+                            )}
+
+                            {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
+                                <button onClick={() => submitApply()}>Join team</button>
+                            )}
+
+                            {isViewedByMemberOrLeaderOfTeam && (
+                                <button onClick={() => submitLeave()}>Leave team</button>
+                            )}
+                            {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id
+                                && currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
+                                    <button onClick={() => submitCancelApplication()}>Cancel application</button>
+                                )}
+                            {isViewedByLeaderOfTeam && (
+                                <button onClick={() => submitResignFromLeadership()}>Resign from leadership</button>
+                            )}
                         </div>
-                    );
+                    )
                 }
-            )}
-        </div>
+
+                {isViewedByLeaderOfTeam && (
+                    <>
+                        <h2>Applicants</h2>
+                        {usedTeamApplicants.pending && (
+                            <p>Pending...</p>
+                        )}
+
+                        {usedTeamApplicants.failed && (
+                            <p>Couldn't load applicants :'(</p>
+                        )}
+
+                        {usedTeamApplicants.data && (
+                            usedTeamApplicants.data.map(applicant => {
+                                const basicDisplayName = UserNameFormatter.getBasicDisplayName(applicant);
+                                return (
+                                    <div key={applicant.userId}>
+                                        <Link
+                                            href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}>
+                                            <a>
+                                                <span>{basicDisplayName} (Applicant)</span>
+                                                <img src={applicant.profilePicUrl} alt={basicDisplayName} />
+                                            </a>
+                                        </Link>
+                                        <button onClick={() => submitApproveApplication(applicant.userId)}>Approve</button>
+                                        <button onClick={() => submitDeclineApplication(applicant.userId)}>Decline</button>
+                                    </div>
+                                );
+                            })
+                        )}
+                    </>
+                )}
+
+                <h2>Members</h2>
+                {usedTeamMembers.pending && (
+                    <p>Pending...</p>
+                )}
+
+                {usedTeamMembers.failed && (
+                    <p>Couldn't load members :'(</p>
+                )}
+                <Grid
+                    item xs={12}
+                    md={6}
+                >
+                    <Typography variant="h6">
+                        Tagok
+                    </Typography>
+                    <List>
+                        {usedTeamMembers.data &&
+                            usedTeamMembers.data.map((member, index) => {
+                                const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
+                                return (
+                                    <ListItem key={member.userId}>
+                                        <Grid
+                                            container
+                                            alignItems="center"
+                                        >
+                                            <ListItemAvatar>
+                                                <Link
+                                                    href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
+                                                    <div>
+                                                        <Avatar src={member.profilePicUrl} alt={basicDisplayName} />
+
+                                                    </div>
+                                                </Link>
+                                            </ListItemAvatar>
+                                            <ListItemText>{
+                                                basicDisplayName
+                                                + (member.teamRole === TeamRole.LEADER
+                                                    ? ` (${teamRoleData[member.teamRole].displayName})`
+                                                    : ' ')
+                                            }
+                                            </ListItemText>
+                                            {
+                                                isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
+                                                    <ListItemSecondaryAction>
+                                                        <button onClick={() => submitKick(member.userId)}>Kick</button>
+                                                        {member.teamRole === TeamRole.MEMBER && (
+                                                            <button onClick={() => submitGiveLeaderRights(member.userId)}>
+                                                                Give leader rights
+                                                            </button>
+                                                        )}
+                                                        {member.teamRole === TeamRole.LEADER && (
+                                                            <button onClick={() => submitTakeAwayLeaderRights(member.userId)}>
+                                                                Take away leader rights
+                                                            </button>
+                                                        )}
+                                                    </ListItemSecondaryAction>
+                                                )
+                                            }
+                                        </Grid>
+                                    </ListItem>
+                                );
+                            }
+                            )}
+                    </List>
+                </Grid>
+            </Paper >
+        </>
     )
 };
 
