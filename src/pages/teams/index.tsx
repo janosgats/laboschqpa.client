@@ -57,7 +57,7 @@ const Index: NextPage = () => {
                   <TableCell>{team.score}</TableCell>
                   <TableCell>
                     <Link href={`/teams/team/${team.name}?id=${team.id}`}>
-                      <Button variant="contained">Show Team</Button>
+                      <Button variant="contained" color="primary">Show Team</Button>
                     </Link>
                   </TableCell>
                 </TableRow>
