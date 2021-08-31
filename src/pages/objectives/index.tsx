@@ -1,12 +1,15 @@
 import Head from 'next/head'
-import {NextPage} from "next";
-import React, {useState} from "react";
+import { NextPage } from "next";
+import React, { useState } from "react";
 import ObjectivesPanel from "~/components/panel/ObjectivesPanel";
-import {ObjectiveType} from "~/enums/ObjectiveType";
+import { ObjectiveType } from "~/enums/ObjectiveType";
+import { Grid, Paper, Tab, Tabs, Typography } from '@material-ui/core';
 
 const Index: NextPage = () => {
     const [filteredObjectiveTypes, setFilteredObjectiveTypes]
-        = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE, ObjectiveType.PRE_WEEK_TASK, ObjectiveType.ACHIEVEMENT]));
+        = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE]));
+
+    const [selectedTab, setSelectedTab] = useState<ObjectiveType>(ObjectiveType.MAIN_OBJECTIVE);
 
     function updateFilteredObjectiveTypes(type: ObjectiveType, shouldDisplay: boolean) {
         if (shouldDisplay) {
@@ -17,31 +20,41 @@ const Index: NextPage = () => {
         setFilteredObjectiveTypes(new Set(filteredObjectiveTypes));
     }
 
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setSelectedTab(newValue);
+        filteredObjectiveTypes.clear();
+        filteredObjectiveTypes.add(newValue);
+        setFilteredObjectiveTypes(new Set(filteredObjectiveTypes));
+    };
+
     return (
-        <div>
+        <>
             <Head>
-                <title>Objectives</title>
+                <title>Feladatok</title>
             </Head>
+            <Grid>
+                <Paper>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={handleChange}
+                        centered
+                        variant="fullWidth"
+                        indicatorColor="secondary"
+                        textColor="secondary"
+                        aria-label="icon label tabs example"
+                    >
+                        <Tab label="Elő feladatok" value={ObjectiveType.PRE_WEEK_TASK} />
+                        <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
+                        <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
+                    </Tabs>
 
-            <label>Show main objectives: </label>
-            <input type="checkbox"
-                   checked={filteredObjectiveTypes.has(ObjectiveType.MAIN_OBJECTIVE)}
-                   onChange={e => updateFilteredObjectiveTypes(ObjectiveType.MAIN_OBJECTIVE, e.target.checked)}/>
-            <br/>
-            <label>Show pre-week tasks: </label>
-            <input type="checkbox"
-                   checked={filteredObjectiveTypes.has(ObjectiveType.PRE_WEEK_TASK)}
-                   onChange={e => updateFilteredObjectiveTypes(ObjectiveType.PRE_WEEK_TASK, e.target.checked)}/>
-            <br/>
-            <label>Show achievements: </label>
-            <input type="checkbox"
-                   checked={filteredObjectiveTypes.has(ObjectiveType.ACHIEVEMENT)}
-                   onChange={e => updateFilteredObjectiveTypes(ObjectiveType.ACHIEVEMENT, e.target.checked)}/>
-            <br/>
 
-            <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)}/>
+                    <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)} />
 
-        </div>
+                </Paper>
+            </Grid>
+
+        </>
     )
 };
 
