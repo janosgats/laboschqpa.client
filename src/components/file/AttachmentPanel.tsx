@@ -10,9 +10,9 @@ import AttachmentIcon from '@material-ui/icons/Attachment';
 import AttachFileOutlinedIcon from '@material-ui/icons/AttachFileOutlined';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import styles from './styles/attachmentPanelStyle';
 import ClearIcon from '@material-ui/icons/Clear';
+import BackupIcon from '@material-ui/icons/Backup';
 interface AttachmentInfo {
     fileId: number;
     fileName: string;
@@ -73,7 +73,7 @@ const AttachmentPanel: FC<Props> = (props) => {
 
     const [isAttachmentsDisplayed, setIsAttachmentsDisplayed] = useState(false);
     return (
-        <CardContent>
+        <>
             {(!usedEndpoint.data) && usedEndpoint.pending && (
                 <p>Pending... TODO SPINNER</p>
             )}
@@ -96,7 +96,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                                         <ListItemIcon>
                                             <AttachmentIcon />
                                         </ListItemIcon>
-                                        <ListItemText primary="Attachments" />
+                                        <ListItemText primary="Csatolt fájlok" />
                                         {isAttachmentsDisplayed ? <ExpandLess /> : <ExpandMore />}
                                     </ListItem>
                                 </List>
@@ -130,6 +130,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                                         }
                                     </List>
                                 </Collapse>
+                                <Divider variant="middle" />
                             </>
                         ) : null
                     }
@@ -144,12 +145,14 @@ const AttachmentPanel: FC<Props> = (props) => {
                         className={classes.buttonGrid}
                     >
                         <Button
-                            variant="outlined"
-                            startIcon={<AddOutlinedIcon />}
-                            endIcon={<AddOutlinedIcon />}
+                            variant="text"
+                            endIcon={<BackupIcon />}
                             onClick={() => setIsFileUploaderShown(true)}
+                            color="secondary"
+                            fullWidth
+                            size="medium"
                         >
-                            Add attachment
+                            Fájl feltöltés
                         </Button>
                     </Grid>
 
@@ -184,12 +187,12 @@ const AttachmentPanel: FC<Props> = (props) => {
                     </Grid>
                 );
             })}
-
+            
             {fileIdToShowInInfoModal && (
                 <FileInfoModal fileId={fileIdToShowInInfoModal} />
             )}
-            <Divider variant="middle" />
-        </CardContent>
+            
+        </>
     )
 };
 

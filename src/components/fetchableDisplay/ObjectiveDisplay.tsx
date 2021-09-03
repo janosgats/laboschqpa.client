@@ -20,11 +20,33 @@ import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
   Button,
-  ListItem,
-  ListItemIcon,
   Typography,
   Dialog,
+  Paper,
+  Grid,
+  IconButton,
+  TextField,
+  ButtonGroup,
+  Checkbox,
+  FormControlLabel,
+  DialogTitle,
+  DialogContent,
+  Collapse,
+  makeStyles,
+  Theme,
+  createStyles,
+  Box,
 } from "@material-ui/core";
+import EditIcon from '@material-ui/icons/Edit';
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
+import style from "./styles/ObjectiveDisplayStyle";
+
+
+const useStyles = makeStyles((theme: Theme) => createStyles(style))
 
 export interface SaveObjectiveCommand {
   title: string;
@@ -45,6 +67,9 @@ function getDefaultDeadline(): Date {
 const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
   props
 ) => {
+
+  const classes = useStyles();
+
   const defaultTitle = props.isCreatingNew ? "" : props.existingEntity.title;
   const defaultDescription = props.isCreatingNew
     ? MuiRteUtils.emptyEditorContent
@@ -92,6 +117,8 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
   const [isAuthorFetchingPending, setIsAuthorFetchingPending] =
     useState<boolean>(false);
 
+  const [showAuthor, setShowAuthor] = useState<boolean>(false);
+
   useEffect(() => {
     setDescription(defaultDescription);
     usedAttachments.reset(defaultAttachments);
@@ -127,20 +154,19 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
   }
 
   function doCancelEdit() {
-    const confirmResult = confirm("Do you want to discard your changes?");
-    if (confirmResult) {
-      setIsEdited(false);
-      setResetTrigger(resetTrigger + 1);
-      setTitle(defaultTitle);
-      setDescription(defaultDescription);
-      setSubmittable(defaultSubmittable);
-      setDeadline(defaultDeadline);
-      setHideSubmissionsBefore(defaultHideSubmissionsBefore);
-      setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
-      setObjectiveType(defaultObjectiveType);
-      usedAttachments.reset(defaultAttachments);
-      props.onCancelEditing();
-    }
+
+    setIsEdited(false);
+    setResetTrigger(resetTrigger + 1);
+    setTitle(defaultTitle);
+    setDescription(defaultDescription);
+    setSubmittable(defaultSubmittable);
+    setDeadline(defaultDeadline);
+    setHideSubmissionsBefore(defaultHideSubmissionsBefore);
+    setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
+    setObjectiveType(defaultObjectiveType);
+    usedAttachments.reset(defaultAttachments);
+    props.onCancelEditing();
+
   }
 
   function doDelete() {
@@ -153,6 +179,12 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
   }
 
   function fetchAuthor() {
+    if (showAuthor) {
+      return setShowAuthor(false);
+    }
+    setShowAuthor(true);
+    if (author) return;
+
     setIsAuthorFetchingPending(true);
     UserInfoService.getAuthor(
       props.existingEntity.creatorUserId,
@@ -176,110 +208,220 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
 
   return (
     <>
-      <div
-        style={{
-          borderStyle: "solid",
-          borderWidth: 2,
-          padding: 10,
-          backgroundColor: observerTeamHasScore ? "green" : "yellow",
-        }}
+      <Paper
+        className={classes.objectiveDisplayWrapper}
       >
-        {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-          <Button
-            size="small"
-            variant="contained"
-            onClick={() => setIsEdited(true)}
-          >
-            Edit
-          </Button>
-        )}
-
-        {isEdited && (
-          <ObjectiveTypeSelector
-            value={objectiveType}
-            onChange={setObjectiveType}
-          />
-        )}
 
         {isEdited ? (
-          <>
-            <label>Title: </label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} />
-            <br />
-          </>
+          <Grid
+          >
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justify="center"
+            >
+              <Typography variant="subtitle1" className={classes.typeSelectorLabel}>Feladat típusa:  </Typography>
+              <ObjectiveTypeSelector
+                value={objectiveType}
+                onChange={setObjectiveType}
+              />
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justify="space-between"
+              style={{ marginBottom: "8px" }}
+            >
+              <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)} variant="outlined" />
+              <Grid
+              >
+                {props.isCreatingNew && (
+                  <>
+                    <ButtonGroup
+                      size="medium"
+                    >
+                      <Button
+                        onClick={doSave}
+                        disabled={props.isApiCallPending}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Létrehoz
+                      </Button>
+                      <Button
+                        onClick={doCancelEdit}
+                        disabled={props.isApiCallPending}
+                        variant="outlined"
+                        color="secondary"
+                      >
+                        Mégsem
+                      </Button>
+                    </ButtonGroup>
+
+                  </>
+                )}
+                {!props.isCreatingNew && (
+                  <>
+                    <ButtonGroup
+                      variant="text"
+                      fullWidth
+                      size="large"
+                    >
+                      <IconButton
+                        onClick={doSave}
+                        disabled={props.isApiCallPending}
+                      >
+                        <SaveIcon
+                          color="primary"
+                        />
+                      </IconButton>
+                      <IconButton
+                        onClick={doDelete}
+                        disabled={props.isApiCallPending}
+
+                      >
+                        <DeleteIcon
+                          color="secondary"
+                        />
+                      </IconButton>
+                      <IconButton
+                        onClick={doCancelEdit}
+                        disabled={props.isApiCallPending}
+                      >
+                        <CloseIcon
+                          color="action"
+                        />
+                      </IconButton>
+                    </ButtonGroup>
+                  </>
+                )}
+              </Grid>
+            </Grid>
+          </Grid>
+
+
         ) : (
-          <>
-            <ListItem>
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+          >
+            <Grid
+              item
+            >
               {objectiveTypeData[props.existingEntity.objectiveType] && (
-                <ListItemIcon>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                >
                   {React.createElement(
                     objectiveTypeData[props.existingEntity.objectiveType].icon,
-                    { style: { width: 40, height: 40 } }
+                    { style: { width: 50, height: 50 } }
                   )}
-                </ListItemIcon>
+                  <Typography variant="h4" className={classes.title}>{title}</Typography>
+                </Grid>
               )}
-              <Typography variant="h4">{title}</Typography>
-            </ListItem>
-          </>
+            </Grid>
+
+            {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+              <Grid
+                item
+              >
+                <IconButton
+                  onClick={() => setIsEdited(true)}
+                >
+                  <EditIcon
+                    color="action"
+                  />
+                </IconButton>
+              </Grid>
+            )}
+
+          </Grid>
         )}
+
+
 
         {observerTeamHasScore && (
-          <Typography variant="subtitle1">
-            Your team's score: {props.existingEntity.observerTeamScore}
+          <Typography variant="subtitle1" className={classes.subtitle}>
+            -A csapatod pontszáma: {props.existingEntity.observerTeamScore}
           </Typography>
         )}
-
-        <RichTextEditor
-          isEdited={isEdited}
-          readOnlyControls={props.isApiCallPending}
-          defaultValue={defaultDescription}
-          resetTrigger={resetTrigger}
-          onChange={(data) => setDescription(data)}
-          usedAttachments={usedAttachments}
-        />
-
+        <Box
+          className={classes.richTextEditor}
+        >
+          <RichTextEditor
+            isEdited={isEdited}
+            readOnlyControls={props.isApiCallPending}
+            defaultValue={defaultDescription}
+            resetTrigger={resetTrigger}
+            onChange={(data) => setDescription(data)}
+            usedAttachments={usedAttachments}
+          />
+        </Box>
         {isEdited && (
           <>
-            <label>Teams can submit directly to this objective: </label>
-            <input
-              type="checkbox"
-              checked={submittable}
-              onChange={(e) => setSubmittable(e.target.checked)}
+            <FormControlLabel
+              control={
+                <TempDatetimePicker
+                  value={deadline}
+                  onChange={setDeadline}
+                  disabled={!isEdited}
+                />
+              }
+              labelPlacement="start"
+              label="Határidő: "
             />
+            <br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={submittable}
+                  onChange={(e) => setSubmittable(e.target.checked)}
+                  color="primary"
+                />
+              }
+              labelPlacement="start"
+              label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
+            />
+
             <br />
           </>
         )}
 
-        <label>Deadline: </label>
-        <TempDatetimePicker
-          value={deadline}
-          onChange={setDeadline}
-          disabled={!isEdited}
-        />
-        <br />
-
         {isEdited && (
           <>
-            <label>
-              Submissions should not be public before a given time:{" "}
-            </label>
-            <input
-              type="checkbox"
-              checked={isHideSubmissionsBeforeChecked}
-              onChange={(e) =>
-                setIsHideSubmissionsBeforeChecked(e.target.checked)
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isHideSubmissionsBeforeChecked}
+                  onChange={(e) =>
+                    setIsHideSubmissionsBeforeChecked(e.target.checked)
+                  }
+                  color="secondary"
+                />
               }
+              labelPlacement="start"
+              label="A feladat nem lehet elérhető hamarabb mint egy adott idő."
             />
-            <br />
+
             {isHideSubmissionsBeforeChecked && (
               <>
-                <label>Submissions are not public before: </label>
-                <TempDatetimePicker
-                  value={hideSubmissionsBefore}
-                  onChange={setHideSubmissionsBefore}
-                  disabled={!isEdited}
+                <FormControlLabel
+                  control={
+                    <TempDatetimePicker
+                      value={hideSubmissionsBefore}
+                      onChange={setHideSubmissionsBefore}
+                      disabled={!isEdited}
+                    />
+                  }
+                  labelPlacement="start"
+                  label="A feladat nem érhető el egészen: "
                 />
-                <br />
               </>
             )}
           </>
@@ -292,53 +434,71 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
 
         {!isEdited && (
           <>
-            {submittable &&
-              isBeforeSubmissionDeadline() &&
-              currentUser.isMemberOrLeaderOfAnyTeam() && (
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              {submittable &&
+                isBeforeSubmissionDeadline() &&
+                currentUser.isMemberOrLeaderOfAnyTeam() && (
+                  <Button
+                    size="large"
+                    variant="contained"
+                    onClick={() => setIsSubmissionDisplayOpen(true)}
+                    color="primary"
+                  >
+                    Beadás
+                  </Button>
+                )}
+              {currentUser.hasAuthority(Authority.TeamScorer) && (
                 <Button
-                  size="small"
+                  size="large"
                   variant="contained"
-                  style={{ marginRight: "16px" }}
-                  onClick={() => setIsSubmissionDisplayOpen(true)}
+                  onClick={() => setIsScorerOpen(true)}
+                  color="secondary"
                 >
-                  Submit
+                  Pontozás
                 </Button>
               )}
-            {currentUser.hasAuthority(Authority.TeamScorer) && (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={() => setIsScorerOpen(true)}
-              >
-                Score
-              </Button>
-            )}
+            </Grid>
 
             {isSubmissionDisplayOpen && (
-              <div style={{ borderStyle: "solid", borderColor: "green" }}>
-                {/* <p>TODO: This should be a modal</p>
-                 */}
-                <Dialog open={isSubmissionDisplayOpen} maxWidth="xl">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    style={{ width: "fit-content", alignSelf: "flex-end" }}
-                    onClick={() => setIsSubmissionDisplayOpen(false)}
-                  >
-                    X
-                  </Button>
-                  <SubmissionDisplayContainer
-                    shouldCreateNew={true}
-                    displayExtraProps={{
-                      creationObjectiveId: props.existingEntity.id,
-                      creationObjectiveTitle: props.existingEntity.title,
-                      creationTeamName:
-                        currentUser.getUserInfo() &&
-                        currentUser.getUserInfo().teamName,
-                      showObjectiveTitle: true,
-                      showTeamName: !!currentUser.getUserInfo(),
-                    }}
-                  />
+              <div >
+                <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
+                  <DialogTitle>
+                    <Grid
+                      container
+                      alignItems="center"
+                      justify="space-between"
+                      direction="row"
+                    >
+                      <Typography variant="h3">
+                        {props.existingEntity.title}
+                      </Typography>
+                      <IconButton
+                        onClick={() => setIsSubmissionDisplayOpen(false)}
+                      >
+                        <ClearOutlinedIcon />
+                      </IconButton>
+                    </Grid>
+                  </DialogTitle>
+                  <DialogContent>
+                    <SubmissionDisplayContainer
+                      shouldCreateNew={true}
+                      displayExtraProps={{
+                        creationObjectiveId: props.existingEntity.id,
+                        creationObjectiveTitle: props.existingEntity.title,
+                        creationTeamName:
+                          currentUser.getUserInfo() &&
+                          currentUser.getUserInfo().teamName,
+                        showObjectiveTitle: true,
+                        showTeamName: !!currentUser.getUserInfo(),
+                      }}
+                    />
+                  </DialogContent>
+
                 </Dialog>
               </div>
             )}
@@ -349,86 +509,69 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                 onClose={() => setIsScorerOpen(false)}
               />
             )}
-
-            <ul>
-              <li>
-                Created:{" "}
-                {DateTimeFormatter.toFullBasic(
-                  props.existingEntity.creationTime
-                )}
-              </li>
-              <li>
-                Last edited:{" "}
-                {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
-              </li>
-            </ul>
-            {author ? (
-              <ul>
-                <li>
-                  Created by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.creator)}
-                </li>
-                <li>
-                  Last edited by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.editor)}
-                </li>
-              </ul>
-            ) : (
-              <Button
-                size="small"
-                variant="contained"
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              justify="space-between"
+            >
+              {props.existingEntity.creationTime === props.existingEntity.editTime ? (
+                <Typography variant="caption" >Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
+              ) :
+                <Typography variant="caption">Utoljára módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
+              }
+              <IconButton
                 onClick={fetchAuthor}
                 disabled={isAuthorFetchingPending}
               >
-                Show Author
-              </Button>
-            )}
-          </>
-        )}
+                <InfoOutlinedIcon 
+                  color="secondary"
+                />
+              </IconButton>
+            </Grid>
+            {author && (
+              <Collapse in={showAuthor}>
+                <Grid
+                  container
+                  direction="column"
+                >
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <Typography variant="caption">Készítette:{" "}
+                      {UserNameFormatter.getBasicDisplayName(author.creator)}
+                    </Typography>
+                    <Typography variant="caption">
+                      Készült:{" "}
+                      {DateTimeFormatter.toFullBasic(
+                        props.existingEntity.creationTime
+                      )}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <Typography variant="caption">Utoljára módosította:{" "}
+                      {UserNameFormatter.getBasicDisplayName(author.editor)}
+                    </Typography>
+                    <Typography variant="caption">
+                      Utoljára módosítva:{" "}
+                      {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                    </Typography>
 
-        {isEdited && (
-          <>
-            {props.isCreatingNew && (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={doSave}
-                disabled={props.isApiCallPending}
-              >
-                Create
-              </Button>
-            )}
-            {!props.isCreatingNew && (
-              <>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doSave}
-                  disabled={props.isApiCallPending}
-                >
-                  Modify
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doCancelEdit}
-                  disabled={props.isApiCallPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doDelete}
-                  disabled={props.isApiCallPending}
-                >
-                  Delete
-                </Button>
-              </>
+                  </Grid>
+                </Grid>
+              </Collapse>
             )}
           </>
         )}
-      </div>
+      </Paper>
     </>
   );
 };
@@ -448,6 +591,7 @@ function padToTwoChars(num: number): string {
 
 /**
  * TODO: Replace this ugliness with a MUI component
+ * XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
  */
 const TempDatetimePicker: FC<TempDatetimePickerProps> = ({
   value,
@@ -458,11 +602,11 @@ const TempDatetimePicker: FC<TempDatetimePickerProps> = ({
   const [internalValue, setInternalValue] = useState<string>(
     valueDate
       ? `${valueDate.getFullYear()}-${padToTwoChars(
-          valueDate.getMonth() + 1
-        )}-${padToTwoChars(valueDate.getDate())} ` +
-          `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(
-            valueDate.getMinutes()
-          )}:${padToTwoChars(valueDate.getSeconds())}`
+        valueDate.getMonth() + 1
+      )}-${padToTwoChars(valueDate.getDate())} ` +
+      `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(
+        valueDate.getMinutes()
+      )}:${padToTwoChars(valueDate.getSeconds())}`
       : ""
   );
   const [isError, setIsError] = useState<boolean>(

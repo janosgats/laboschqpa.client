@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import React, { useState } from "react";
 import ObjectivesPanel from "~/components/panel/ObjectivesPanel";
 import { ObjectiveType } from "~/enums/ObjectiveType";
-import { Grid, Paper, Tab, Tabs, Typography } from '@material-ui/core';
+import { Box, Grid, Tab, Tabs, Typography } from '@material-ui/core';
 
 const Index: NextPage = () => {
     const [filteredObjectiveTypes, setFilteredObjectiveTypes]
@@ -33,7 +33,12 @@ const Index: NextPage = () => {
                 <title>Feladatok</title>
             </Head>
             <Grid>
-                <Paper>
+                <Box
+                    style={{
+                        padding: "24px",
+                        
+                    }}
+                >
                     <Tabs
                         value={selectedTab}
                         onChange={handleChange}
@@ -51,7 +56,7 @@ const Index: NextPage = () => {
 
                     <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)} />
 
-                </Paper>
+                </Box>
             </Grid>
 
         </>

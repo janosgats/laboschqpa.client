@@ -20,19 +20,19 @@ export interface ObjectiveTypeDataEntry {
 export const objectiveTypeData: Record<ObjectiveType, ObjectiveTypeDataEntry> = {
     [ObjectiveType.MAIN_OBJECTIVE]: {
         objectiveType: ObjectiveType.MAIN_OBJECTIVE,
-        displayName: "Main objective",
+        displayName: "Feladat",
         shortDisplayName: "Main",
         icon: AssignmentTurnedInIcon,
     },
     [ObjectiveType.PRE_WEEK_TASK]: {
         objectiveType: ObjectiveType.PRE_WEEK_TASK,
-        displayName: "Pre-week task",
+        displayName: "Előfeladat",
         shortDisplayName: "Pre-week",
         icon: PlaylistAddCheckIcon,
     },
     [ObjectiveType.ACHIEVEMENT]: {
         objectiveType: ObjectiveType.ACHIEVEMENT,
-        displayName: "Achievement",
+        displayName: "Achí",
         shortDisplayName: "Achi",
         icon: RedeemIcon,
     },
