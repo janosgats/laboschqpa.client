@@ -38,7 +38,7 @@ const NewsFeedPanel: FC = () => {
                     <Typography
                         variant="h3"
                     >
-                        News
+                        Hírek
                     </Typography>
                 </Grid>
                 {(!wasCreateNewPostClicked) && currentUser.hasAuthority(Authority.NewsPostEditor) && (
@@ -50,13 +50,13 @@ const NewsFeedPanel: FC = () => {
                             endIcon={<AddCircleOutlineOutlinedIcon />}
                             onClick={() => setWasCreateNewPostClicked(true)}
                         >
-                            Create new post
+                           Új poszt
                         </Button>
                     </Grid>
                 )}
             </Grid>
             
-            <Divider />
+            <Divider style={{marginBottom: "8px"}} />
 
             {wasCreateNewPostClicked && (
                 <NewsPostDisplayContainer
@@ -84,9 +84,21 @@ const NewsFeedPanel: FC = () => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <button onClick={() => infiniteScroller.increaseShownCount(5)}>
-                            &darr;&darr; Show more &darr;&darr;
-                        </button>
+                        <Grid
+                            container
+                            justify="center"
+                        >
+                            <Button
+                                size="large"
+                                variant="text"
+                                fullWidth
+                                color="secondary"
+                                onClick={() => infiniteScroller.increaseShownCount(5)}
+                                style={{margin: "8px"}}
+                                >
+                                &darr; Show more &darr;
+                            </Button>
+                        </Grid>
                     )}
                 </>
             )}
