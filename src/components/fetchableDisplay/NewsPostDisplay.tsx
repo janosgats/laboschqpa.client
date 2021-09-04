@@ -1,20 +1,23 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
+import React, { useContext, useEffect, useState } from 'react'
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Authority } from "~/enums/Authority";
+import { NewsPost } from "~/model/usergeneratedcontent/NewsPost";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
+import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, {Author} from "~/service/UserInfoService";
+import UserInfoService, { Author } from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
+import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
     Avatar,
+    Box,
+    Button,
+    ButtonGroup,
     Card,
     CardContent,
     CardHeader,
@@ -23,17 +26,19 @@ import {
     Grid,
     IconButton,
     makeStyles,
+    Paper,
     Theme,
     Tooltip,
     Typography
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete'
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DescriptionIcon from '@material-ui/icons/Description';
-import {styles} from './styles/NewsPostDisplayStyle';
+import { styles } from './styles/NewsPostDisplayStyle';
 
 export interface SaveNewsPostCommand {
     content: string;
@@ -84,14 +89,11 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }
 
     function doCancelEdit() {
-        const confirmResult = confirm('Do you want to discard your changes?');
-        if (confirmResult) {
-            setIsEdited(false);
-            setResetTrigger(resetTrigger + 1)
-            setContent(defaultContent);
-            usedAttachments.reset(defaultAttachments);
-            props.onCancelEditing();
-        }
+        setIsEdited(false);
+        setResetTrigger(resetTrigger + 1)
+        setContent(defaultContent);
+        usedAttachments.reset(defaultAttachments);
+        props.onCancelEditing();
     }
 
     function doDelete() {
@@ -119,137 +121,185 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
 
 
     return (
-        <Card className={classes.cardRoot} >
-            {!currentUser.hasAuthority(Authority.NewsPostEditor) && (
-                <CardHeader
-                    className={classes.cardHeader}
-                    avatar={
-                        <Avatar>
-                            <DescriptionIcon />
-                        </Avatar>
-                    }
-                />
-            )}
-            {(!isEdited)
-                && currentUser.hasAuthority(Authority.NewsPostEditor) && (
-                    <CardHeader
-                        className={classes.cardHeader}
-                        avatar={
-                            <Avatar>
-                                <DescriptionIcon />
-                            </Avatar>
-                        }
-                        action={
+        <Paper className={classes.newsDisplayWrapper} >
+            <Grid
+                className={classes.newsHeader}
+            >
+                <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justify="space-between"
+                >
+                    <Grid
+                        item
+                    >
+                        <Grid
+                            container
+                            direction="row"
+                            alignItems="center"
+                        >
+                            <DescriptionIcon style={{ width: 30, height: 30 }} />
+                            <Typography variant="h4">Hír</Typography>
+                        </Grid>
+                    </Grid>
+
+                    {(!isEdited) && currentUser.hasAuthority(Authority.NewsPostEditor) &&
+                        (
                             <IconButton
-                                onClick={() => setIsEdited(true)}
-                            >
+                                onClick={() => setIsEdited(true)}>
                                 <EditIcon />
                             </IconButton>
-                        }
-                    />
-                )
-            }
-            {(isEdited)
-                && currentUser.hasAuthority(Authority.NewsPostEditor) && (
-                    <CardHeader
-                        className={classes.cardHeader}
-                        avatar={
-                            <Avatar>
-                                <DescriptionIcon />
-                            </Avatar>
-                        }
-                    />
-                )
-            }
+                        )
+                    }
+                    {props.isCreatingNew && (
+                        <ButtonGroup>
+                            <Button
+                                onClick={doSave}
+                                disabled={props.isApiCallPending}
+                                variant="contained"
+                                color="primary"
+                            >
+                                Létrehoz
+                            </Button>
+                            <Button
+                                onClick={doCancelEdit}
+                                disabled={props.isApiCallPending}
+                                variant="outlined"
+                                color="secondary"
+                            >
+                                Mégsem
+                            </Button>
+                        </ButtonGroup>
+                    )
 
-            <CardContent>
-                <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
-                    defaultValue={defaultContent}
-                    resetTrigger={resetTrigger}
-                    onChange={(data) => setContent(data)}
-                    usedAttachments={usedAttachments}
-                />
-            </CardContent>
+                    }
+                    {isEdited && !props.isCreatingNew && (
+                        <ButtonGroup>
+                            <Tooltip title="Save">
+                                <IconButton
+                                    onClick={doSave}
+                                    disabled={props.isApiCallPending}
+                                >
+                                    <SaveIcon
+                                        color="primary"
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                            {(!props.isCreatingNew) && (
+                                <>
+                                    <Tooltip title="Delete">
+                                        <IconButton
+                                            onClick={doDelete}
+                                            disabled={props.isApiCallPending}>
+                                            <DeleteIcon
+                                                color="secondary"
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Cancel">
+                                        <IconButton
+                                            onClick={doCancelEdit}
+                                            disabled={props.isApiCallPending}>
+                                            <ClearOutlinedIcon
+                                                color="action"
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
+                            )}
+
+                        </ButtonGroup>
+                    )}
+                </Grid>
+            </Grid>
+
+
+
+            <RichTextEditor isEdited={isEdited} readOnlyControls={props.isApiCallPending}
+                defaultValue={defaultContent}
+                resetTrigger={resetTrigger}
+                onChange={(data) => setContent(data)}
+                usedAttachments={usedAttachments}
+            />
+
 
             <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
 
             {(!isEdited) && (
-                <CardContent className={classes.cardFooter}>
-
-                    {props.existingEntity.creationTime === props.existingEntity.editTime ? (
-                        <Typography variant="caption">
-                            Created: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
-                        </Typography>
-                    ) : (
-                        <Typography variant="caption">
-                            Edited: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
-                        </Typography>
-                    )}
+                <>
+                    <Grid
+                        container
+                        direction="row"
+                        alignItems="center"
+                        justify="space-between"
+                    >
+                        {props.existingEntity.creationTime === props.existingEntity.editTime ? (
+                            <Typography variant="caption">
+                                Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
+                            </Typography>
+                        ) : (
+                            <Typography variant="caption">
+                                módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                            </Typography>
+                        )}
                         <Tooltip title="Show Author" leaveDelay={300}>
                             <IconButton
                                 aria-label="Show Author"
                                 onClick={() => fetchAuthor()}
                                 disabled={isAuthorFetchingPending}
                             >
-                                <InfoOutlinedIcon />
+                                <InfoOutlinedIcon
+                                    color="secondary"
+                                />
                             </IconButton>
                         </Tooltip>
+                    </Grid>
 
 
                     {author && (
-                        <Collapse in={showAuthor} timeout="auto" unmountOnExit>
+                        <Collapse in={showAuthor}>
+                            <Grid
+                                container
+                                direction="column"
+                            >
                                 <Grid
-                                     container
-                                     direction="row"
-                                     justify="space-between"
-                                     alignItems="flex-start"
-                                    >
-                                    <Typography  variant="caption">Created by: {UserNameFormatter.getBasicDisplayName(author.creator)}</Typography>
-                                    <Typography variant="caption">Edited by: {UserNameFormatter.getBasicDisplayName(author.editor)}</Typography>
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    justify="space-between"
+                                >
+                                    <Typography variant="caption">Posztolta:{" "}
+                                        {UserNameFormatter.getBasicDisplayName(author.creator)}
+                                    </Typography>
+                                    <Typography variant="caption">
+                                        Posztolva:{" "}
+                                        {DateTimeFormatter.toFullBasic(
+                                            props.existingEntity.creationTime
+                                        )}
+                                    </Typography>
                                 </Grid>
+                                <Grid
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    justify="space-between"
+                                >
+                                    <Typography variant="caption">Módosította:{" "}
+                                        {UserNameFormatter.getBasicDisplayName(author.editor)}
+                                    </Typography>
+                                    <Typography variant="caption">
+                                        Módosítva:{" "}
+                                        {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                                    </Typography>
+
+                                </Grid>
+                            </Grid>
                         </Collapse>
                     )}
-                </CardContent>
+                </>
             )}
-
-            {isEdited && (
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                >
-                    <Tooltip title="Save">
-                        <IconButton
-                            onClick={doSave}
-                            disabled={props.isApiCallPending}
-                        >
-                            <SaveOutlinedIcon />
-                        </IconButton>
-                    </Tooltip>
-                    {(!props.isCreatingNew) && (
-                        <>
-                            <Tooltip title="Delete">
-                                <IconButton
-                                    onClick={doDelete}
-                                    disabled={props.isApiCallPending}>
-                                    <DeleteOutlineOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Cancel">
-                                <IconButton
-                                    onClick={doCancelEdit}
-                                    disabled={props.isApiCallPending}>
-                                    <ClearOutlinedIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
-                    )}
-
-                </Grid>
-            )}
-
-        </Card>
+        </Paper>
     )
 }
 

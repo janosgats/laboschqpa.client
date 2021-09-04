@@ -518,7 +518,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
               {props.existingEntity.creationTime === props.existingEntity.editTime ? (
                 <Typography variant="caption" >Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
               ) :
-                <Typography variant="caption">Utoljára módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
+                <Typography variant="caption">Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
               }
               <IconButton
                 onClick={fetchAuthor}
@@ -541,11 +541,11 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                     alignItems="center"
                     justify="space-between"
                   >
-                    <Typography variant="caption">Készítette:{" "}
+                    <Typography variant="caption">Posztolta:{" "}
                       {UserNameFormatter.getBasicDisplayName(author.creator)}
                     </Typography>
                     <Typography variant="caption">
-                      Készült:{" "}
+                      Posztolva:{" "}
                       {DateTimeFormatter.toFullBasic(
                         props.existingEntity.creationTime
                       )}
@@ -557,11 +557,11 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                     alignItems="center"
                     justify="space-between"
                   >
-                    <Typography variant="caption">Utoljára módosította:{" "}
+                    <Typography variant="caption">Módosította:{" "}
                       {UserNameFormatter.getBasicDisplayName(author.editor)}
                     </Typography>
                     <Typography variant="caption">
-                      Utoljára módosítva:{" "}
+                      Módosítva:{" "}
                       {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
                     </Typography>
 
