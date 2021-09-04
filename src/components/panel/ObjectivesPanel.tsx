@@ -52,6 +52,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
                         size="large"
                         aria-label="add"
                         color="secondary"
+                        style={{position: "fixed"}}
                         className={classes.floatingActionButton}
                         onClick={() => setWasCreateNewPostClicked(true)}
                     >

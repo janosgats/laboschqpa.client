@@ -17,7 +17,6 @@ const style = {
         textIndent: "50px",
         fontStyle: "oblique",
         fontSize: "small",
-        fontWeight: "lighter",
     },
 
     richTextEditor:{
