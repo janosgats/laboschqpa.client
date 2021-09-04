@@ -68,8 +68,8 @@ const NotAcceptedByEmailBanner: FC = () => {
     const [isAddNewEmailDialogOpen, setAddNewEmailDialogOpen] = useState<boolean>(false);
     const [isAskYourTeamLeadDialogOpen, setAskYourTeamLeadDialogOpen] = useState<boolean>(false);
 
-    //TODO:  remove "false &&" after GTB
-    const displayBanner = false && currentUser.getUserInfo() && !currentUser.getUserInfo().isAcceptedByEmail;
+    
+    const displayBanner = currentUser.getUserInfo() && !currentUser.getUserInfo().isAcceptedByEmail;
 
     if (!displayBanner) {
         return <></>;
