@@ -1,18 +1,23 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import useEndpoint from "~/hooks/useEndpoint";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import {ObjectiveType} from "~/enums/ObjectiveType";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
-import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
-import { Button } from '@material-ui/core';
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Authority } from "~/enums/Authority";
+import { ObjectiveType } from "~/enums/ObjectiveType";
+import { Objective } from "~/model/usergeneratedcontent/Objective";
+import { ObjectiveDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
+import { Button, createStyles, Fab, Grid, makeStyles, Theme } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import styles from './styles/ObjectivePanelStyle';
+
+const useStyles = makeStyles((theme: Theme) => createStyles(styles))
 
 interface Props {
     filteredObjectiveTypes: ObjectiveType[];
 }
 
 const ObjectivesPanel: FC<Props> = (props) => {
+    const classes = useStyles()
     const currentUser = useContext(CurrentUserContext);
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
@@ -41,8 +46,19 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
     return (
         <div>
-            {(!wasCreateNewObjectiveClicked) && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                <Button size="small" variant="contained" onClick={() => setWasCreateNewPostClicked(true)}>Create new objective</Button>
+            {!wasCreateNewObjectiveClicked && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+                <>
+                    <Fab
+                        size="large"
+                        aria-label="add"
+                        color="secondary"
+                        style={{position: "fixed"}}
+                        className={classes.floatingActionButton}
+                        onClick={() => setWasCreateNewPostClicked(true)}
+                    >
+                        <AddIcon />
+                    </Fab>
+                </>
             )}
 
             {wasCreateNewObjectiveClicked && (
@@ -71,9 +87,21 @@ const ObjectivesPanel: FC<Props> = (props) => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Button size="small" variant="contained" onClick={() => infiniteScroller.increaseShownCount(5)}>
-                            &darr;&darr; Show more &darr;&darr;
-                        </Button>
+                        <Grid
+                            container
+                            justify="center"
+                        >
+                            <Button
+                                size="large"
+                                variant="text"
+                                fullWidth
+                                color="secondary"
+                                onClick={() => infiniteScroller.increaseShownCount(5)}
+                                className={classes.showMoreButton}
+                                >
+                                &darr; Show more &darr;
+                            </Button>
+                        </Grid>
                     )}
                 </>
             )}

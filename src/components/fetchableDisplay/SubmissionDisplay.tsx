@@ -21,7 +21,10 @@ import { Authority } from "~/enums/Authority";
 import Scorer from "~/components/Scorer";
 import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Button } from "@material-ui/core";
+import { Button, ButtonGroup, DialogContent, DialogContentText, IconButton, Typography } from "@material-ui/core";
+import SaveIcon from '@material-ui/icons/Save';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CloseIcon from '@material-ui/icons/Close';
 
 export interface SaveSubmissionCommand {
   /**
@@ -171,142 +174,131 @@ const SubmissionDisplay: FetchableDisplay<
 
   return (
     <>
-      <div
-        style={{
-          borderStyle: "dashed",
-          borderWidth: 2,
-          padding: 10,
-          //marginBottom: 8,
-          minWidth: "80vw",
-        }}
-      >
-        {!isEdited && canEditSubmission() && (
-          <Button
-            size="small"
-            variant="contained"
-            onClick={() => setIsEdited(true)}
-          >
-            Edit
-          </Button>
-        )}
+      <RichTextEditor
+        isEdited={isEdited}
+        readOnlyControls={props.isApiCallPending}
+        defaultValue={defaultContent}
+        resetTrigger={resetTrigger}
+        onChange={(data) => setContent(data)}
+        usedAttachments={usedAttachments}
+      />
 
-        {props.showObjectiveTitle && <h1>For {objectiveTitle}</h1>}
+      <AttachmentPanel
+        usedAttachments={usedAttachments}
+        isEdited={isEdited}
+      />
 
-        {props.showTeamName && <h3>By {teamName}</h3>}
+      {!isEdited && (
+        <>
+          {currentUser.hasAuthority(Authority.TeamScorer) && (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => setIsScorerOpen(true)}
+            >
+              Score
+            </Button>
+          )}
 
-        <RichTextEditor
-          isEdited={isEdited}
-          readOnlyControls={props.isApiCallPending}
-          defaultValue={defaultContent}
-          resetTrigger={resetTrigger}
-          onChange={(data) => setContent(data)}
-          usedAttachments={usedAttachments}
-        />
-
-        <AttachmentPanel
-          usedAttachments={usedAttachments}
-          isEdited={isEdited}
-        />
-
-        {!isEdited && (
-          <>
-            {currentUser.hasAuthority(Authority.TeamScorer) && (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={() => setIsScorerOpen(true)}
-              >
-                Score
-              </Button>
-            )}
-
-            {isScorerOpen && (
-              <Scorer
-                defaultObjectiveId={props.existingEntity.objectiveId}
-                defaultTeamId={props.existingEntity.teamId}
-                onClose={() => setIsScorerOpen(false)}
-              />
-            )}
-
+          {isScorerOpen && (
+            <Scorer
+              defaultObjectiveId={props.existingEntity.objectiveId}
+              defaultTeamId={props.existingEntity.teamId}
+              onClose={() => setIsScorerOpen(false)}
+            />
+          )}
+          
+          <ul>
+            <li>
+              Created:{" "}
+              {DateTimeFormatter.toFullBasic(
+                props.existingEntity.creationTime
+              )}
+            </li>
+            <li>
+              Last edited:{" "}
+              {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+            </li>
+          </ul>
+          {author ? (
             <ul>
               <li>
-                Created:{" "}
-                {DateTimeFormatter.toFullBasic(
-                  props.existingEntity.creationTime
-                )}
+                Created by:{" "}
+                {UserNameFormatter.getBasicDisplayName(author.creator)}
               </li>
               <li>
-                Last edited:{" "}
-                {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                Last edited by:{" "}
+                {UserNameFormatter.getBasicDisplayName(author.editor)}
               </li>
             </ul>
-            {author ? (
-              <ul>
-                <li>
-                  Created by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.creator)}
-                </li>
-                <li>
-                  Last edited by:{" "}
-                  {UserNameFormatter.getBasicDisplayName(author.editor)}
-                </li>
-              </ul>
-            ) : (
-              <Button
-                size="small"
-                variant="contained"
-                onClick={fetchAuthor}
-                disabled={isAuthorFetchingPending}
-              >
-                Show Author
-              </Button>
-            )}
-          </>
-        )}
+          ) : (
+            <Button
+              size="small"
+              variant="contained"
+              onClick={fetchAuthor}
+              disabled={isAuthorFetchingPending}
+            >
+              Show Author
+            </Button>
+          )}
+        </>
+      )}
 
-        {isEdited && (
-          <>
-            {props.isCreatingNew && (
-              <Button
-                size="small"
-                variant="contained"
+      {!isEdited && canEditSubmission() && (
+        <Button
+          size="small"
+          variant="contained"
+          onClick={() => setIsEdited(true)}
+        >
+          Edit
+        </Button>
+      )}
+
+      {isEdited && (
+        <>
+          {props.isCreatingNew && (
+            <Button
+              size="large"
+              variant="contained"
+              onClick={doSave}
+              disabled={props.isApiCallPending}
+              color="primary"
+              fullWidth
+            >
+              Beadás
+            </Button>
+          )}
+          {!props.isCreatingNew && (
+            <ButtonGroup
+              variant="text"
+              fullWidth
+              size="large"
+            >
+              <IconButton
                 onClick={doSave}
                 disabled={props.isApiCallPending}
               >
-                Create
-              </Button>
-            )}
-            {!props.isCreatingNew && (
-              <>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doSave}
-                  disabled={props.isApiCallPending}
-                >
-                  Modify
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doCancelEdit}
-                  disabled={props.isApiCallPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={doDelete}
-                  disabled={props.isApiCallPending}
-                >
-                  Delete
-                </Button>
-              </>
-            )}
-          </>
-        )}
-      </div>
+                <SaveIcon />
+              </IconButton>
+              <IconButton
+                
+                
+                onClick={doDelete}
+                disabled={props.isApiCallPending}
+                
+              >
+                <DeleteIcon />
+              </IconButton>
+              <IconButton
+                onClick={doCancelEdit}
+                disabled={props.isApiCallPending}
+              >
+                <CloseIcon />
+              </IconButton>
+            </ButtonGroup>
+          )}
+        </>
+      )}
     </>
   );
 };

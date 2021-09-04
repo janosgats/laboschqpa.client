@@ -98,7 +98,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             </MUIPaper>
           )}
           {!isCreatingNewDisplayShown && (
-            <Button size="small" variant="contained"  onClick={() => setIsCreatingNewDisplayShown(true)}>
+            <Button size="small" variant="contained"  onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
               Record new time
             </Button>
           )}
