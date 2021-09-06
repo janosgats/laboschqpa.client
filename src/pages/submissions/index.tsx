@@ -1,19 +1,22 @@
 import Head from 'next/head'
-import {NextPage} from "next";
-import React, {useState} from "react";
-import {objectiveTypeData} from "~/enums/ObjectiveType";
+import { NextPage } from "next";
+import React, { useState } from "react";
+import { objectiveTypeData } from "~/enums/ObjectiveType";
 import SubmissionsPanel from "~/components/panel/SubmissionsPanel";
-import {isValidNumber} from "~/utils/CommonValidators";
+import { isValidNumber } from "~/utils/CommonValidators";
 import useEndpoint from "~/hooks/useEndpoint";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
-import {TeamInfo} from "~/model/Team";
+import { Objective } from "~/model/usergeneratedcontent/Objective";
+import { TeamInfo } from "~/model/Team";
 import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
+import { Grid, List, ListItem, Paper, Table, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 
 const NOT_FILTERED = 'not_filtered';
 
 const Index: NextPage = () => {
     const [filteredObjectiveId, setFilteredObjectiveId] = useState<number>(null);
     const [filteredTeamId, setFilteredTeamId] = useState<number>(null);
+
+    const [selectedObjectiveId, setSelectedObjectiveId] = useState(null);
 
     const usedEndpointObjectives = useEndpoint<Objective[]>({
         conf: {
@@ -35,7 +38,7 @@ const Index: NextPage = () => {
                 <title>Submissions</title>
             </Head>
 
-            <NotAcceptedByEmailBanner/>
+            <NotAcceptedByEmailBanner />
 
             {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && (
                 <p>Pending...</p>
@@ -57,15 +60,15 @@ const Index: NextPage = () => {
                 <>
                     <label>Filter objective: </label>
                     <select value={filteredObjectiveId !== null ? filteredObjectiveId : ''}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (isValidNumber(val)) {
-                                    setFilteredObjectiveId(Number.parseInt(e.target.value));
-                                }
-                                if (val === NOT_FILTERED) {
-                                    setFilteredObjectiveId(null);
-                                }
-                            }}>
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (isValidNumber(val)) {
+                                setFilteredObjectiveId(Number.parseInt(e.target.value));
+                            }
+                            if (val === NOT_FILTERED) {
+                                setFilteredObjectiveId(null);
+                            }
+                        }}>
                         <option value={NOT_FILTERED}>Not filtered</option>
                         {fetchedObjectives.map(objective => {
                             return (
@@ -75,18 +78,18 @@ const Index: NextPage = () => {
                             );
                         })}
                     </select>
-                    <br/>
+                    <br />
                     <label>Filter team: </label>
                     <select value={filteredTeamId !== null ? filteredTeamId : ''}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (isValidNumber(val)) {
-                                    setFilteredTeamId(Number.parseInt(e.target.value));
-                                }
-                                if (val === NOT_FILTERED) {
-                                    setFilteredTeamId(null);
-                                }
-                            }}>
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (isValidNumber(val)) {
+                                setFilteredTeamId(Number.parseInt(e.target.value));
+                            }
+                            if (val === NOT_FILTERED) {
+                                setFilteredTeamId(null);
+                            }
+                        }}>
 
                         <option value={NOT_FILTERED}>Not filtered</option>
                         {fetchedTeams.map(team => {
@@ -97,11 +100,51 @@ const Index: NextPage = () => {
                             );
                         })}
                     </select>
-                    <br/>
+                    <br />
                 </>
             )}
+            <Grid
+                container
+                direction="row"
+                justify="space-between"
+                spacing={3}
+            >
+                <Grid
+                    item
+                    xs={4}
+                >
+                    <TableContainer component={Paper}>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Feladat</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Határidő</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            {fetchedObjectives && fetchedObjectives.map((objective: Objective) => {
+                                return (
+                                    <TableRow
+                                        onClick={() => setSelectedObjectiveId(objective.id)}
+                                    >
+                                        <TableCell>{objective.title}</TableCell>
+                                        <TableCell>{objective.submittable ? "Beadható" : "Lejárt"}</TableCell>
+                                        <TableCell>{objective.deadline}</TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </Table>
+                    </TableContainer>
+                </Grid>
+                <Grid
+                    item
+                    xs={8}
+                >
+                    <SubmissionsPanel filteredObjectiveId={selectedObjectiveId} filteredTeamId={filteredTeamId} />
+                </Grid>
+            </Grid>
 
-            <SubmissionsPanel filteredObjectiveId={filteredObjectiveId} filteredTeamId={filteredTeamId}/>
+            { /*<SubmissionsPanel filteredObjectiveId={filteredObjectiveId} filteredTeamId={filteredTeamId} />*/}
 
         </div>
     )
