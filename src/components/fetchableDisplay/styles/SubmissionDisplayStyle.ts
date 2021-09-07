@@ -8,6 +8,6 @@ export const styles={
 
     header:{
         marginBottom: "8px"
-    }
+    },
 
 }

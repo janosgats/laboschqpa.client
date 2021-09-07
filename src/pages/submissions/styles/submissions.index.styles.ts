@@ -1,5 +1,4 @@
-
-export const styles={
+const styles={
 
     formControl:{
         marginBottom: "8px",
@@ -21,5 +20,7 @@ export const styles={
         padding: "8px",
     },
     
-    
+
 }
+
+export default styles;
