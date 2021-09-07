@@ -4,17 +4,24 @@ import { SubmissionDisplayContainer } from "~/components/fetchableDisplay/Fetcha
 import { Submission } from "~/model/usergeneratedcontent/Submission";
 import { isValidNumber } from "~/utils/CommonValidators";
 import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
-import { Box, Divider, Paper, Typography } from '@material-ui/core';
+import { Box, createStyles, Divider, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { styles } from './styles/SubmissionsPanelStyle';
 
 interface Props {
     filteredObjectiveId?: number;
     filteredTeamId?: number;
 }
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles(styles)
+)
+
 const SubmissionsPanel: FC<Props> = (props) => {
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
         startingShowCount: 5
     });
+
+    const classes = useStyles();
 
     const [objectiveSubmissionMap, setObjectiveSubmissionMap] = useState<Map<number, Submission[]>>(null);
 
@@ -66,16 +73,16 @@ const SubmissionsPanel: FC<Props> = (props) => {
                         objectivesIdList.map((objectiveId: number, index: number) => {
                             return (
                                 <Paper
-                                    style={{ marginBottom: "8px", padding: "16px" }} key={objectiveId * objectiveId + index * 2}
+                                    className={classes.submissionPanelWrapper}
+                                    key={objectiveId * objectiveId + index * 2}
                                     elevation={0}
                                     variant="outlined"
                                     >
-                                    <Typography variant="h4">{objectiveSubmissionMap.get(objectiveId)[0].objectiveTitle}</Typography>
-                                    <Typography variant="subtitle1">Beadások: </Typography>
+                                    <Typography variant="h4"><b>{objectiveSubmissionMap.get(objectiveId)[0].objectiveTitle}</b> feladat beadásai</Typography>
+                                    <Typography variant="subtitle1" className={classes.subtitle}>Beadások: </Typography>
                                     {
                                         objectiveSubmissionMap.get(objectiveId).map((submission) => {
                                             return (
-
                                                 <>
                                                     <SubmissionDisplayContainer
                                                         key={submission.id}

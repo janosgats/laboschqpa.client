@@ -21,12 +21,17 @@ import { Authority } from "~/enums/Authority";
 import Scorer from "~/components/Scorer";
 import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Button, ButtonGroup, Collapse, DialogContent, DialogContentText, Grid, IconButton, Paper, Typography } from "@material-ui/core";
+import { Box, Button, ButtonGroup, Collapse, createStyles, DialogContent, DialogContentText, Grid, IconButton, makeStyles, Paper, Theme, Typography } from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { styles } from "./styles/SubmissionDisplayStyle";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles(styles)
+)
 
 export interface SaveSubmissionCommand {
   /**
@@ -182,68 +187,75 @@ const SubmissionDisplay: FetchableDisplay<
 
   const [showAuthor, setShowAuthor] = useState<boolean>(false);
 
+  const classes = useStyles();
+
   return (
-    <Paper style={{ marginTop: "8px", padding: "16px" }}
+    <Paper
+      className={classes.submissionDisplayContainer}
       variant="outlined"
       elevation={3}
     >
-      <Grid
-        container
-        alignItems="center"
-        justify="space-between"
-      >
 
 
-        {!isEdited && canEditSubmission() && (
-          <>
-            <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+      {!isEdited && canEditSubmission() && (
+        <Grid
+          container
+          alignItems="center"
+          justify="space-between"
+          className={classes.header}
+        >
+          <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+          <IconButton
+            onClick={() => setIsEdited(true)}
+          >
+            <EditIcon
+              color="action"
+            />
+          </IconButton>
+        </Grid>
+      )}
+
+      {isEdited && !props.isCreatingNew && (
+        <Grid
+          container
+          alignItems="center"
+          justify="space-between"
+          className={classes.header}
+        >
+          <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+          <ButtonGroup
+            variant="text"
+            size="large"
+          >
             <IconButton
-              onClick={() => setIsEdited(true)}
+              onClick={doSave}
+              disabled={props.isApiCallPending}
             >
-              <EditIcon
+              <SaveIcon
+                color="primary"
+              />
+            </IconButton>
+            <IconButton
+              onClick={doDelete}
+              disabled={props.isApiCallPending}
+
+            >
+              <DeleteIcon
+                color="secondary"
+              />
+            </IconButton>
+            <IconButton
+              onClick={doCancelEdit}
+              disabled={props.isApiCallPending}
+            >
+              <CloseIcon
                 color="action"
               />
             </IconButton>
-          </>
-        )}
+          </ButtonGroup>
+        </Grid>
+      )}
 
-        {isEdited && !props.isCreatingNew && (
-          <>
-            <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
-            <ButtonGroup
-              variant="text"
-              size="large"
-            >
-              <IconButton
-                onClick={doSave}
-                disabled={props.isApiCallPending}
-              >
-                <SaveIcon
-                  color="primary"
-                />
-              </IconButton>
-              <IconButton
-                onClick={doDelete}
-                disabled={props.isApiCallPending}
-
-              >
-                <DeleteIcon
-                  color="secondary"
-                />
-              </IconButton>
-              <IconButton
-                onClick={doCancelEdit}
-                disabled={props.isApiCallPending}
-              >
-                <CloseIcon
-                  color="action"
-                />
-              </IconButton>
-            </ButtonGroup>
-          </>
-        )}
-
-      </Grid>
       <RichTextEditor
         isEdited={isEdited}
         readOnlyControls={props.isApiCallPending}
