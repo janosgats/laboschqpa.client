@@ -1,4 +1,4 @@
-const styles={
+export const styles={
 
     formControl:{
         marginBottom: "8px",
@@ -19,8 +19,4 @@ const styles={
     objectiveTable:{
         padding: "8px",
     },
-    
-
 }
-
-export default styles;
