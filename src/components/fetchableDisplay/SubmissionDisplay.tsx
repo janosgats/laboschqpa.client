@@ -21,10 +21,12 @@ import { Authority } from "~/enums/Authority";
 import Scorer from "~/components/Scorer";
 import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Button, ButtonGroup, DialogContent, DialogContentText, IconButton, Typography } from "@material-ui/core";
+import { Button, ButtonGroup, Collapse, DialogContent, DialogContentText, Grid, IconButton, Paper, Typography } from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 export interface SaveSubmissionCommand {
   /**
@@ -121,14 +123,13 @@ const SubmissionDisplay: FetchableDisplay<
   }
 
   function doCancelEdit() {
-    const confirmResult = confirm("Do you want to discard your changes?");
-    if (confirmResult) {
-      setIsEdited(false);
-      setResetTrigger(resetTrigger + 1);
-      setContent(defaultContent);
-      usedAttachments.reset(defaultAttachments);
-      props.onCancelEditing();
-    }
+
+    setIsEdited(false);
+    setResetTrigger(resetTrigger + 1);
+    setContent(defaultContent);
+    usedAttachments.reset(defaultAttachments);
+    props.onCancelEditing();
+
   }
 
   function doDelete() {
@@ -141,6 +142,13 @@ const SubmissionDisplay: FetchableDisplay<
   }
 
   function fetchAuthor() {
+    if (showAuthor) {
+      return setShowAuthor(false);
+    }
+    setShowAuthor(true);
+    if (author) return;
+
+
     setIsAuthorFetchingPending(true);
     UserInfoService.getAuthor(
       props.existingEntity.creatorUserId,
@@ -172,8 +180,70 @@ const SubmissionDisplay: FetchableDisplay<
     );
   }
 
+  const [showAuthor, setShowAuthor] = useState<boolean>(false);
+
   return (
-    <>
+    <Paper style={{ marginTop: "8px", padding: "16px" }}
+      variant="outlined"
+      elevation={3}
+    >
+      <Grid
+        container
+        alignItems="center"
+        justify="space-between"
+      >
+
+
+        {!isEdited && canEditSubmission() && (
+          <>
+            <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+            <IconButton
+              onClick={() => setIsEdited(true)}
+            >
+              <EditIcon
+                color="action"
+              />
+            </IconButton>
+          </>
+        )}
+
+        {isEdited && !props.isCreatingNew && (
+          <>
+            <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+            <ButtonGroup
+              variant="text"
+              size="large"
+            >
+              <IconButton
+                onClick={doSave}
+                disabled={props.isApiCallPending}
+              >
+                <SaveIcon
+                  color="primary"
+                />
+              </IconButton>
+              <IconButton
+                onClick={doDelete}
+                disabled={props.isApiCallPending}
+
+              >
+                <DeleteIcon
+                  color="secondary"
+                />
+              </IconButton>
+              <IconButton
+                onClick={doCancelEdit}
+                disabled={props.isApiCallPending}
+              >
+                <CloseIcon
+                  color="action"
+                />
+              </IconButton>
+            </ButtonGroup>
+          </>
+        )}
+
+      </Grid>
       <RichTextEditor
         isEdited={isEdited}
         readOnlyControls={props.isApiCallPending}
@@ -187,72 +257,6 @@ const SubmissionDisplay: FetchableDisplay<
         usedAttachments={usedAttachments}
         isEdited={isEdited}
       />
-
-      {!isEdited && (
-        <>
-          {currentUser.hasAuthority(Authority.TeamScorer) && (
-            <Button
-              size="small"
-              variant="contained"
-              onClick={() => setIsScorerOpen(true)}
-            >
-              Score
-            </Button>
-          )}
-
-          {isScorerOpen && (
-            <Scorer
-              defaultObjectiveId={props.existingEntity.objectiveId}
-              defaultTeamId={props.existingEntity.teamId}
-              onClose={() => setIsScorerOpen(false)}
-            />
-          )}
-          
-          <ul>
-            <li>
-              Created:{" "}
-              {DateTimeFormatter.toFullBasic(
-                props.existingEntity.creationTime
-              )}
-            </li>
-            <li>
-              Last edited:{" "}
-              {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
-            </li>
-          </ul>
-          {author ? (
-            <ul>
-              <li>
-                Created by:{" "}
-                {UserNameFormatter.getBasicDisplayName(author.creator)}
-              </li>
-              <li>
-                Last edited by:{" "}
-                {UserNameFormatter.getBasicDisplayName(author.editor)}
-              </li>
-            </ul>
-          ) : (
-            <Button
-              size="small"
-              variant="contained"
-              onClick={fetchAuthor}
-              disabled={isAuthorFetchingPending}
-            >
-              Show Author
-            </Button>
-          )}
-        </>
-      )}
-
-      {!isEdited && canEditSubmission() && (
-        <Button
-          size="small"
-          variant="contained"
-          onClick={() => setIsEdited(true)}
-        >
-          Edit
-        </Button>
-      )}
 
       {isEdited && (
         <>
@@ -268,38 +272,97 @@ const SubmissionDisplay: FetchableDisplay<
               Beadás
             </Button>
           )}
-          {!props.isCreatingNew && (
-            <ButtonGroup
-              variant="text"
-              fullWidth
+        </>
+      )}
+      {!isEdited && (
+        <>
+          {currentUser.hasAuthority(Authority.TeamScorer) && (
+            <Button
               size="large"
+              variant="contained"
+              onClick={() => setIsScorerOpen(true)}
+              color="primary"
+              fullWidth
             >
-              <IconButton
-                onClick={doSave}
-                disabled={props.isApiCallPending}
+              Pontozás
+            </Button>
+          )}
+
+          {isScorerOpen && (
+            <Scorer
+              defaultObjectiveId={props.existingEntity.objectiveId}
+              defaultTeamId={props.existingEntity.teamId}
+              onClose={() => setIsScorerOpen(false)}
+            />
+          )}
+
+
+
+          <Grid
+            container
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+          >
+            {props.existingEntity.creationTime === props.existingEntity.editTime ? (
+              <Typography variant="caption" >Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
+            ) :
+              <Typography variant="caption">Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
+            }
+            <IconButton
+              onClick={fetchAuthor}
+              disabled={isAuthorFetchingPending}
+            >
+              <InfoOutlinedIcon
+                color="secondary"
+              />
+            </IconButton>
+          </Grid>
+
+          {author && (
+            <Collapse in={showAuthor}>
+              <Grid
+                container
+                direction="column"
               >
-                <SaveIcon />
-              </IconButton>
-              <IconButton
-                
-                
-                onClick={doDelete}
-                disabled={props.isApiCallPending}
-                
-              >
-                <DeleteIcon />
-              </IconButton>
-              <IconButton
-                onClick={doCancelEdit}
-                disabled={props.isApiCallPending}
-              >
-                <CloseIcon />
-              </IconButton>
-            </ButtonGroup>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <Typography variant="caption">Posztolta:{" "}
+                    {UserNameFormatter.getBasicDisplayName(author.creator)}
+                  </Typography>
+                  <Typography variant="caption">
+                    Posztolva:{" "}
+                    {DateTimeFormatter.toFullBasic(
+                      props.existingEntity.creationTime
+                    )}
+                  </Typography>
+                </Grid>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="space-between"
+                >
+                  <Typography variant="caption">Módosította:{" "}
+                    {UserNameFormatter.getBasicDisplayName(author.editor)}
+                  </Typography>
+                  <Typography variant="caption">
+                    Módosítva:{" "}
+                    {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Collapse>
           )}
         </>
       )}
-    </>
+
+
+    </Paper>
   );
 };
 

@@ -8,7 +8,7 @@ import useEndpoint from "~/hooks/useEndpoint";
 import { Objective } from "~/model/usergeneratedcontent/Objective";
 import { TeamInfo } from "~/model/Team";
 import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
-import { Grid, List, ListItem, Paper, Table, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
+import { Grid, List, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 
 const NOT_FILTERED = 'not_filtered';
 
@@ -33,7 +33,7 @@ const Index: NextPage = () => {
     const fetchedTeams = usedEndpointTeams.data;
 
     return (
-        <div>
+        <>
             <Head>
                 <title>Submissions</title>
             </Head>
@@ -111,7 +111,7 @@ const Index: NextPage = () => {
             >
                 <Grid
                     item
-                    xs={4}
+                    lg={4}
                 >
                     <TableContainer component={Paper}>
                         <Table size="small">
@@ -122,23 +122,26 @@ const Index: NextPage = () => {
                                     <TableCell>Határidő</TableCell>
                                 </TableRow>
                             </TableHead>
-                            {fetchedObjectives && fetchedObjectives.map((objective: Objective) => {
-                                return (
-                                    <TableRow
-                                        onClick={() => setSelectedObjectiveId(objective.id)}
-                                    >
-                                        <TableCell>{objective.title}</TableCell>
-                                        <TableCell>{objective.submittable ? "Beadható" : "Lejárt"}</TableCell>
-                                        <TableCell>{objective.deadline}</TableCell>
-                                    </TableRow>
-                                )
-                            })}
+                            <TableBody>
+                                {fetchedObjectives && fetchedObjectives.map((objective: Objective, index: number) => {
+                                    return (
+                                        <TableRow
+                                            key={index}
+                                            onClick={() => setSelectedObjectiveId(objective.id)}
+                                        >
+                                            <TableCell>{objective.title}</TableCell>
+                                            <TableCell>{objective.submittable ? "Beadható" : "Lejárt"}</TableCell>
+                                            <TableCell>{objective.deadline}</TableCell>
+                                        </TableRow>
+                                    )
+                                })}
+                            </TableBody>
                         </Table>
                     </TableContainer>
                 </Grid>
                 <Grid
                     item
-                    xs={8}
+                    lg={8}
                 >
                     <SubmissionsPanel filteredObjectiveId={selectedObjectiveId} filteredTeamId={filteredTeamId} />
                 </Grid>
@@ -146,7 +149,7 @@ const Index: NextPage = () => {
 
             { /*<SubmissionsPanel filteredObjectiveId={filteredObjectiveId} filteredTeamId={filteredTeamId} />*/}
 
-        </div>
+        </>
     )
 };
 
