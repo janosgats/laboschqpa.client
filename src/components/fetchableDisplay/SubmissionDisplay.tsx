@@ -27,7 +27,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import { styles } from "./styles/SubmissionDisplayStyle";
+import {styles} from'~/components/fetchableDisplay/styles/SubmissionDisplayStyle'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles(styles)
@@ -195,16 +195,21 @@ const SubmissionDisplay: FetchableDisplay<
       variant="outlined"
       elevation={3}
     >
-
-
-      {!isEdited && canEditSubmission() && (
-        <Grid
+      <Grid
           container
           alignItems="center"
           justify="space-between"
-          className={classes.header}
+          className={classes.header}>
+
+      
+      {props.existingEntity.teamName && (
+        <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+      )}
+
+      {!isEdited && canEditSubmission() && (
+        <
         >
-          <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+
           <IconButton
             onClick={() => setIsEdited(true)}
           >
@@ -212,17 +217,11 @@ const SubmissionDisplay: FetchableDisplay<
               color="action"
             />
           </IconButton>
-        </Grid>
+        </>
       )}
 
       {isEdited && !props.isCreatingNew && (
-        <Grid
-          container
-          alignItems="center"
-          justify="space-between"
-          className={classes.header}
-        >
-          <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
+        <>
           <ButtonGroup
             variant="text"
             size="large"
@@ -253,8 +252,9 @@ const SubmissionDisplay: FetchableDisplay<
               />
             </IconButton>
           </ButtonGroup>
-        </Grid>
+        </>
       )}
+      </Grid>
 
       <RichTextEditor
         isEdited={isEdited}
