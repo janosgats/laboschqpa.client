@@ -9,7 +9,7 @@ import { Objective } from "~/model/usergeneratedcontent/Objective";
 import { TeamInfo } from "~/model/Team";
 import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
 import { Box, createStyles, FormControl, Grid, InputLabel, List, ListItem, makeStyles, Paper, Select, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Theme, Typography } from '@material-ui/core';
-import  {styles}  from './styles/submissionsPage.styles';
+import  {styles}  from '../../styles/submissionStyles/submissionsPage.styles';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
 
 const NOT_FILTERED = 'not_filtered';
