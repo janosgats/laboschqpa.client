@@ -4,7 +4,7 @@ import useEndpoint from "~/hooks/useEndpoint";
 import FileToUpload, { UploadedFileType } from "~/model/usergeneratedcontent/FileToUpload";
 import FileUploaderDialog from "~/components/file/FileUploaderDialog";
 import FileInfoModal from "~/components/file/FileInfoModal";
-import { Button, CardContent, CircularProgress, Collapse, createStyles, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, makeStyles, Theme, Tooltip, Typography } from "@material-ui/core";
+import { Box, Button, CardContent, CircularProgress, Collapse, createStyles, Divider, Grid, IconButton, List, ListItem, ListItemAvatar, ListItemIcon, ListItemSecondaryAction, ListItemText, makeStyles, Theme, Tooltip, Typography } from "@material-ui/core";
 import { ExpandLess, ExpandMore, FastfoodOutlined, ReportRounded } from "@material-ui/icons";
 import AttachmentIcon from '@material-ui/icons/Attachment';
 import AttachFileOutlinedIcon from '@material-ui/icons/AttachFileOutlined';
@@ -73,7 +73,9 @@ const AttachmentPanel: FC<Props> = (props) => {
 
     const [isAttachmentsDisplayed, setIsAttachmentsDisplayed] = useState(false);
     return (
-        <>
+        <Box
+            className={classes.attachmentPanelContainer}
+        >
             {(!usedEndpoint.data) && usedEndpoint.pending && (
                 <p>Pending... TODO SPINNER</p>
             )}
@@ -192,7 +194,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                 <FileInfoModal fileId={fileIdToShowInInfoModal} />
             )}
             
-        </>
+        </Box>
     )
 };
 
