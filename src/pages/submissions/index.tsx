@@ -8,8 +8,8 @@ import useEndpoint from "~/hooks/useEndpoint";
 import { Objective } from "~/model/usergeneratedcontent/Objective";
 import { TeamInfo } from "~/model/Team";
 import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
-import { Box, createStyles, FormControl, Grid, InputLabel, List, ListItem, makeStyles, Paper, Select, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Theme, Typography } from '@material-ui/core';
-import  {styles}  from '../../styles/submissionStyles/submissionsPage.styles';
+import { Box, createStyles, FormControl, Grid, InputLabel, List, ListItem, makeStyles, Paper, Select, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, Theme, Tooltip, Typography } from '@material-ui/core';
+import { styles } from '../../styles/submissionStyles/submissionsPage.styles';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
 
 const NOT_FILTERED = 'not_filtered';
@@ -84,6 +84,7 @@ const Index: NextPage = () => {
                                     <InputLabel id="objective-filter" className={classes.formControlBox}>Szűrés feladatra</InputLabel>
                                     <Select
                                         fullWidth
+                                        defaultValue={NOT_FILTERED}
                                         native
                                         labelId="objective-filter"
                                         value={filteredObjectiveId !== null ? filteredObjectiveId : ''}
@@ -97,7 +98,7 @@ const Index: NextPage = () => {
                                                 setFilteredObjectiveId(null);
                                             }
                                         }}>
-                                        <option value={NOT_FILTERED}></option>
+                                        <option value={NOT_FILTERED}>Nincs</option>
                                         {fetchedObjectives.map(objective => {
                                             return (
                                                 <option key={objective.id} value={objective.id}>
@@ -109,7 +110,7 @@ const Index: NextPage = () => {
                                     </Select>
                                 </Box>
                             </FormControl>
-                            <TableContainer 
+                            <TableContainer
                                 component={Paper}
                                 className={classes.objectiveTableContainer}
                             >
@@ -117,7 +118,7 @@ const Index: NextPage = () => {
                                     className={classes.objectiveTable}
                                 >
                                     <TableHead
-                                    >  
+                                    >
                                         <TableRow >
                                             <TableCell variant="head"><b>Feladat</b></TableCell>
                                             <TableCell variant="head"><b>Status</b></TableCell>
@@ -127,16 +128,18 @@ const Index: NextPage = () => {
                                     <TableBody>
                                         {fetchedObjectives && fetchedObjectives.map((objective: Objective, index: number) => {
                                             return (
-                                                <TableRow
-                                                    key={index}
-                                                    onClick={() => setFilteredObjectiveId(objective.id)}
-                                                    hover
-                                                    selected={objective.id === filteredObjectiveId}
-                                                >
-                                                    <TableCell>{objective.title}</TableCell>
-                                                    <TableCell>{objective.submittable ? "Beadható" : "Lejárt"}</TableCell>
-                                                    <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
-                                                </TableRow>
+                                                    <TableRow
+                                                        key={index}
+                                                        onClick={() => setFilteredObjectiveId(objective.id)}
+                                                        hover
+                                                        className={classes.tableRow}
+                                                        selected={objective.id === filteredObjectiveId}
+                                                    >
+                                                        <TableCell>{objective.title}</TableCell>
+                                                        <TableCell>{objective.submittable ? "Beadható" : "Lejárt"}</TableCell>
+                                                        <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
+                                                    </TableRow>
+                                                
                                             )
                                         })}
                                     </TableBody>
@@ -157,6 +160,7 @@ const Index: NextPage = () => {
                                     <InputLabel id="team-filter" className={classes.formControlBox}>Szűrés csapatra</InputLabel>
                                     <Select
                                         fullWidth
+                                        defaultValue={NOT_FILTERED}
                                         native
                                         labelId="team-filter"
                                         value={filteredTeamId !== null ? filteredTeamId : ''}
@@ -170,7 +174,7 @@ const Index: NextPage = () => {
                                             }
                                         }}>
 
-                                        <option value={NOT_FILTERED}></option>
+                                        <option value={NOT_FILTERED}>Nincs</option>
                                         {fetchedTeams.map(team => {
                                             return (
                                                 <option key={team.id} value={team.id}>

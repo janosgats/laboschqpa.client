@@ -19,4 +19,10 @@ export const styles={
     objectiveTable:{
         padding: "8px",
     },
+
+    tableRow:{
+        '&:hover': {
+            cursor: "pointer",
+        },
+    },
 }
