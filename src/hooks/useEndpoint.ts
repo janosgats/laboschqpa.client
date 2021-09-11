@@ -11,6 +11,7 @@ export interface UseEndpointCommand<T, R = T> {
   onError?: (err: any) => void;
   enableRequest?: boolean;
   keepOldDataWhileFetchingNew?: boolean;
+  delayPendingState: boolean;
 }
 
 export interface UsedEndpoint<R> {
@@ -31,10 +32,14 @@ const useEndpoint = <T, R = T>({
   keepOldDataWhileFetchingNew = false,
   onError,
   onSuccess,
+  delayPendingState = true,
 }: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
   const [data, setData] = React.useState<R>(null);
   const [error, setError] = React.useState(false);
-  const [pending, setPending] = useDelayedToggle(true);
+  const [pending, setPending] = useDelayedToggle(
+    true,
+    delayPendingState ? 250 : 0
+  );
   const [succeeded, setSucceeded] = React.useState(false);
 
   const refreshOnChange = () => {
