@@ -1,17 +1,17 @@
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Head from "next/head";
-import React, { useState } from "react";
-import EventDisplayContainer from "~/components/eventDisplay/EventDisplayContainer";
-import NavBar from "~/components/nav/NavBar";
-import CurrentUserProvider from "~/context/CurrentUserProvider";
+import {createMuiTheme, ThemeProvider} from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Head from 'next/head';
+import React, {useState} from 'react';
+import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
+import NavBar from '~/components/nav/NavBar';
+import CurrentUserProvider from '~/context/CurrentUserProvider';
 
-function MyApp({ Component, pageProps }): JSX.Element {
+function MyApp({Component, pageProps}): JSX.Element {
   const [darkMode, setDarkMode] = useState(false);
 
   const theme = createMuiTheme({
     palette: {
-      type: darkMode ? "dark" : "light",
+      type: darkMode ? 'dark' : 'light',
     },
   });
 
