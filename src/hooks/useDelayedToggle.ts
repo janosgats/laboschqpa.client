@@ -10,7 +10,7 @@ export function useDelayedToggle(
   const [returnedState, setReturnedState] = React.useState<boolean>(false);
 
   useEffect(() => {
-    if (realState) {
+    if (realState && delay) {
       let timeout = setTimeout(() => {
         setReturnedState(realState);
       }, delay);
