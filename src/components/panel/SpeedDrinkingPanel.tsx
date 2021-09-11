@@ -1,13 +1,19 @@
+import {
+  Button,
+  Table,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
+import MUIPaper from "@material-ui/core/Paper";
 import React, { FC, useContext, useState } from "react";
-import useEndpoint from "~/hooks/useEndpoint";
+import { SpeedDrinkingDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import { CurrentUserContext } from "~/context/CurrentUserProvider";
 import { Authority } from "~/enums/Authority";
-import { SpeedDrinkingDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
+import useEndpoint from "~/hooks/useEndpoint";
 import { SpeedDrinking } from "~/model/usergeneratedcontent/SpeedDrinking";
-
-import MUIPaper from "@material-ui/core/Paper";
-import { Button, Table, TableRow, TableHead, TableCell } from "@material-ui/core";
+import Spinner from "../Spinner";
 
 interface Props {
   filteredCategory: SpeedDrinkingCategory;
@@ -43,7 +49,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
 
           {(isCreatingNewDisplayShown ||
             newlyCreatedSpeedDrinkingIds.length > 0) && (
-            <MUIPaper >
+            <MUIPaper>
               <Table>
                 <TableHead>
                   <TableRow>
@@ -98,14 +104,19 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             </MUIPaper>
           )}
           {!isCreatingNewDisplayShown && (
-            <Button size="small" variant="contained"  onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => setIsCreatingNewDisplayShown(true)}
+              color="primary"
+            >
               Record new time
             </Button>
           )}
         </div>
       )}
 
-      {usedEndpoint.pending && <p>Pending...</p>}
+      {usedEndpoint.pending && <Spinner />}
       {usedEndpoint.failed && <p>Couldn't load news :'(</p>}
       {usedEndpoint.data && (
         <MUIPaper>

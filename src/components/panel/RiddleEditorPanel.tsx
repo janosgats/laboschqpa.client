@@ -1,12 +1,19 @@
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
+import MUIPaper from "@material-ui/core/Paper";
 import React, { FC, useContext, useState } from "react";
-import useEndpoint from "~/hooks/useEndpoint";
+import RiddleEditorDialog from "~/components/riddle/editor/RiddleEditorDialog";
 import { CurrentUserContext } from "~/context/CurrentUserProvider";
 import { Authority } from "~/enums/Authority";
+import useEndpoint from "~/hooks/useEndpoint";
 import { Riddle } from "~/model/usergeneratedcontent/Riddle";
-import RiddleEditorDialog from "~/components/riddle/editor/RiddleEditorDialog";
-
-import MUIPaper from "@material-ui/core/Paper"
-import { Button, TableBody, TableRow, TableHead,  TableCell, Table} from "@material-ui/core";
+import Spinner from "../Spinner";
 
 const RiddleEditorPanel: FC = () => {
   const currentUser = useContext(CurrentUserContext);
@@ -42,12 +49,16 @@ const RiddleEditorPanel: FC = () => {
   return (
     <div>
       {currentUser.hasAuthority(Authority.RiddleEditor) && (
-        <Button size="small" variant="contained" onClick={() => startCreatingNewRiddle()}>
-          Create new riddle 
+        <Button
+          size="small"
+          variant="contained"
+          onClick={() => startCreatingNewRiddle()}
+        >
+          Create new riddle
         </Button>
       )}
 
-      {usedEndpoint.pending && <p>Pending...</p>}
+      {usedEndpoint.pending && <Spinner />}
 
       {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
@@ -72,7 +83,11 @@ const RiddleEditorPanel: FC = () => {
                     <TableCell>{riddle.hint}</TableCell>
                     <TableCell>{riddle.solution}</TableCell>
                     <TableCell>
-                      <Button size="small" variant="contained" onClick={() => startEditingRiddle(riddle.id)}>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => startEditingRiddle(riddle.id)}
+                      >
                         edit
                       </Button>
                     </TableCell>
