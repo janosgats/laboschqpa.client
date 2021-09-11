@@ -1,18 +1,18 @@
-import Head from "next/head";
-import { NextPage } from "next";
-import React from "react";
-import useEndpoint from "~/hooks/useEndpoint";
-import Link from "next/link";
-import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
-
-import MUIPaper from "@material-ui/core/Paper";
 import {
   Button,
   Table,
-  TableRow,
-  TableHead,
   TableCell,
+  TableHead,
+  TableRow,
 } from "@material-ui/core";
+import MUIPaper from "@material-ui/core/Paper";
+import { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import React from "react";
+import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
+import Spinner from "~/components/Spinner";
+import useEndpoint from "~/hooks/useEndpoint";
 
 interface TeamWithScore {
   id: number;
@@ -36,7 +36,7 @@ const Index: NextPage = () => {
 
       <NotTeamMemberBanner />
 
-      {usedEndpoint.pending && <p>Pending...</p>}
+      {usedEndpoint.pending && <Spinner />}
       {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
       {usedEndpoint.data && (
         <MUIPaper>
@@ -57,7 +57,9 @@ const Index: NextPage = () => {
                   <TableCell>{team.score}</TableCell>
                   <TableCell>
                     <Link href={`/teams/team/${team.name}?id=${team.id}`}>
-                      <Button variant="contained" color="primary">Show Team</Button>
+                      <Button variant="contained" color="primary">
+                        Show Team
+                      </Button>
                     </Link>
                   </TableCell>
                 </TableRow>

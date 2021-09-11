@@ -1,15 +1,15 @@
-import React, { FC, useState } from "react";
-import useEndpoint from "~/hooks/useEndpoint";
-import { AccessibleRiddle } from "~/model/usergeneratedcontent/AccessibleRiddle";
-import RiddleSolverDialog from "~/components/riddle/solver/RiddleSolverDialog";
-
-import Table from "@material-ui/core/Table";
-import TableCell from "@material-ui/core/TableCell";
+import Button from "@material-ui/core/Button";
 import MUIPaper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import Button from '@material-ui/core/Button';
+import React, { FC, useState } from "react";
+import RiddleSolverDialog from "~/components/riddle/solver/RiddleSolverDialog";
+import useEndpoint from "~/hooks/useEndpoint";
+import { AccessibleRiddle } from "~/model/usergeneratedcontent/AccessibleRiddle";
+import Spinner from "../Spinner";
 
 const RiddlesPanel: FC = () => {
   const [isSolveRiddleDialogOpen, setIsSolveRiddleDialogOpen] =
@@ -34,7 +34,7 @@ const RiddlesPanel: FC = () => {
 
   return (
     <div>
-      {usedEndpoint.pending && <p>Pending...</p>}
+      {usedEndpoint.pending && <Spinner />}
 
       {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
@@ -53,9 +53,14 @@ const RiddlesPanel: FC = () => {
                 return (
                   <TableRow key={riddle.id}>
                     <TableCell>{riddle.title}</TableCell>
-                    <TableCell>{riddle.isAlreadySolved ? "Yes" : "No"}</TableCell>
                     <TableCell>
-                      <Button variant="contained" onClick={() => openRiddle(riddle.id)}>
+                      {riddle.isAlreadySolved ? "Yes" : "No"}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        onClick={() => openRiddle(riddle.id)}
+                      >
                         Let me see
                       </Button>
                     </TableCell>
