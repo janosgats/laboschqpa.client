@@ -11,7 +11,7 @@ export interface UseEndpointCommand<T, R = T> {
   onError?: (err: any) => void;
   enableRequest?: boolean;
   keepOldDataWhileFetchingNew?: boolean;
-  delayPendingState: boolean;
+  delayPendingState?: boolean;
 }
 
 export interface UsedEndpoint<R> {
