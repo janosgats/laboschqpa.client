@@ -1,22 +1,21 @@
-import React, { FC, useContext, useRef, useState } from 'react'
+import React, {FC, useContext, useRef, useState} from 'react'
 import BackupIcon from '@material-ui/icons/Backup'
-import MUIRichTextEditor, { TAsyncAtomicBlockResponse, TMUIRichTextEditorRef } from "mui-rte";
+import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from "mui-rte";
 import EventBus from "~/utils/EventBus";
-import { convertToRaw } from "draft-js";
-import { UsedAttachments } from "~/hooks/useAttachments";
+import {convertToRaw} from "draft-js";
+import {UsedAttachments} from "~/hooks/useAttachments";
 import FileUploaderDialog from "~/components/file/FileUploaderDialog";
-import { NOTIFICATION_TIMEOUT_LONG } from "~/components/eventDisplay/AppNotificationEventDisplay";
-import FileToUpload, { UploadedFileType } from "~/model/usergeneratedcontent/FileToUpload";
-import { ImageBlock } from "~/components/textEditor/imageBlock/ImageBlock";
-import EditorContextProvider, { EditorContext } from "~/context/EditorContextProvider";
-import { ImageAlignment, ImageBlockSpec } from "~/components/textEditor/imageBlock/ImageBlockTypes";
-import LinkDecorator, { LinkMatcherRegex } from "~/components/textEditor/LinkDecorator";
-import { Box, makeStyles, Paper } from '@material-ui/core';
-import { style } from './styles/style';
+import {NOTIFICATION_TIMEOUT_LONG} from "~/components/eventDisplay/AppNotificationEventDisplay";
+import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
+import {ImageBlock} from "~/components/textEditor/imageBlock/ImageBlock";
+import EditorContextProvider, {EditorContext} from "~/context/EditorContextProvider";
+import {ImageAlignment, ImageBlockSpec} from "~/components/textEditor/imageBlock/ImageBlockTypes";
+import LinkDecorator, {LinkMatcherRegex} from "~/components/textEditor/LinkDecorator";
+import {createStyles, makeStyles, Paper, Theme} from '@material-ui/core';
+import {getStyles} from './styles/style';
 
 
-
-const useStyles = makeStyles(style);
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
 
 interface Props {
     isEdited: boolean;

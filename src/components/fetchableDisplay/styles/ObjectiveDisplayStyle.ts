@@ -1,38 +1,41 @@
-const style = {
-    objectiveDisplayWrapper:{
-        padding: "16px",
-        borderRadius: "16px",
-        marginTop: "24px",
-    },
+import {Theme} from "@material-ui/core/styles";
+import {alpha} from "@material-ui/core";
 
-    typeSelectorLabel:{
-        marginRight: "8px",
-    },
+export function getStyles(theme: Theme) {
+    return {
+        objectiveDisplayWrapper:{
+            padding: "16px",
+            borderRadius: "16px",
+            marginTop: "24px",
+            backgroundColor: alpha(theme.palette.background.paper, 0.5),
+        },
 
-    title:{
-        marginLeft: "4px",
-    },
+        typeSelectorLabel:{
+            marginRight: "8px",
+        },
 
-    subtitle:{
-        textIndent: "50px",
-        fontStyle: "oblique",
-        fontSize: "small",
-    },
+        title:{
+            marginLeft: "4px",
+        },
 
-    richTextEditor:{
-        marginTop: "8px",
-        marginBottom: "8px",
-    },
+        subtitle:{
+            textIndent: "50px",
+            fontStyle: "oblique",
+            fontSize: "small",
+        },
 
-    buttonSubmission:{
-        marginLeft: "16px",
-    },
+        richTextEditor:{
+            marginTop: "8px",
+            marginBottom: "8px",
+        },
 
-    buttonScore:{
-        marginRight: "16px",
-    }
+        buttonSubmission:{
+            marginLeft: "16px",
+        },
 
+        buttonScore:{
+            marginRight: "16px",
+        }
+
+    };
 }
-
-
-export default style;

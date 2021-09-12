@@ -1,4 +1,4 @@
-import {Button, Table, TableCell, TableHead, TableRow} from '@material-ui/core';
+import {alpha, Button, Table, TableCell, TableHead, TableRow, useTheme} from '@material-ui/core';
 import MUIPaper from '@material-ui/core/Paper';
 import {NextPage} from 'next';
 import Head from 'next/head';
@@ -16,6 +16,8 @@ interface TeamWithScore {
 }
 
 const Index: NextPage = () => {
+    const theme = useTheme();
+
     const usedEndpoint = useEndpoint<TeamWithScore[]>({
         conf: {
             url: '/api/up/server/api/team/listActiveTeamsWithScores',
@@ -33,7 +35,7 @@ const Index: NextPage = () => {
             {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
             {usedEndpoint.data && (
-                <MUIPaper>
+                <MUIPaper style={{backgroundColor: alpha(theme.palette.background.paper, 0.4)}}>
                     <Table>
                         <TableHead>
                             <TableRow>
