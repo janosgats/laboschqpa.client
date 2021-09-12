@@ -1,22 +1,19 @@
-import React, { FC, useContext } from "react";
-import Image from "~/components/image/Image";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { content_CONTENT_IS_NOT_FOUND } from "~/enums/ApiErrors";
-import {
-  IndexedFileStatus,
-  indexedFileStatusData,
-} from "~/enums/IndexedFileStatus";
-import { TeamRole } from "~/enums/TeamRole";
-import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import useEndpoint, { UsedEndpoint } from "~/hooks/useEndpoint";
-import { UserNameContainer } from "~/model/UserInfo";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { getSurelyDate } from "~/utils/DateHelpers";
-import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import EventBus from "~/utils/EventBus";
-import * as FileHostUtils from "~/utils/FileHostUtils";
-import UserNameFormatter from "~/utils/UserNameFormatter";
-import Spinner from "../Spinner";
+import React, {FC, useContext} from 'react';
+import Image from '~/components/image/Image';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {content_CONTENT_IS_NOT_FOUND} from '~/enums/ApiErrors';
+import {IndexedFileStatus, indexedFileStatusData} from '~/enums/IndexedFileStatus';
+import {TeamRole} from '~/enums/TeamRole';
+import ApiErrorDescriptorException from '~/exception/ApiErrorDescriptorException';
+import useEndpoint, {UsedEndpoint} from '~/hooks/useEndpoint';
+import {UserNameContainer} from '~/model/UserInfo';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {getSurelyDate} from '~/utils/DateHelpers';
+import DateTimeFormatter from '~/utils/DateTimeFormatter';
+import EventBus from '~/utils/EventBus';
+import * as FileHostUtils from '~/utils/FileHostUtils';
+import UserNameFormatter from '~/utils/UserNameFormatter';
+import Spinner from '../Spinner';
 
 interface FileInfo {
   id: number;
@@ -44,7 +41,7 @@ const FileInfoModal: FC<Props> = (props) => {
   const currentUser = useContext(CurrentUserContext);
   const usedEndpoint: UsedEndpoint<FileInfo> = useEndpoint<FileInfo>({
     conf: {
-      url: "api/up/server/api/file/info",
+      url: 'api/up/server/api/file/info',
       params: {
         id: props.fileId,
       },
@@ -60,43 +57,33 @@ const FileInfoModal: FC<Props> = (props) => {
     onError: (err) => {
       if (err instanceof ApiErrorDescriptorException) {
         if (content_CONTENT_IS_NOT_FOUND.is(err.apiErrorDescriptor)) {
-          EventBus.notifyError("The file does not exist", "File Not Found");
+          EventBus.notifyError('The file does not exist', 'File Not Found');
         }
       }
     },
   });
 
   const fileInfo: FileInfo = usedEndpoint.data;
-  const isImage: boolean = !!fileInfo?.mimeType?.startsWith("image/");
+  const isImage: boolean = !!fileInfo?.mimeType?.startsWith('image/');
   const isVisible: boolean = !!fileInfo?.isVisibleForUser;
 
   function onDeleteFileClick() {
-    const surelyDelete: boolean = confirm("Do you want to delete this file?");
+    const surelyDelete: boolean = confirm('Do you want to delete this file?');
     if (!surelyDelete) {
       return;
     }
 
     callJsonEndpoint({
       conf: {
-        url: "/api/up/server/api/file/delete",
-        method: "DELETE",
+        url: '/api/up/server/api/file/delete',
+        method: 'DELETE',
         params: {
           id: fileInfo.id,
         },
       },
     })
-      .then((res) =>
-        EventBus.notifySuccess(
-          `${fileInfo.name} (${fileInfo.id})`,
-          "File deleted"
-        )
-      )
-      .catch(() =>
-        EventBus.notifyError(
-          `Error while deleting the file`,
-          "Cannot deleted file"
-        )
-      );
+      .then((res) => EventBus.notifySuccess(`${fileInfo.name} (${fileInfo.id})`, 'File deleted'))
+      .catch(() => EventBus.notifyError(`Error while deleting the file`, 'Cannot deleted file'));
   }
 
   function canUserEditFile() {
@@ -107,10 +94,7 @@ const FileInfoModal: FC<Props> = (props) => {
     if (currentUser.getUserInfo().userId === fileInfo.ownerUserId) {
       return true;
     }
-    if (
-      currentUser.getUserInfo().teamRole === TeamRole.LEADER &&
-      currentUser.getUserInfo().teamId === fileInfo.ownerTeamId
-    ) {
+    if (currentUser.getUserInfo().teamRole === TeamRole.LEADER && currentUser.getUserInfo().teamId === fileInfo.ownerTeamId) {
       return true;
     }
     return false;
@@ -118,7 +102,7 @@ const FileInfoModal: FC<Props> = (props) => {
 
   function getOwnerUserNameToDisplay() {
     if (!fileInfo) {
-      return "Pending...";
+      return 'Pending...';
     }
 
     const container: UserNameContainer = {
@@ -132,9 +116,7 @@ const FileInfoModal: FC<Props> = (props) => {
 
   const ImagePreview: FC<{}> = () => {
     if (!isVisible) {
-      return (
-        <p style={{ color: "red" }}>You're not authorized to view this file</p>
-      );
+      return <p style={{color: 'red'}}>You're not authorized to view this file</p>;
     }
 
     if (isImage) {
@@ -145,9 +127,7 @@ const FileInfoModal: FC<Props> = (props) => {
   };
 
   return (
-    <div
-      style={{ borderStyle: "dashed", borderColor: "green", borderWidth: 1 }}
-    >
+    <div style={{borderStyle: 'dashed', borderColor: 'green', borderWidth: 1}}>
       <p>TODO: This should be a modal</p>
       {usedEndpoint.pending && <Spinner />}
 
@@ -167,31 +147,21 @@ const FileInfoModal: FC<Props> = (props) => {
               <p>Name: {fileInfo.name}</p>
 
               <p>
-                Owner user: {getOwnerUserNameToDisplay()} (
-                {fileInfo.ownerUserId})
+                Owner user: {getOwnerUserNameToDisplay()} ({fileInfo.ownerUserId})
               </p>
               <p>
                 Owner team: {fileInfo.ownerTeamName} ({fileInfo.ownerTeamId})
               </p>
 
-              <p>
-                Created at:{" "}
-                {DateTimeFormatter.toFullBasic(fileInfo.creationTime)}
-              </p>
+              <p>Created at: {DateTimeFormatter.toFullBasic(fileInfo.creationTime)}</p>
 
               <p>Size: {fileInfo.size}</p>
               {isVisible && (
                 <>
-                  <a
-                    href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)}
-                    target="_blank"
-                  >
+                  <a href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)} target="_blank">
                     <button>Download original</button>
                   </a>
-                  <a
-                    href={FileHostUtils.getUrlOfFile(fileInfo.id)}
-                    target="_blank"
-                  >
+                  <a href={FileHostUtils.getUrlOfFile(fileInfo.id)} target="_blank">
                     <button>Download optimized</button>
                   </a>
                 </>
@@ -207,8 +177,7 @@ const FileInfoModal: FC<Props> = (props) => {
             <>
               <h3>This file is not available atm.</h3>
               <p>
-                Current status:{" "}
-                <b>{indexedFileStatusData[fileInfo.status]?.displayName}</b>
+                Current status: <b>{indexedFileStatusData[fileInfo.status]?.displayName}</b>
               </p>
             </>
           )}

@@ -1,9 +1,9 @@
-import { Button, Grid, List, ListItem, ListItemText } from "@material-ui/core";
-import React, { CSSProperties, FC, useState } from "react";
-import { AddNewEmailAddressDialog } from "~/components/email/AddNewEmailAddressDialog";
-import useEndpoint, { UsedEndpoint } from "~/hooks/useEndpoint";
-import { UserEmailAddress } from "~/model/UserEmailAddress";
-import Spinner from "../Spinner";
+import {Button, Grid, List, ListItem, ListItemText} from '@material-ui/core';
+import React, {CSSProperties, FC, useState} from 'react';
+import {AddNewEmailAddressDialog} from '~/components/email/AddNewEmailAddressDialog';
+import useEndpoint, {UsedEndpoint} from '~/hooks/useEndpoint';
+import {UserEmailAddress} from '~/model/UserEmailAddress';
+import Spinner from '../Spinner';
 
 interface Overrides {
   ul: CSSProperties;
@@ -15,15 +15,13 @@ interface Props {
 }
 
 const EmailAddressesPanel: FC<Props> = (props) => {
-  const [isAddNewAddressDialogOpen, setAddNewAddressDialogOpen] =
-    useState<boolean>(false);
+  const [isAddNewAddressDialogOpen, setAddNewAddressDialogOpen] = useState<boolean>(false);
 
-  const usedCurrentEmailAddresses: UsedEndpoint<UserEmailAddress[]> =
-    useEndpoint<UserEmailAddress[]>({
-      conf: {
-        url: "/api/up/server/api/emailAddress/listOwnAddresses",
-      },
-    });
+  const usedCurrentEmailAddresses: UsedEndpoint<UserEmailAddress[]> = useEndpoint<UserEmailAddress[]>({
+    conf: {
+      url: '/api/up/server/api/emailAddress/listOwnAddresses',
+    },
+  });
 
   return (
     <Grid>
@@ -32,9 +30,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
       {usedCurrentEmailAddresses.failed && (
         <>
           <p>Error while fetching addresses :'(</p>
-          <button onClick={() => usedCurrentEmailAddresses.reloadEndpoint()}>
-            Retry
-          </button>
+          <button onClick={() => usedCurrentEmailAddresses.reloadEndpoint()}>Retry</button>
         </>
       )}
       {usedCurrentEmailAddresses.data && (
@@ -50,11 +46,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
           </Grid>
           <Grid container justify="flex-end">
             {!props.hideAddNewAddressButton && (
-              <Button
-                variant="outlined"
-                color="inherit"
-                onClick={() => setAddNewAddressDialogOpen(true)}
-              >
+              <Button variant="outlined" color="inherit" onClick={() => setAddNewAddressDialogOpen(true)}>
                 E-mail cím hozzáadása
               </Button>
             )}
@@ -62,10 +54,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
         </>
       )}
       {isAddNewAddressDialogOpen && (
-        <AddNewEmailAddressDialog
-          isOpen={isAddNewAddressDialogOpen}
-          onClose={() => setAddNewAddressDialogOpen(false)}
-        />
+        <AddNewEmailAddressDialog isOpen={isAddNewAddressDialogOpen} onClose={() => setAddNewAddressDialogOpen(false)} />
       )}
     </Grid>
   );

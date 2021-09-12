@@ -1,32 +1,20 @@
-import {
-  Avatar,
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import EditIcon from "@material-ui/icons/Edit";
-import SaveIcon from "@material-ui/icons/Save";
-import { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import React, { FC, useContext, useState } from "react";
-import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
-import LoginForm from "~/components/join/LoginForm";
-import Spinner from "~/components/Spinner";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import useEndpoint from "~/hooks/useEndpoint";
-import { UserInfo } from "~/model/UserInfo";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import EventBus from "~/utils/EventBus";
-import UserNameFormatter from "~/utils/UserNameFormatter";
+import {Avatar, Divider, Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Tooltip, Typography} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import {NextPage} from 'next';
+import Head from 'next/head';
+import {useRouter} from 'next/router';
+import React, {FC, useContext, useState} from 'react';
+import EmailAddressesPanel from '~/components/email/EmailAddressesPanel';
+import LoginForm from '~/components/join/LoginForm';
+import Spinner from '~/components/Spinner';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import useEndpoint from '~/hooks/useEndpoint';
+import {UserInfo} from '~/model/UserInfo';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import EventBus from '~/utils/EventBus';
+import UserNameFormatter from '~/utils/UserNameFormatter';
 
 const Index: NextPage = () => {
   const router = useRouter();
@@ -36,12 +24,12 @@ const Index: NextPage = () => {
 
   const usedEndpoint = useEndpoint<UserInfo>({
     conf: {
-      url: "/api/up/server/api/user/infoWithAuthorities",
+      url: '/api/up/server/api/user/infoWithAuthorities',
       params: {
-        id: router.query["id"],
+        id: router.query['id'],
       },
     },
-    deps: [router.query["id"], router.isReady],
+    deps: [router.query['id'], router.isReady],
     enableRequest: router.isReady,
   });
   const userInfo: UserInfo = usedEndpoint.data;
@@ -49,8 +37,8 @@ const Index: NextPage = () => {
   function submitEditedUserInfo(userNamesDto: UserNamesDto) {
     callJsonEndpoint<void>({
       conf: {
-        url: "/api/up/server/api/user/setInfo",
-        method: "POST",
+        url: '/api/up/server/api/user/setInfo',
+        method: 'POST',
         data: {
           userId: usedEndpoint.data.userId,
           firstName: userNamesDto.firstName,
@@ -65,55 +53,37 @@ const Index: NextPage = () => {
         currentUser.reload();
       })
       .catch(() => {
-        EventBus.notifyError(
-          "Error while editing your profile",
-          "Couldn't save your changes"
-        );
+        EventBus.notifyError('Error while editing your profile', "Couldn't save your changes");
       });
   }
 
-  const isViewingOwnProfile: boolean = !!(
-    userInfo && userInfo.userId === currentUser?.getUserInfo()?.userId
-  );
+  const isViewingOwnProfile: boolean = !!(userInfo && userInfo.userId === currentUser?.getUserInfo()?.userId);
 
   return (
     <div>
       <Head>
-        <title>
-          {UserNameFormatter.getBasicDisplayName(userInfo, "Qpa")} User
-        </title>
+        <title>{UserNameFormatter.getBasicDisplayName(userInfo, 'Qpa')} User</title>
       </Head>
       {usedEndpoint.pending && <Spinner />}
       {usedEndpoint.failed && <p>Couldn't load user :'(</p>}
       {userInfo && (
         <Paper>
           <Grid container direction="column" alignItems="stretch">
-            <Grid
-              container
-              justify="flex-start"
-              alignItems="center"
-              spacing={2}
-            >
+            <Grid container justify="flex-start" alignItems="center" spacing={2}>
               {!userInfoEditorOpen && (
                 <>
                   <Grid item>
-                    <Avatar
-                      src={userInfo.profilePicUrl}
-                      alt={UserNameFormatter.getBasicDisplayName(userInfo)}
-                    />
+                    <Avatar src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)} />
                   </Grid>
                   <Grid item>
                     <Typography variant="h3">
-                      {UserNameFormatter.getNickName(userInfo) !== "N/A" &&
-                      UserNameFormatter.getNickName(userInfo) !== null
+                      {UserNameFormatter.getNickName(userInfo) !== 'N/A' && UserNameFormatter.getNickName(userInfo) !== null
                         ? UserNameFormatter.getNickName(userInfo)
-                        : null}{" "}
+                        : null}{' '}
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h4">
-                      {UserNameFormatter.getFullName(userInfo)}
-                    </Typography>
+                    <Typography variant="h4">{UserNameFormatter.getFullName(userInfo)}</Typography>
                   </Grid>
                   {isViewingOwnProfile && (
                     <Grid>
@@ -152,12 +122,12 @@ const Index: NextPage = () => {
               <List>
                 {userInfo.authorities.map((value) => (
                   <>
-                    {" "}
+                    {' '}
                     <ListItem key={value}>
-                      {" "}
-                      <ListItemText primary={value} />{" "}
-                    </ListItem>{" "}
-                    <Divider variant="middle" />{" "}
+                      {' '}
+                      <ListItemText primary={value} />{' '}
+                    </ListItem>{' '}
+                    <Divider variant="middle" />{' '}
                   </>
                 ))}
               </List>
@@ -193,11 +163,7 @@ interface UserNamesEditorProps {
   onCancel: () => void;
 }
 
-const UserInfoEditor: FC<UserNamesEditorProps> = ({
-  defaultNames,
-  onSubmit,
-  onCancel,
-}) => {
+const UserInfoEditor: FC<UserNamesEditorProps> = ({defaultNames, onSubmit, onCancel}) => {
   const [firstName, setFirstName] = useState<string>(defaultNames.firstName);
   const [lastName, setLastName] = useState<string>(defaultNames.lastName);
   const [nickName, setNickName] = useState<string>(defaultNames.nickName);

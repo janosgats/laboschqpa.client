@@ -1,19 +1,13 @@
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@material-ui/core";
-import MUIPaper from "@material-ui/core/Paper";
-import React, { FC, useContext, useState } from "react";
-import { SpeedDrinkingDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
-import { SpeedDrinkingCategory } from "~/enums/SpeedDrinkingCategory";
-import useEndpoint from "~/hooks/useEndpoint";
-import { SpeedDrinking } from "~/model/usergeneratedcontent/SpeedDrinking";
-import Spinner from "../Spinner";
+import {Button, Table, TableCell, TableHead, TableRow} from '@material-ui/core';
+import MUIPaper from '@material-ui/core/Paper';
+import React, {FC, useContext, useState} from 'react';
+import {SpeedDrinkingDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
+import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
+import useEndpoint from '~/hooks/useEndpoint';
+import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
+import Spinner from '../Spinner';
 
 interface Props {
   filteredCategory: SpeedDrinkingCategory;
@@ -23,13 +17,12 @@ interface Props {
 const SpeedDrinkingPanel: FC<Props> = (props) => {
   const currentUser = useContext(CurrentUserContext);
 
-  const [isCreatingNewDisplayShown, setIsCreatingNewDisplayShown] =
-    useState<boolean>(false);
+  const [isCreatingNewDisplayShown, setIsCreatingNewDisplayShown] = useState<boolean>(false);
 
   const usedEndpoint = useEndpoint<SpeedDrinking[]>({
     conf: {
-      url: "/api/up/server/api/speedDrinking/display/list",
-      method: "post",
+      url: '/api/up/server/api/speedDrinking/display/list',
+      method: 'post',
       data: {
         category: props.filteredCategory,
         teamId: props.filteredTeamId,
@@ -38,17 +31,15 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
     deps: [props.filteredCategory, props.filteredTeamId],
   });
 
-  const [newlyCreatedSpeedDrinkingIds, setNewlyCreatedSpeedDrinkingIds] =
-    useState<number[]>([]);
+  const [newlyCreatedSpeedDrinkingIds, setNewlyCreatedSpeedDrinkingIds] = useState<number[]>([]);
 
   return (
     <div>
       {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
-        <div style={{ borderStyle: "solid", borderColor: "orange" }}>
+        <div style={{borderStyle: 'solid', borderColor: 'orange'}}>
           <h4>Times newly recorded by you</h4>
 
-          {(isCreatingNewDisplayShown ||
-            newlyCreatedSpeedDrinkingIds.length > 0) && (
+          {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
             <MUIPaper>
               <Table>
                 <TableHead>
@@ -88,15 +79,10 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                         showTeam: true,
                       }}
                       onCreatedNew={(id) => {
-                        setNewlyCreatedSpeedDrinkingIds([
-                          ...newlyCreatedSpeedDrinkingIds,
-                          id,
-                        ]);
+                        setNewlyCreatedSpeedDrinkingIds([...newlyCreatedSpeedDrinkingIds, id]);
                         setIsCreatingNewDisplayShown(false);
                       }}
-                      onCancelledNewCreation={() =>
-                        setIsCreatingNewDisplayShown(false)
-                      }
+                      onCancelledNewCreation={() => setIsCreatingNewDisplayShown(false)}
                     />
                   </TableRow>
                 )}
@@ -104,12 +90,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             </MUIPaper>
           )}
           {!isCreatingNewDisplayShown && (
-            <Button
-              size="small"
-              variant="contained"
-              onClick={() => setIsCreatingNewDisplayShown(true)}
-              color="primary"
-            >
+            <Button size="small" variant="contained" onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
               Record new time
             </Button>
           )}
@@ -129,9 +110,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 <TableCell>Time</TableCell>
                 <TableCell>Note</TableCell>
                 <TableCell>When</TableCell>
-                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
-                  <TableCell>Edit</TableCell>
-                )}
+                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Edit</TableCell>}
               </TableRow>
             </TableHead>
             {usedEndpoint.data.map((speedDrinking, index) => {

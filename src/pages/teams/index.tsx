@@ -1,18 +1,12 @@
-import {
-  Button,
-  Table,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@material-ui/core";
-import MUIPaper from "@material-ui/core/Paper";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import React from "react";
-import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
-import Spinner from "~/components/Spinner";
-import useEndpoint from "~/hooks/useEndpoint";
+import {Button, Table, TableCell, TableHead, TableRow} from '@material-ui/core';
+import MUIPaper from '@material-ui/core/Paper';
+import {NextPage} from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import React from 'react';
+import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
+import Spinner from '~/components/Spinner';
+import useEndpoint from '~/hooks/useEndpoint';
 
 interface TeamWithScore {
   id: number;
@@ -24,7 +18,7 @@ interface TeamWithScore {
 const Index: NextPage = () => {
   const usedEndpoint = useEndpoint<TeamWithScore[]>({
     conf: {
-      url: "/api/up/server/api/team/listActiveTeamsWithScores",
+      url: '/api/up/server/api/team/listActiveTeamsWithScores',
     },
   });
 

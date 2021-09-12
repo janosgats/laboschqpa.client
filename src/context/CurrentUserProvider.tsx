@@ -1,20 +1,14 @@
-import { useRouter } from "next/router";
-import React, {
-  createContext,
-  FC,
-  FunctionComponent,
-  ReactNode,
-  useState,
-} from "react";
-import LoginWall from "~/components/join/LoginWall";
-import Spinner from "~/components/Spinner";
-import { Authority } from "~/enums/Authority";
-import { TeamRole } from "~/enums/TeamRole";
-import { UserInfo } from "~/model/UserInfo";
-import * as CsrfService from "~/service/CsrfService";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { isValidBoolean } from "~/utils/CommonValidators";
-import EventBus, { EventType } from "~/utils/EventBus";
+import {useRouter} from 'next/router';
+import React, {createContext, FC, FunctionComponent, ReactNode, useState} from 'react';
+import LoginWall from '~/components/join/LoginWall';
+import Spinner from '~/components/Spinner';
+import {Authority} from '~/enums/Authority';
+import {TeamRole} from '~/enums/TeamRole';
+import {UserInfo} from '~/model/UserInfo';
+import * as CsrfService from '~/service/CsrfService';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {isValidBoolean} from '~/utils/CommonValidators';
+import EventBus, {EventType} from '~/utils/EventBus';
 
 export interface CurrentUser {
   getUserInfo: () => UserInfo;
@@ -59,7 +53,7 @@ interface Props {
   children: ReactNode;
 }
 
-const FetchErrorBlock: FC<{ onRetryClick: () => void }> = (props) => {
+const FetchErrorBlock: FC<{onRetryClick: () => void}> = (props) => {
   return (
     <>
       <p>Error while fetching your login info</p>
@@ -68,22 +62,15 @@ const FetchErrorBlock: FC<{ onRetryClick: () => void }> = (props) => {
   );
 };
 
-const CurrentUserProvider: FunctionComponent = ({
-  children,
-}: Props): JSX.Element => {
+const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element => {
   const router = useRouter();
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(null);
   const [userInfo, setUserInfo] = useState<UserInfo>(null);
-  const [errorWhileFetchingUserInfo, setErrorWhileFetchingUserInfo] =
-    useState<boolean>(false);
-  const [pendingFetchingUserInfo, setPendingFetchingUserInfo] =
-    useState<boolean>(false);
+  const [errorWhileFetchingUserInfo, setErrorWhileFetchingUserInfo] = useState<boolean>(false);
+  const [pendingFetchingUserInfo, setPendingFetchingUserInfo] = useState<boolean>(false);
 
   function shouldApplyLoginWall(): boolean {
-    return (
-      !router.pathname.startsWith("/login/") &&
-      !router.pathname.startsWith("/emailVerification/")
-    );
+    return !router.pathname.startsWith('/login/') && !router.pathname.startsWith('/emailVerification/');
   }
 
   async function updateStateFromServer() {
@@ -91,7 +78,7 @@ const CurrentUserProvider: FunctionComponent = ({
     CsrfService.reloadCsrfToken();
     await callJsonEndpoint<UserInfo>({
       conf: {
-        url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam",
+        url: '/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam',
       },
       acceptedResponseCodes: [200, 403],
     })
@@ -141,17 +128,14 @@ const CurrentUserProvider: FunctionComponent = ({
   }
 
   function hasAuthority(authorityToCheck: Authority): boolean {
-    return (
-      getUserInfo() && getUserInfo().authorities.includes(authorityToCheck)
-    );
+    return getUserInfo() && getUserInfo().authorities.includes(authorityToCheck);
   }
 
   function isMemberOrLeaderOfTeam(teamId: number): boolean {
     return (
       getUserInfo() &&
       getUserInfo().teamId === teamId &&
-      (getUserInfo().teamRole == TeamRole.MEMBER ||
-        getUserInfo().teamRole == TeamRole.LEADER)
+      (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
     );
   }
 
@@ -165,19 +149,11 @@ const CurrentUserProvider: FunctionComponent = ({
   }
 
   function isLeaderOfTeam(teamId: number): boolean {
-    return (
-      getUserInfo() &&
-      getUserInfo().teamId === teamId &&
-      getUserInfo().teamRole == TeamRole.LEADER
-    );
+    return getUserInfo() && getUserInfo().teamId === teamId && getUserInfo().teamRole == TeamRole.LEADER;
   }
 
   function isMemberOrLeaderOfAnyTeam(): boolean {
-    return (
-      getUserInfo() &&
-      (getUserInfo().teamRole == TeamRole.MEMBER ||
-        getUserInfo().teamRole == TeamRole.LEADER)
-    );
+    return getUserInfo() && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
   }
 
   function setLoggedInState(isLoggedIn: boolean) {
@@ -201,13 +177,9 @@ const CurrentUserProvider: FunctionComponent = ({
     isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
   };
 
-  EventBus.subscribe(
-    EventType.TRIGGER_USER_CONTEXT_RELOAD,
-    "CurrentUserProvider",
-    (event) => {
-      setTimeout(reload, 600);
-    }
-  );
+  EventBus.subscribe(EventType.TRIGGER_USER_CONTEXT_RELOAD, 'CurrentUserProvider', (event) => {
+    setTimeout(reload, 600);
+  });
 
   function getPageContent(): ReactNode {
     if (!shouldApplyLoginWall()) {
@@ -227,11 +199,7 @@ const CurrentUserProvider: FunctionComponent = ({
     return <LoginWall />;
   }
 
-  return (
-    <CurrentUserContext.Provider value={contextValue}>
-      {getPageContent()}
-    </CurrentUserContext.Provider>
-  );
+  return <CurrentUserContext.Provider value={contextValue}>{getPageContent()}</CurrentUserContext.Provider>;
 };
 
 export default CurrentUserProvider;
