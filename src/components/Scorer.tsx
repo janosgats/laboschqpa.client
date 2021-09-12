@@ -1,13 +1,14 @@
-import React, {FC, useEffect, useState} from 'react'
-import useEndpoint from "~/hooks/useEndpoint";
-import {objectiveTypeData} from "~/enums/ObjectiveType";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
-import {TeamInfo} from "~/model/Team";
-import {isValidNumber} from "~/utils/CommonValidators";
-import {TeamScore} from "~/model/TeamScore";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import EventBus from "~/utils/EventBus";
-import {AxiosRequestConfig} from "axios";
+import {AxiosRequestConfig} from 'axios';
+import React, {FC, useEffect, useState} from 'react';
+import {objectiveTypeData} from '~/enums/ObjectiveType';
+import useEndpoint from '~/hooks/useEndpoint';
+import {TeamInfo} from '~/model/Team';
+import {TeamScore} from '~/model/TeamScore';
+import {Objective} from '~/model/usergeneratedcontent/Objective';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {isValidNumber} from '~/utils/CommonValidators';
+import EventBus from '~/utils/EventBus';
+import Spinner from './Spinner';
 
 interface Props {
     defaultObjectiveId?: number;
@@ -23,28 +24,28 @@ const Scorer: FC<Props> = (props) => {
 
     const usedEndpointObjectives = useEndpoint<Objective[]>({
         conf: {
-            url: "/api/up/server/api/objective/listAll",
-        }
+            url: '/api/up/server/api/objective/listAll',
+        },
     });
     const fetchedObjectives = usedEndpointObjectives.data;
 
     const usedEndpointTeams = useEndpoint<TeamInfo[]>({
         conf: {
-            url: "/api/up/server/api/team/listAll",
-        }
+            url: '/api/up/server/api/team/listAll',
+        },
     });
     const fetchedTeams = usedEndpointTeams.data;
 
     const usedEndpointTeamScore = useEndpoint<TeamScore[]>({
         conf: {
-            url: "/api/up/server/api/teamScore/find",
+            url: '/api/up/server/api/teamScore/find',
             params: {
                 objectiveId: selectedObjectiveId,
                 teamId: selectedTeamId,
-            }
+            },
         },
         deps: [selectedObjectiveId, selectedTeamId],
-        enableRequest: isValidNumber(selectedTeamId) && isValidNumber(selectedObjectiveId)
+        enableRequest: isValidNumber(selectedTeamId) && isValidNumber(selectedObjectiveId),
     });
 
     const isTeamScoreAlreadyExisting = usedEndpointTeamScore.data && usedEndpointTeamScore.data.length > 0;
@@ -61,7 +62,7 @@ const Scorer: FC<Props> = (props) => {
         setSaveOrDeletionInProgress(true);
 
         const requestConfig: AxiosRequestConfig = {
-            method: 'post'
+            method: 'post',
         };
         if (isTeamScoreAlreadyExisting) {
             requestConfig.url = '/api/up/server/api/teamScore/edit';
@@ -79,8 +80,9 @@ const Scorer: FC<Props> = (props) => {
         }
 
         callJsonEndpoint({
-            conf: requestConfig
-        }).then(() => props.onClose())
+            conf: requestConfig,
+        })
+            .then(() => props.onClose())
             .catch(() => EventBus.notifyError('Error while saving', 'Cannot save TeamScore'))
             .finally(() => setSaveOrDeletionInProgress(false));
     }
@@ -93,10 +95,11 @@ const Scorer: FC<Props> = (props) => {
                 url: '/api/up/server/api/teamScore/delete',
                 method: 'delete',
                 params: {
-                    id: usedEndpointTeamScore.data[0].id
-                }
-            }
-        }).then(() => props.onClose())
+                    id: usedEndpointTeamScore.data[0].id,
+                },
+            },
+        })
+            .then(() => props.onClose())
             .catch(() => EventBus.notifyError('Error while deleting', 'Cannot delete TeamScore'))
             .finally(() => setSaveOrDeletionInProgress(false));
     }
@@ -106,17 +109,17 @@ const Scorer: FC<Props> = (props) => {
             <p>TODO: This should be a modal</p>
             <button onClick={() => props.onClose()}>Close modal</button>
 
-            {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && (
-                <p>Pending...</p>
-            )}
+            {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && <Spinner />}
 
             {(usedEndpointObjectives.failed || usedEndpointTeams.failed) && (
                 <>
                     <p>Couldn't load teams and objectives :'(</p>
-                    <button onClick={() => {
-                        usedEndpointObjectives.reloadEndpoint();
-                        usedEndpointTeams.reloadEndpoint();
-                    }}>
+                    <button
+                        onClick={() => {
+                            usedEndpointObjectives.reloadEndpoint();
+                            usedEndpointTeams.reloadEndpoint();
+                        }}
+                    >
                         Retry
                     </button>
                 </>
@@ -124,17 +127,19 @@ const Scorer: FC<Props> = (props) => {
 
             {fetchedObjectives && fetchedTeams && (
                 <>
-                    <br/>
+                    <br />
                     <label>Objective: </label>
-                    <select value={selectedObjectiveId}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (isValidNumber(val)) {
-                                    setSelectedObjectiveId(Number.parseInt(val));
-                                }
-                            }}>
+                    <select
+                        value={selectedObjectiveId}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (isValidNumber(val)) {
+                                setSelectedObjectiveId(Number.parseInt(val));
+                            }
+                        }}
+                    >
                         <option>Select an objective...</option>
-                        {fetchedObjectives.map(objective => {
+                        {fetchedObjectives.map((objective) => {
                             return (
                                 <option key={objective.id} value={objective.id}>
                                     {`${objectiveTypeData[objective.objectiveType].shortDisplayName} > ${objective.title}`}
@@ -142,18 +147,19 @@ const Scorer: FC<Props> = (props) => {
                             );
                         })}
                     </select>
-                    <br/>
+                    <br />
                     <label>Team: </label>
-                    <select value={selectedTeamId}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                if (isValidNumber(val)) {
-                                    setSelectedTeamId(Number.parseInt(val));
-                                }
-                            }}>
-
+                    <select
+                        value={selectedTeamId}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (isValidNumber(val)) {
+                                setSelectedTeamId(Number.parseInt(val));
+                            }
+                        }}
+                    >
                         <option>Select a team...</option>
-                        {fetchedTeams.map(team => {
+                        {fetchedTeams.map((team) => {
                             return (
                                 <option key={team.id} value={team.id}>
                                     {team.name + (team.archived ? ' (archive)' : '')}
@@ -161,35 +167,34 @@ const Scorer: FC<Props> = (props) => {
                             );
                         })}
                     </select>
-                    <br/>
+                    <br />
 
-                    {usedEndpointTeamScore.pending && (
-                        <p>Pending...</p>
-                    )}
+                    {usedEndpointTeamScore.pending && <Spinner />}
 
                     {usedEndpointTeamScore.failed && (
                         <>
                             <p>Couldn't load score of this team for this objective :'(</p>
-                            <button onClick={() => usedEndpointTeamScore.reloadEndpoint()}>
-                                Retry
-                            </button>
+                            <button onClick={() => usedEndpointTeamScore.reloadEndpoint()}>Retry</button>
                         </>
                     )}
 
                     {usedEndpointTeamScore.data && (
                         <>
-                            <input type="number"
-                                   value={givenScore}
-                                   onChange={(e) => setGivenScore(Number.parseInt(e.target.value))}
-                            />
+                            <input type="number" value={givenScore} onChange={(e) => setGivenScore(Number.parseInt(e.target.value))} />
                             {isTeamScoreAlreadyExisting ? (
                                 <>
-                                    <button onClick={doSave} disabled={saveOrDeletionInProgress}>Modify</button>
-                                    <button onClick={doDelete} disabled={saveOrDeletionInProgress}>Delete</button>
+                                    <button onClick={doSave} disabled={saveOrDeletionInProgress}>
+                                        Modify
+                                    </button>
+                                    <button onClick={doDelete} disabled={saveOrDeletionInProgress}>
+                                        Delete
+                                    </button>
                                 </>
                             ) : (
                                 <>
-                                    <button onClick={doSave} disabled={saveOrDeletionInProgress}>Create</button>
+                                    <button onClick={doSave} disabled={saveOrDeletionInProgress}>
+                                        Create
+                                    </button>
                                 </>
                             )}
                         </>
@@ -198,6 +203,6 @@ const Scorer: FC<Props> = (props) => {
             )}
         </div>
     );
-}
+};
 
 export default Scorer;

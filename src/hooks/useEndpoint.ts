@@ -1,6 +1,7 @@
-import React from "react";
-import {AxiosRequestConfig, AxiosResponse} from "axios";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import {AxiosRequestConfig, AxiosResponse} from 'axios';
+import React from 'react';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {useDelayedToggle} from './useDelayedToggle';
 
 export interface UseEndpointCommand<T, R = T> {
     conf: AxiosRequestConfig;
@@ -10,6 +11,7 @@ export interface UseEndpointCommand<T, R = T> {
     onError?: (err: any) => void;
     enableRequest?: boolean;
     keepOldDataWhileFetchingNew?: boolean;
+    delayPendingState?: boolean;
 }
 
 export interface UsedEndpoint<R> {
@@ -22,12 +24,19 @@ export interface UsedEndpoint<R> {
     reloadEndpoint: () => void;
 }
 
-const useEndpoint = <T, R = T>(
-    {conf, deps = [], customSuccessProcessor, enableRequest = true, keepOldDataWhileFetchingNew = false, onError, onSuccess}: UseEndpointCommand<T, R>
-): UsedEndpoint<R> => {
+const useEndpoint = <T, R = T>({
+    conf,
+    deps = [],
+    customSuccessProcessor,
+    enableRequest = true,
+    keepOldDataWhileFetchingNew = false,
+    onError,
+    onSuccess,
+    delayPendingState = true,
+}: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
-    const [pending, setPending] = React.useState(true);
+    const [pending, setPending] = useDelayedToggle(true, delayPendingState ? 250 : 0);
     const [succeeded, setSucceeded] = React.useState(false);
 
     const refreshOnChange = () => {
@@ -74,7 +83,7 @@ const useEndpoint = <T, R = T>(
         pending: pending,
         succeeded: succeeded,
         failed: error,
-        reloadEndpoint: refreshOnChange
+        reloadEndpoint: refreshOnChange,
     };
 };
 

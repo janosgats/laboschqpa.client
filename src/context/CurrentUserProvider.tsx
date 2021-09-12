@@ -1,13 +1,14 @@
-import React, {createContext, FC, FunctionComponent, ReactNode, useState} from "react";
-import {isValidBoolean} from "~/utils/CommonValidators";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import LoginWall from "~/components/join/LoginWall";
-import {useRouter} from "next/router";
-import {UserInfo} from "~/model/UserInfo";
-import {Authority} from "~/enums/Authority";
-import {TeamRole} from "~/enums/TeamRole";
-import * as CsrfService from "~/service/CsrfService";
-import EventBus, {EventType} from "~/utils/EventBus";
+import {useRouter} from 'next/router';
+import React, {createContext, FC, FunctionComponent, ReactNode, useState} from 'react';
+import LoginWall from '~/components/join/LoginWall';
+import Spinner from '~/components/Spinner';
+import {Authority} from '~/enums/Authority';
+import {TeamRole} from '~/enums/TeamRole';
+import {UserInfo} from '~/model/UserInfo';
+import * as CsrfService from '~/service/CsrfService';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {isValidBoolean} from '~/utils/CommonValidators';
+import EventBus, {EventType} from '~/utils/EventBus';
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
@@ -52,16 +53,14 @@ interface Props {
     children: ReactNode;
 }
 
-const FetchErrorBlock: FC<{ onRetryClick: () => void; }> = (props) => {
+const FetchErrorBlock: FC<{onRetryClick: () => void}> = (props) => {
     return (
         <>
             <p>Error while fetching your login info</p>
-            <button onClick={props.onRetryClick}>
-                Retry
-            </button>
+            <button onClick={props.onRetryClick}>Retry</button>
         </>
     );
-}
+};
 
 const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element => {
     const router = useRouter();
@@ -78,25 +77,27 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         setPendingFetchingUserInfo(true);
         CsrfService.reloadCsrfToken();
         await callJsonEndpoint<UserInfo>({
-                conf: {
-                    url: "/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam"
-                },
-                acceptedResponseCodes: [200, 403]
-            }
-        ).then(res => {
-            if (res.status === 200) {
-                setIsUserLoggedIn(true);
-                setUserInfo(res.data);
-            } else {
-                setIsUserLoggedIn(false);
-                setUserInfo(null);
-            }
-            setErrorWhileFetchingUserInfo(false);
-        }).catch(e => {
-            setErrorWhileFetchingUserInfo(true);
-        }).finally(() => {
-            setPendingFetchingUserInfo(false);
-        });
+            conf: {
+                url: '/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam',
+            },
+            acceptedResponseCodes: [200, 403],
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    setIsUserLoggedIn(true);
+                    setUserInfo(res.data);
+                } else {
+                    setIsUserLoggedIn(false);
+                    setUserInfo(null);
+                }
+                setErrorWhileFetchingUserInfo(false);
+            })
+            .catch((e) => {
+                setErrorWhileFetchingUserInfo(true);
+            })
+            .finally(() => {
+                setPendingFetchingUserInfo(false);
+            });
     }
 
     function isLoggedIn(): boolean {
@@ -131,27 +132,28 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     }
 
     function isMemberOrLeaderOfTeam(teamId: number): boolean {
-        return getUserInfo()
-            && getUserInfo().teamId === teamId
-            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
+        return (
+            getUserInfo() &&
+            getUserInfo().teamId === teamId &&
+            (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER)
+        );
     }
 
     function isMemberOrLeaderOrApplicantOfAnyTeam(): boolean {
-        return getUserInfo()
-            && (getUserInfo().teamRole == TeamRole.MEMBER
-                || getUserInfo().teamRole == TeamRole.LEADER
-                || getUserInfo().teamRole == TeamRole.APPLICANT);
+        return (
+            getUserInfo() &&
+            (getUserInfo().teamRole == TeamRole.MEMBER ||
+                getUserInfo().teamRole == TeamRole.LEADER ||
+                getUserInfo().teamRole == TeamRole.APPLICANT)
+        );
     }
 
     function isLeaderOfTeam(teamId: number): boolean {
-        return getUserInfo()
-            && getUserInfo().teamId === teamId
-            && getUserInfo().teamRole == TeamRole.LEADER;
+        return getUserInfo() && getUserInfo().teamId === teamId && getUserInfo().teamRole == TeamRole.LEADER;
     }
 
     function isMemberOrLeaderOfAnyTeam(): boolean {
-        return getUserInfo()
-            && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
+        return getUserInfo() && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
     }
 
     function setLoggedInState(isLoggedIn: boolean) {
@@ -173,10 +175,9 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         isMemberOrLeaderOfTeam: isMemberOrLeaderOfTeam,
         isLeaderOfTeam: isLeaderOfTeam,
         isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
-
     };
 
-    EventBus.subscribe(EventType.TRIGGER_USER_CONTEXT_RELOAD, "CurrentUserProvider", event => {
+    EventBus.subscribe(EventType.TRIGGER_USER_CONTEXT_RELOAD, 'CurrentUserProvider', (event) => {
         setTimeout(reload, 600);
     });
 
@@ -186,23 +187,19 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         }
 
         if (errorWhileFetchingUserInfo && !pendingFetchingUserInfo) {
-            return <FetchErrorBlock onRetryClick={reload}/>
+            return <FetchErrorBlock onRetryClick={reload} />;
         }
 
         if (isLoggedIn() === null) {
-            return (<p>TODO: Display a spinner here while determining login status</p>)
+            return <Spinner />;
         }
         if (isLoggedIn()) {
             return children;
         }
-        return <LoginWall/>
+        return <LoginWall />;
     }
 
-    return (
-        <CurrentUserContext.Provider value={contextValue}>
-            {getPageContent()}
-        </CurrentUserContext.Provider>
-    );
+    return <CurrentUserContext.Provider value={contextValue}>{getPageContent()}</CurrentUserContext.Provider>;
 };
 
 export default CurrentUserProvider;

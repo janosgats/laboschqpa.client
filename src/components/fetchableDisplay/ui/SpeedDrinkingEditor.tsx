@@ -1,13 +1,14 @@
-import React, {FC} from "react";
-import UserNameFormatter from "~/utils/UserNameFormatter";
-import {SpeedDrinkingCategory} from "~/enums/SpeedDrinkingCategory";
-import {isValidNumber} from "~/utils/CommonValidators";
-import useEndpoint from "~/hooks/useEndpoint";
-import {UserInfo} from "~/model/UserInfo";
-import SpeedDrinkingCategorySelector from "~/components/selector/SpeedDrinkingCategorySelector";
-import {Autocomplete} from "@material-ui/lab";
-import {Button, createStyles, Dialog, DialogContent, makeStyles, TextField, Theme,} from "@material-ui/core";
-import {dialogStyles} from "~/styles/dialog-styles";
+import {Button, createStyles, Dialog, DialogContent, makeStyles, TextField, Theme} from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
+import React, {FC} from 'react';
+import SpeedDrinkingCategorySelector from '~/components/selector/SpeedDrinkingCategorySelector';
+import Spinner from '~/components/Spinner';
+import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
+import useEndpoint from '~/hooks/useEndpoint';
+import {UserInfo} from '~/model/UserInfo';
+import {dialogStyles} from '~/styles/dialog-styles';
+import {isValidNumber} from '~/utils/CommonValidators';
+import UserNameFormatter from '~/utils/UserNameFormatter';
 
 interface Props {
     isOpen: boolean;
@@ -33,9 +34,9 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 function getSelectorOptionLabelForUser(userInfo: UserInfo): string {
-    let prefix = "";
+    let prefix = '';
     if (userInfo.teamName) {
-        prefix = userInfo.teamName + ": ";
+        prefix = userInfo.teamName + ': ';
     }
     return prefix + UserNameFormatter.getBasicDisplayName(userInfo);
 }
@@ -45,7 +46,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
 
     const usedEndpointUsers = useEndpoint<UserInfo[]>({
         conf: {
-            url: "/api/up/server/api/user/listAllWithTeamName",
+            url: '/api/up/server/api/user/listAllWithTeamName',
         },
     });
     const fetchedUsers = usedEndpointUsers.data;
@@ -54,7 +55,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
         <Dialog open={props.isOpen} onClose={() => props.onCancel()}>
             <DialogContent className={classes.dialogContainer}>
                 <>
-                    {usedEndpointUsers.pending && <p>Pending...</p>}
+                    {usedEndpointUsers.pending && <Spinner />}
 
                     {usedEndpointUsers.failed && (
                         <>
@@ -73,19 +74,11 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                         <>
                             <h2 className={classes.dialogTitle}>Record Time</h2>
                             <Autocomplete
-                                style={{width: "350px", padding: "10px 0"}}
+                                style={{width: '350px', padding: '10px 0'}}
                                 options={fetchedUsers}
-                                getOptionLabel={(userInfo) =>
-                                    getSelectorOptionLabelForUser(userInfo)
-                                }
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Drinker:" variant="outlined"/>
-                                )}
-                                value={
-                                    fetchedUsers.filter(
-                                        (u) => u.userId === props.drinkerUserId
-                                    )[0]
-                                }
+                                getOptionLabel={(userInfo) => getSelectorOptionLabelForUser(userInfo)}
+                                renderInput={(params) => <TextField {...params} label="Drinker:" variant="outlined" />}
+                                value={fetchedUsers.filter((u) => u.userId === props.drinkerUserId)[0]}
                                 onChange={(e, val: UserInfo) => {
                                     if (val && isValidNumber(val.userId)) {
                                         props.setDrinkerUserId(val.userId);
@@ -93,25 +86,20 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                                 }}
                             />
 
-                            <SpeedDrinkingCategorySelector
-                                value={props.category}
-                                onChange={props.setCategory}
-                            />
+                            <SpeedDrinkingCategorySelector value={props.category} onChange={props.setCategory} />
 
                             <TextField
-                                style={{margin: "20px 0 10px 0"}}
+                                style={{margin: '20px 0 10px 0'}}
                                 variant="outlined"
                                 type="number"
                                 inputProps={{step: 0.01}}
                                 value={props.time}
-                                onChange={(e) =>
-                                    props.setTime(Number.parseFloat(e.target.value))
-                                }
+                                onChange={(e) => props.setTime(Number.parseFloat(e.target.value))}
                                 label="Time"
                             />
 
                             <TextField
-                                style={{margin: "10px 0"}}
+                                style={{margin: '10px 0'}}
                                 variant="outlined"
                                 value={props.note}
                                 onChange={(e) => props.setNote(e.target.value)}
@@ -119,35 +107,19 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                             />
 
                             {props.isCreatingNew && (
-                                <Button
-                                    variant="contained"
-                                    onClick={props.onSave}
-                                    disabled={props.isApiCallPending}
-                                >
+                                <Button variant="contained" onClick={props.onSave} disabled={props.isApiCallPending}>
                                     Create
                                 </Button>
                             )}
                             {!props.isCreatingNew && (
                                 <>
-                                    <Button
-                                        variant="contained"
-                                        onClick={props.onSave}
-                                        disabled={props.isApiCallPending}
-                                    >
+                                    <Button variant="contained" onClick={props.onSave} disabled={props.isApiCallPending}>
                                         Modify
                                     </Button>
-                                    <Button
-                                        variant="contained"
-                                        onClick={props.onCancel}
-                                        disabled={props.isApiCallPending}
-                                    >
+                                    <Button variant="contained" onClick={props.onCancel} disabled={props.isApiCallPending}>
                                         Cancel
                                     </Button>
-                                    <Button
-                                        variant="contained"
-                                        onClick={props.onDelete}
-                                        disabled={props.isApiCallPending}
-                                    >
+                                    <Button variant="contained" onClick={props.onDelete} disabled={props.isApiCallPending}>
                                         Delete
                                     </Button>
                                 </>
