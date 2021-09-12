@@ -4,7 +4,7 @@ import { SubmissionDisplayContainer } from "~/components/fetchableDisplay/Fetcha
 import { Submission } from "~/model/usergeneratedcontent/Submission";
 import { isValidNumber } from "~/utils/CommonValidators";
 import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
-import { Box, createStyles, Divider, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
+import { Box, Button, createStyles, Divider, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core';
 import { styles } from './styles/SubmissionsPanelStyle';
 
 interface Props {
@@ -77,11 +77,11 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                     key={objectiveId * objectiveId + index * 2}
                                     elevation={0}
                                     variant="outlined"
-                                    >
+                                >
                                     <Typography variant="h4"><b>{objectiveSubmissionMap.get(objectiveId)[0].objectiveTitle}</b> feladat beadásai</Typography>
                                     <Typography variant="subtitle1" className={classes.subtitle}>Beadások: </Typography>
                                     {
-                                        objectiveSubmissionMap.get(objectiveId).map((submission) => {
+                                        objectiveSubmissionMap.get(objectiveId).slice(0, infiniteScroller.shownCount).map((submission) => {
                                             return (
                                                 <>
                                                     <SubmissionDisplayContainer
@@ -98,6 +98,23 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                             )
                                         })
                                     }
+                                    {infiniteScroller.canShownCountBeIncreased && (
+                                        <Grid
+                                        container
+                                        justify="center"
+                                        >
+                                            {/* TO DO VALAKI FIX THIS SHIT XD */}
+                                            <Button
+                                                size="large"
+                                                variant="text"
+                                                fullWidth
+                                                color="secondary"
+                                                onClick={() => infiniteScroller.increaseShownCount(5)}
+                                            >
+                                                &darr; Show more &darr;
+                                            </Button>
+                                        </Grid>
+                                    )}
                                 </Paper>
                             )
                         })
