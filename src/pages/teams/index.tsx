@@ -9,61 +9,61 @@ import Spinner from '~/components/Spinner';
 import useEndpoint from '~/hooks/useEndpoint';
 
 interface TeamWithScore {
-  id: number;
-  name: string;
-  archived: boolean;
-  score: number;
+    id: number;
+    name: string;
+    archived: boolean;
+    score: number;
 }
 
 const Index: NextPage = () => {
-  const usedEndpoint = useEndpoint<TeamWithScore[]>({
-    conf: {
-      url: '/api/up/server/api/team/listActiveTeamsWithScores',
-    },
-  });
+    const usedEndpoint = useEndpoint<TeamWithScore[]>({
+        conf: {
+            url: '/api/up/server/api/team/listActiveTeamsWithScores',
+        },
+    });
 
-  return (
-    <div>
-      <Head>
-        <title>Teams</title>
-      </Head>
+    return (
+        <div>
+            <Head>
+                <title>Teams</title>
+            </Head>
 
-      <NotTeamMemberBanner />
+            <NotTeamMemberBanner />
 
-      {usedEndpoint.pending && <Spinner />}
-      {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
-      {usedEndpoint.data && (
-        <MUIPaper>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>#</TableCell>
-                <TableCell>Team Name</TableCell>
-                <TableCell>Score</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            {usedEndpoint.data.map((team, index) => {
-              return (
-                <TableRow>
-                  <TableCell>{team.id}</TableCell>
-                  <TableCell>{team.name}</TableCell>
-                  <TableCell>{team.score}</TableCell>
-                  <TableCell>
-                    <Link href={`/teams/team/${team.name}?id=${team.id}`}>
-                      <Button variant="contained" color="primary">
-                        Show Team
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </Table>
-        </MUIPaper>
-      )}
-    </div>
-  );
+            {usedEndpoint.pending && <Spinner />}
+            {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
+            {usedEndpoint.data && (
+                <MUIPaper>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>#</TableCell>
+                                <TableCell>Team Name</TableCell>
+                                <TableCell>Score</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        {usedEndpoint.data.map((team, index) => {
+                            return (
+                                <TableRow>
+                                    <TableCell>{team.id}</TableCell>
+                                    <TableCell>{team.name}</TableCell>
+                                    <TableCell>{team.score}</TableCell>
+                                    <TableCell>
+                                        <Link href={`/teams/team/${team.name}?id=${team.id}`}>
+                                            <Button variant="contained" color="primary">
+                                                Show Team
+                                            </Button>
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
+                    </Table>
+                </MUIPaper>
+            )}
+        </div>
+    );
 };
 
 export default Index;

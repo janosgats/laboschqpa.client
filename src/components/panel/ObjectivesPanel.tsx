@@ -4,7 +4,7 @@ import {
   Fab,
   Grid,
   makeStyles,
-  Theme,
+  Theme
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import React, { FC, useContext, useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import { Authority } from "~/enums/Authority";
 import { ObjectiveType } from "~/enums/ObjectiveType";
 import useEndpoint from "~/hooks/useEndpoint";
 import useInfiniteScroller, {
-  InfiniteScroller,
+  InfiniteScroller
 } from "~/hooks/useInfiniteScroller";
 import { Objective } from "~/model/usergeneratedcontent/Objective";
 import Spinner from "../Spinner";
