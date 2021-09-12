@@ -1,26 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
-import { NewsPost } from "~/model/usergeneratedcontent/NewsPost";
+import React, {useContext, useEffect, useState} from 'react'
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
+import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
+import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, { Author } from "~/service/UserInfoService";
+import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
-    Avatar,
-    Box,
     Button,
     ButtonGroup,
-    Card,
-    CardContent,
-    CardHeader,
     Collapse,
     createStyles,
     Grid,
@@ -36,18 +31,15 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete'
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
-import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { styles } from './styles/NewsPostDisplayStyle';
+import {getStyles} from './styles/NewsPostDisplayStyle';
 
 export interface SaveNewsPostCommand {
     content: string;
     attachments: number[];
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles(styles)
-)
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
 
 const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props) => {
 

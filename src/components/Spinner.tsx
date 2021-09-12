@@ -6,7 +6,7 @@ interface Props {}
 export default function Spinner({}: Props): ReactElement {
     return (
         <Box width="100%" pt={1} justifyContent="center" display="flex">
-            <CircularProgress />;
+            <CircularProgress />
         </Box>
     );
 }

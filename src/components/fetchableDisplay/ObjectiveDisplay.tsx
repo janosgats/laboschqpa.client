@@ -1,41 +1,41 @@
-import React, { FC, useContext, useEffect, useState } from "react";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
+import React, {FC, useContext, useEffect, useState} from "react";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
+import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, { Author } from "~/service/UserInfoService";
+import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
-import { Objective } from "~/model/usergeneratedcontent/Objective";
-import { ObjectiveType, objectiveTypeData } from "~/enums/ObjectiveType";
+import {Objective} from "~/model/usergeneratedcontent/Objective";
+import {ObjectiveType, objectiveTypeData} from "~/enums/ObjectiveType";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
-import { getSurelyDate, isDateTextInputValid } from "~/utils/DateHelpers";
+import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
 import Scorer from "~/components/Scorer";
-import { SubmissionDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
+import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
+  Box,
   Button,
-  Typography,
-  Dialog,
-  Paper,
-  Grid,
-  IconButton,
-  TextField,
   ButtonGroup,
   Checkbox,
-  FormControlLabel,
-  DialogTitle,
-  DialogContent,
   Collapse,
-  makeStyles,
-  Theme,
   createStyles,
-  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  makeStyles,
+  Paper,
+  TextField,
+  Theme,
+  Typography,
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
@@ -43,10 +43,10 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
-import style from "./styles/ObjectiveDisplayStyle";
+import {getStyles} from "./styles/ObjectiveDisplayStyle";
 
 
-const useStyles = makeStyles((theme: Theme) => createStyles(style))
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
 
 export interface SaveObjectiveCommand {
   title: string;
