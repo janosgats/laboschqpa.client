@@ -1,11 +1,11 @@
-import {Button, Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
-import MUIPaper from '@material-ui/core/Paper';
+import {Button, Grid, Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import React, {FC, useContext, useState} from 'react';
 import RiddleEditorDialog from '~/components/riddle/editor/RiddleEditorDialog';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
 import {Authority} from '~/enums/Authority';
 import useEndpoint from '~/hooks/useEndpoint';
 import {Riddle} from '~/model/usergeneratedcontent/Riddle';
+import MyPaper from '../mui/MyPaper';
 import Spinner from '../Spinner';
 
 const RiddleEditorPanel: FC = () => {
@@ -39,62 +39,66 @@ const RiddleEditorPanel: FC = () => {
     }
 
     return (
-        <div>
-            {currentUser.hasAuthority(Authority.RiddleEditor) && (
-                <Button size="small" variant="contained" onClick={() => startCreatingNewRiddle()}>
-                    Create new riddle
-                </Button>
-            )}
+        <MyPaper>
+            <Grid container direction="column" spacing={2}>
+                {currentUser.hasAuthority(Authority.RiddleEditor) && (
+                    <Grid item>
+                        <Button size="small" variant="contained" color="primary" onClick={() => startCreatingNewRiddle()}>
+                            Create new riddle
+                        </Button>
+                    </Grid>
+                )}
 
-            {usedEndpoint.pending && <Spinner />}
+                {usedEndpoint.pending && <Spinner />}
 
-            {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
+                {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
-            {usedEndpoint.succeeded && (
-                <MUIPaper>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Hint</TableCell>
-                                <TableCell>Solution</TableCell>
-                                <TableCell>Edit</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {usedEndpoint.data.map((riddle, index) => {
-                                return (
-                                    <TableRow key={riddle.id}>
-                                        <TableCell>{riddle.id}</TableCell>
-                                        <TableCell>{riddle.title}</TableCell>
-                                        <TableCell>{riddle.hint}</TableCell>
-                                        <TableCell>{riddle.solution}</TableCell>
-                                        <TableCell>
-                                            <Button size="small" variant="contained" onClick={() => startEditingRiddle(riddle.id)}>
-                                                edit
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </MUIPaper>
-            )}
+                {usedEndpoint.succeeded && (
+                    <Grid item>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>ID</TableCell>
+                                    <TableCell>Title</TableCell>
+                                    <TableCell>Hint</TableCell>
+                                    <TableCell>Solution</TableCell>
+                                    <TableCell>Edit</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {usedEndpoint.data.map((riddle, index) => {
+                                    return (
+                                        <TableRow key={riddle.id}>
+                                            <TableCell>{riddle.id}</TableCell>
+                                            <TableCell>{riddle.title}</TableCell>
+                                            <TableCell>{riddle.hint}</TableCell>
+                                            <TableCell>{riddle.solution}</TableCell>
+                                            <TableCell>
+                                                <Button size="small" variant="contained" onClick={() => startEditingRiddle(riddle.id)}>
+                                                    edit
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </Grid>
+                )}
 
-            <RiddleEditorDialog
-                onClose={(didEntityChangeHappen) => {
-                    closeRiddleEditor();
-                    if (didEntityChangeHappen) {
-                        usedEndpoint.reloadEndpoint();
-                    }
-                }}
-                isOpen={isRiddleEditorDialogOpen}
-                isCreatingNew={isCreatingNewRiddle}
-                idToEdit={editedRiddleId}
-            />
-        </div>
+                <RiddleEditorDialog
+                    onClose={(didEntityChangeHappen) => {
+                        closeRiddleEditor();
+                        if (didEntityChangeHappen) {
+                            usedEndpoint.reloadEndpoint();
+                        }
+                    }}
+                    isOpen={isRiddleEditorDialogOpen}
+                    isCreatingNew={isCreatingNewRiddle}
+                    idToEdit={editedRiddleId}
+                />
+            </Grid>
+        </MyPaper>
     );
 };
 
