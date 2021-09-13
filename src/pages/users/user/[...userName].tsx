@@ -1,6 +1,7 @@
 import {
     Avatar,
     Box,
+    Container,
     Divider,
     Grid,
     IconButton,
@@ -74,7 +75,7 @@ const Index: NextPage = () => {
     const isViewingOwnProfile: boolean = !!(userInfo && userInfo.userId === currentUser?.getUserInfo()?.userId);
 
     return (
-        <Responsive component={Box} __xl={{maxWidth: '100rem'}}>
+        <Container maxWidth="lg">
             <Head>
                 <title>{UserNameFormatter.getBasicDisplayName(userInfo, 'Qpa')} User</title>
             </Head>
@@ -131,6 +132,17 @@ const Index: NextPage = () => {
                                     </Grid>
                                 </>
                             )}
+                            {isViewingOwnProfile && (
+                                <>
+                                    <Grid item>
+                                        <Typography variant="h5">Használatban lévő email címek:</Typography>
+                                        <EmailAddressesPanel />
+                                    </Grid>
+                                    <Grid>
+                                        <LoginForm addLoginMethod={true} />
+                                    </Grid>
+                                </>
+                            )}
                             <Grid item>
                                 <Typography variant="h5">Jogosultságok: </Typography>
                                 <List>
@@ -144,22 +156,11 @@ const Index: NextPage = () => {
                                     ))}
                                 </List>
                             </Grid>
-                            {isViewingOwnProfile && (
-                                <Grid item>
-                                    <Typography variant="h5">Használatban lévő email címek:</Typography>
-                                    <EmailAddressesPanel />
-                                </Grid>
-                            )}
-                            {isViewingOwnProfile && (
-                                <Grid>
-                                    <LoginForm addLoginMethod={true} />
-                                </Grid>
-                            )}
                         </Grid>
                     </Box>
                 </Paper>
             )}
-        </Responsive>
+        </Container>
     );
 };
 
