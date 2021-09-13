@@ -18,6 +18,7 @@ import React, {FC, useContext, useState} from 'react';
 import {AddNewEmailAddressDialog} from '~/components/email/AddNewEmailAddressDialog';
 import EmailAddressesPanel from '~/components/email/EmailAddressesPanel';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import MyPaper from '../mui/MyPaper';
 import {style} from './styles/style';
 
 interface AskYourTeamLeadForHelpDialogProps {
@@ -75,23 +76,25 @@ const NotAcceptedByEmailBanner: FC = () => {
 
     return (
         <Grid item>
-            <Alert variant="outlined" severity="warning" style={{backgroundColor: theme.palette.background.paper}}>
-                <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
-                <p>- which makes you unable to see submissions of other users :/</p>
-                <ButtonGroup color="inherit" aria-label="outlined primary button group">
-                    <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Click here to fix this</Button>
-                </ButtonGroup>
+            <MyPaper p={0}>
+                <Alert variant="outlined" severity="warning">
+                    <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
+                    <p>- which makes you unable to see submissions of other users :/</p>
+                    <ButtonGroup color="inherit" aria-label="outlined primary button group">
+                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Click here to fix this</Button>
+                    </ButtonGroup>
 
-                <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
-                <AskYourTeamLeadForHelpDialog
-                    onClose={() => setAskYourTeamLeadDialogOpen(false)}
-                    isOpen={isAskYourTeamLeadDialogOpen}
-                    onSubmitNewAddressClicked={() => {
-                        setAskYourTeamLeadDialogOpen(false);
-                        setAddNewEmailDialogOpen(true);
-                    }}
-                />
-            </Alert>
+                    <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
+                    <AskYourTeamLeadForHelpDialog
+                        onClose={() => setAskYourTeamLeadDialogOpen(false)}
+                        isOpen={isAskYourTeamLeadDialogOpen}
+                        onSubmitNewAddressClicked={() => {
+                            setAskYourTeamLeadDialogOpen(false);
+                            setAddNewEmailDialogOpen(true);
+                        }}
+                    />
+                </Alert>
+            </MyPaper>
         </Grid>
     );
 };

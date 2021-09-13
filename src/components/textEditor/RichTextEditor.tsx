@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Paper, Theme} from '@material-ui/core';
+import {createStyles, makeStyles, Theme} from '@material-ui/core';
 import BackupIcon from '@material-ui/icons/Backup';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
@@ -12,6 +12,7 @@ import EditorContextProvider, {EditorContext} from '~/context/EditorContextProvi
 import {UsedAttachments} from '~/hooks/useAttachments';
 import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
 import EventBus from '~/utils/EventBus';
+import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/style';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
@@ -74,7 +75,7 @@ const RichTextEditor: FC<Props> = (props) => {
                 isOpen={isUploadImageModalOpen}
                 onClose={() => setIsUploadImageModalOpen(false)}
             />
-            <Paper variant="outlined" elevation={3} className={classes.richTextEditorPaper}>
+            <MyPaper opacity={0}>
                 <MUIRichTextEditor
                     key={props.resetTrigger}
                     readOnly={editorContext.isMuiRteReadonly}
@@ -133,7 +134,7 @@ const RichTextEditor: FC<Props> = (props) => {
                         },
                     }}
                 />
-            </Paper>
+            </MyPaper>
         </>
     );
 };
