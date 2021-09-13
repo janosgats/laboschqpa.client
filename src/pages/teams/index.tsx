@@ -1,10 +1,10 @@
-import {alpha, Button, Table, TableCell, TableHead, TableRow, useTheme} from '@material-ui/core';
-import MUIPaper from '@material-ui/core/Paper';
+import {Button, Container, Table, TableCell, TableHead, TableRow, useTheme} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
+import MyPaper from '~/components/mui/MyPaper';
 import Spinner from '~/components/Spinner';
 import useEndpoint from '~/hooks/useEndpoint';
 
@@ -25,7 +25,7 @@ const Index: NextPage = () => {
     });
 
     return (
-        <div>
+        <Container maxWidth="lg">
             <Head>
                 <title>Teams</title>
             </Head>
@@ -35,7 +35,7 @@ const Index: NextPage = () => {
             {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
             {usedEndpoint.data && (
-                <MUIPaper style={{backgroundColor: alpha(theme.palette.background.paper, 0.4)}}>
+                <MyPaper>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -62,9 +62,9 @@ const Index: NextPage = () => {
                             );
                         })}
                     </Table>
-                </MUIPaper>
+                </MyPaper>
             )}
-        </div>
+        </Container>
     );
 };
 

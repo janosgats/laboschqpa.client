@@ -1,6 +1,5 @@
 import {
     Avatar,
-    Box,
     Container,
     Divider,
     Grid,
@@ -8,7 +7,6 @@ import {
     List,
     ListItem,
     ListItemText,
-    Paper,
     TextField,
     Tooltip,
     Typography,
@@ -22,6 +20,7 @@ import {useRouter} from 'next/router';
 import React, {FC, useContext, useState} from 'react';
 import EmailAddressesPanel from '~/components/email/EmailAddressesPanel';
 import LoginForm from '~/components/join/LoginForm';
+import MyPaper from '~/components/mui/MyPaper';
 import Responsive from '~/components/Responsive';
 import Spinner from '~/components/Spinner';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
@@ -82,83 +81,81 @@ const Index: NextPage = () => {
             {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load user :'(</p>}
             {userInfo && (
-                <Paper>
-                    <Box p={2}>
-                        <Grid container direction="column" alignItems="stretch" spacing={3}>
-                            <Grid item container justify="flex-start" alignItems="center" spacing={2}>
-                                {!userInfoEditorOpen && (
-                                    <>
-                                        <Grid item>
-                                            <Avatar src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)} />
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant="h3">
-                                                {UserNameFormatter.getNickName(userInfo) !== 'N/A' &&
-                                                UserNameFormatter.getNickName(userInfo) !== null
-                                                    ? UserNameFormatter.getNickName(userInfo)
-                                                    : null}{' '}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item>
-                                            <Typography variant="h4">{UserNameFormatter.getFullName(userInfo)}</Typography>
-                                        </Grid>
-                                        {isViewingOwnProfile && (
-                                            <Grid>
-                                                <Tooltip title="Adatok módosítása" arrow>
-                                                    <IconButton onClick={() => setUserInfoEditorOpen(true)}>
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Grid>
-                                        )}
-                                    </>
-                                )}
-                            </Grid>
-                            {isViewingOwnProfile && userInfoEditorOpen && (
+                <MyPaper>
+                    <Grid container direction="column" alignItems="stretch" spacing={3}>
+                        <Grid item container justify="flex-start" alignItems="center" spacing={2}>
+                            {!userInfoEditorOpen && (
                                 <>
                                     <Grid item>
-                                        <Typography variant="h4">Adatok módosítása</Typography>
+                                        <Avatar src={userInfo.profilePicUrl} alt={UserNameFormatter.getBasicDisplayName(userInfo)} />
                                     </Grid>
                                     <Grid item>
-                                        <UserInfoEditor
-                                            defaultNames={{
-                                                firstName: userInfo.firstName,
-                                                lastName: userInfo.lastName,
-                                                nickName: userInfo.nickName,
-                                            }}
-                                            onSubmit={submitEditedUserInfo}
-                                            onCancel={() => setUserInfoEditorOpen(false)}
-                                        />
+                                        <Typography variant="h3">
+                                            {UserNameFormatter.getNickName(userInfo) !== 'N/A' &&
+                                            UserNameFormatter.getNickName(userInfo) !== null
+                                                ? UserNameFormatter.getNickName(userInfo)
+                                                : null}{' '}
+                                        </Typography>
                                     </Grid>
-                                </>
-                            )}
-                            {isViewingOwnProfile && (
-                                <>
                                     <Grid item>
-                                        <Typography variant="h5">Használatban lévő email címek:</Typography>
-                                        <EmailAddressesPanel />
+                                        <Typography variant="h4">{UserNameFormatter.getFullName(userInfo)}</Typography>
                                     </Grid>
-                                    <Grid>
-                                        <LoginForm addLoginMethod={true} />
-                                    </Grid>
+                                    {isViewingOwnProfile && (
+                                        <Grid>
+                                            <Tooltip title="Adatok módosítása" arrow>
+                                                <IconButton onClick={() => setUserInfoEditorOpen(true)}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    )}
                                 </>
                             )}
-                            <Grid item>
-                                <Typography variant="h5">Jogosultságok: </Typography>
-                                <List>
-                                    {userInfo.authorities.map((value) => (
-                                        <>
-                                            <ListItem key={value}>
-                                                <ListItemText primary={value} />
-                                            </ListItem>
-                                            <Divider variant="middle" />
-                                        </>
-                                    ))}
-                                </List>
-                            </Grid>
                         </Grid>
-                    </Box>
-                </Paper>
+                        {isViewingOwnProfile && userInfoEditorOpen && (
+                            <>
+                                <Grid item>
+                                    <Typography variant="h4">Adatok módosítása</Typography>
+                                </Grid>
+                                <Grid item>
+                                    <UserInfoEditor
+                                        defaultNames={{
+                                            firstName: userInfo.firstName,
+                                            lastName: userInfo.lastName,
+                                            nickName: userInfo.nickName,
+                                        }}
+                                        onSubmit={submitEditedUserInfo}
+                                        onCancel={() => setUserInfoEditorOpen(false)}
+                                    />
+                                </Grid>
+                            </>
+                        )}
+                        {isViewingOwnProfile && (
+                            <>
+                                <Grid item>
+                                    <Typography variant="h5">Használatban lévő email címek:</Typography>
+                                    <EmailAddressesPanel />
+                                </Grid>
+                                <Grid>
+                                    <LoginForm addLoginMethod={true} />
+                                </Grid>
+                            </>
+                        )}
+                        <Grid item>
+                            <Typography variant="h5">Jogosultságok: </Typography>
+                            <List>
+                                {userInfo.authorities.map((value) => (
+                                    <>
+                                        <ListItem key={value}>
+                                            <ListItemText primary={value} />
+                                        </ListItem>
+                                        <Divider variant="middle" />
+                                    </>
+                                ))}
+                            </List>
+                        </Grid>
+                    </Grid>
+                </MyPaper>
             )}
         </Container>
     );
