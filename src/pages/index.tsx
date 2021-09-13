@@ -1,4 +1,4 @@
-import {Box} from '@material-ui/core';
+import {Box, Grid} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -12,11 +12,13 @@ const Index: NextPage = () => {
             <Head>
                 <title>Home</title>
             </Head>
-
-            <NewsFeedPanel>
-                <NotTeamMemberBanner />
-                <NotAcceptedByEmailBanner />
-            </NewsFeedPanel>
+            <Box mb={2}>
+                <Grid container direction="column" spacing={2}>
+                    <NotTeamMemberBanner />
+                    <NotAcceptedByEmailBanner />
+                </Grid>
+            </Box>
+            <NewsFeedPanel></NewsFeedPanel>
         </Box>
     );
 };

@@ -3,14 +3,15 @@ import React, {ReactElement} from 'react';
 
 interface MyPaperProps {
     p?: number;
+    opacity?: number;
 }
 
-export default function MyPaper({children, p = 2}: React.PropsWithChildren<MyPaperProps>): ReactElement {
+export default function MyPaper({children, p = 2, opacity = 0.7}: React.PropsWithChildren<MyPaperProps>): ReactElement {
     const theme = useTheme();
     return (
         <Paper
             style={{
-                backgroundColor: alpha(theme.palette.background.paper, 0.9),
+                backgroundColor: alpha(theme.palette.background.paper, opacity),
             }}
         >
             <Box p={p}>{children}</Box>
