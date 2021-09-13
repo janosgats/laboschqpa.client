@@ -1,21 +1,20 @@
-import React, {FC, useContext, useRef, useState} from 'react'
-import BackupIcon from '@material-ui/icons/Backup'
-import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from "mui-rte";
-import EventBus from "~/utils/EventBus";
-import {convertToRaw} from "draft-js";
-import {UsedAttachments} from "~/hooks/useAttachments";
-import FileUploaderDialog from "~/components/file/FileUploaderDialog";
-import {NOTIFICATION_TIMEOUT_LONG} from "~/components/eventDisplay/AppNotificationEventDisplay";
-import FileToUpload, {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
-import {ImageBlock} from "~/components/textEditor/imageBlock/ImageBlock";
-import EditorContextProvider, {EditorContext} from "~/context/EditorContextProvider";
-import {ImageAlignment, ImageBlockSpec} from "~/components/textEditor/imageBlock/ImageBlockTypes";
-import LinkDecorator, {LinkMatcherRegex} from "~/components/textEditor/LinkDecorator";
 import {createStyles, makeStyles, Paper, Theme} from '@material-ui/core';
+import BackupIcon from '@material-ui/icons/Backup';
+import {convertToRaw} from 'draft-js';
+import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
+import React, {FC, useContext, useRef, useState} from 'react';
+import {NOTIFICATION_TIMEOUT_LONG} from '~/components/eventDisplay/AppNotificationEventDisplay';
+import FileUploaderDialog from '~/components/file/FileUploaderDialog';
+import {ImageBlock} from '~/components/textEditor/imageBlock/ImageBlock';
+import {ImageAlignment, ImageBlockSpec} from '~/components/textEditor/imageBlock/ImageBlockTypes';
+import LinkDecorator, {LinkMatcherRegex} from '~/components/textEditor/LinkDecorator';
+import EditorContextProvider, {EditorContext} from '~/context/EditorContextProvider';
+import {UsedAttachments} from '~/hooks/useAttachments';
+import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
+import EventBus from '~/utils/EventBus';
 import {getStyles} from './styles/style';
 
-
-const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
 interface Props {
     isEdited: boolean;
@@ -31,26 +30,20 @@ interface ImageUploadAsyncAtomicBlockResponse extends TAsyncAtomicBlockResponse 
 }
 
 function uploadImage(fileToUpload: FileToUpload, usedAttachments: UsedAttachments): Promise<ImageUploadAsyncAtomicBlockResponse> {
-    return usedAttachments.addAttachment(fileToUpload)
-        .then(createdFileResponse => {
-            if (typeof createdFileResponse.mimeType === 'string'
-                && createdFileResponse.mimeType.startsWith('image')) {
-                return {
-                    data: {
-                        isExternalImage: false,
-                        indexedFileId: createdFileResponse.createdFileId,
-                        size: 300,
-                        alignment: ImageAlignment.center,
-                    }
-                };
-            }
-            EventBus.notifyWarning(
-                'The uploaded file is not an image',
-                'Added as attachment',
-                NOTIFICATION_TIMEOUT_LONG
-            );
-            throw 'The uploaded file is not an image!';
-        });
+    return usedAttachments.addAttachment(fileToUpload).then((createdFileResponse) => {
+        if (typeof createdFileResponse.mimeType === 'string' && createdFileResponse.mimeType.startsWith('image')) {
+            return {
+                data: {
+                    isExternalImage: false,
+                    indexedFileId: createdFileResponse.createdFileId,
+                    size: 300,
+                    alignment: ImageAlignment.center,
+                },
+            };
+        }
+        EventBus.notifyWarning('The uploaded file is not an image', 'Added as attachment', NOTIFICATION_TIMEOUT_LONG);
+        throw 'The uploaded file is not an image!';
+    });
 }
 
 const RichTextEditor: FC<Props> = (props) => {
@@ -66,17 +59,15 @@ const RichTextEditor: FC<Props> = (props) => {
 
     function handleFileUpload(fileToUpload: FileToUpload) {
         if (enableImageUpload && fileToUpload) {
-            ref.current?.insertAtomicBlockAsync(
-                "image-block",
-                uploadImage(fileToUpload, props.usedAttachments),
-                "...image...");
+            ref.current?.insertAtomicBlockAsync('image-block', uploadImage(fileToUpload, props.usedAttachments), '...image...');
         }
     }
 
     return (
         <>
-            <FileUploaderDialog uploadedFileType={UploadedFileType.IMAGE}
-                onUploadInitiation={fileToUpload => {
+            <FileUploaderDialog
+                uploadedFileType={UploadedFileType.IMAGE}
+                onUploadInitiation={(fileToUpload) => {
                     handleFileUpload(fileToUpload);
                     setIsUploadImageModalOpen(false);
                 }}
@@ -94,49 +85,57 @@ const RichTextEditor: FC<Props> = (props) => {
                             props.onChange(JSON.stringify(convertToRaw(state.getCurrentContent())));
                         }
                     }}
-
                     label="Start typing or drop a file inside the editor..."
                     ref={ref}
                     decorators={[
                         {
                             component: LinkDecorator,
-                            regex: LinkMatcherRegex
-                        }
+                            regex: LinkMatcherRegex,
+                        },
                     ]}
                     controls={[
-                        "title", "bold", "italic", "underline", "strikethrough",
-                        "bulletList", "numberList",
-                        "quote", "code", "highlight", "clear",
-                        "link", ...(enableImageUpload ? ["upload-image"] : []),
+                        'title',
+                        'bold',
+                        'italic',
+                        'underline',
+                        'strikethrough',
+                        'bulletList',
+                        'numberList',
+                        'quote',
+                        'code',
+                        'highlight',
+                        'clear',
+                        'link',
+                        ...(enableImageUpload ? ['upload-image'] : []),
                     ]}
                     customControls={[
                         {
-                            name: "upload-image",
+                            name: 'upload-image',
                             icon: <BackupIcon />,
-                            type: "callback",
+                            type: 'callback',
                             onClick: (_editorState, _name, anchor) => {
                                 setIsUploadImageModalOpen(true);
-                            }
+                            },
                         },
                         {
-                            name: "image-block",
-                            type: "atomic",
-                            atomicComponent: ImageBlock
+                            name: 'image-block',
+                            type: 'atomic',
+                            atomicComponent: ImageBlock,
                         },
                     ]}
                     draftEditorProps={{
                         handleDroppedFiles: (_selectionState, files) => {
                             if (files.length && (files[0] as File).name !== undefined) {
-                                handleFileUpload(new FileToUpload(files[0] as File, UploadedFileType.ANY))
-                                return "handled"
+                                handleFileUpload(new FileToUpload(files[0] as File, UploadedFileType.ANY));
+                                return 'handled';
                             }
-                            return "not-handled"
-                        }
+                            return 'not-handled';
+                        },
                     }}
                 />
             </Paper>
         </>
-    )
+    );
 };
 
 const ContextWrappedRichTextEditor: FC<Props> = (props) => {
@@ -144,7 +143,7 @@ const ContextWrappedRichTextEditor: FC<Props> = (props) => {
         <EditorContextProvider areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
             <RichTextEditor {...props} />
         </EditorContextProvider>
-    )
-}
+    );
+};
 
 export default ContextWrappedRichTextEditor;

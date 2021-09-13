@@ -1,17 +1,17 @@
-import React, {FC, useEffect, useState} from 'react'
-import {FetchableDisplay} from "~/model/FetchableDisplay";
-import EventBus from "~/utils/EventBus";
-import {CircularProgress} from "@material-ui/core";
-import {ErrorBoundary} from "react-error-boundary";
-import Entity from "~/model/Entity";
-import SubmissionDisplay, {SubmissionDisplayExtraProps} from "~/components/fetchableDisplay/SubmissionDisplay";
-import {Submission} from "~/model/usergeneratedcontent/Submission";
-import NewsPostDisplay from "~/components/fetchableDisplay/NewsPostDisplay";
-import ObjectiveDisplay from "~/components/fetchableDisplay/ObjectiveDisplay";
-import {NewsPost} from "~/model/usergeneratedcontent/NewsPost";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
-import SpeedDrinkingDisplay, {SpeedDrinkingDisplayExtraProps} from "~/components/fetchableDisplay/SpeedDrinkingDisplay";
-import {SpeedDrinking} from "~/model/usergeneratedcontent/SpeedDrinking";
+import {CircularProgress} from '@material-ui/core';
+import React, {FC, useEffect, useState} from 'react';
+import {ErrorBoundary} from 'react-error-boundary';
+import NewsPostDisplay from '~/components/fetchableDisplay/NewsPostDisplay';
+import ObjectiveDisplay from '~/components/fetchableDisplay/ObjectiveDisplay';
+import SpeedDrinkingDisplay, {SpeedDrinkingDisplayExtraProps} from '~/components/fetchableDisplay/SpeedDrinkingDisplay';
+import SubmissionDisplay, {SubmissionDisplayExtraProps} from '~/components/fetchableDisplay/SubmissionDisplay';
+import Entity from '~/model/Entity';
+import {FetchableDisplay} from '~/model/FetchableDisplay';
+import {NewsPost} from '~/model/usergeneratedcontent/NewsPost';
+import {Objective} from '~/model/usergeneratedcontent/Objective';
+import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
+import {Submission} from '~/model/usergeneratedcontent/Submission';
+import EventBus from '~/utils/EventBus';
 
 interface CallbackProps {
     onCreatedNew?: (createdId: number) => void;
@@ -26,8 +26,9 @@ interface Props<E extends Entity, S, P extends Record<string, any>> extends Call
     displayExtraProps?: P;
 }
 
-const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
-    = <E extends Entity, S, P extends Record<string, any>>(props: Props<E, S, P>) => {
+const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>> = <E extends Entity, S, P extends Record<string, any>>(
+    props: Props<E, S, P>
+) => {
     const WrappedDisplay: FetchableDisplay<E, S, P> = props.displayComponent;
 
     const [isCreatingNew, setIsCreatingNew] = useState<boolean>(props.shouldCreateNew);
@@ -60,8 +61,9 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
         setIsPendingApiCall(true);
         setIsUnderRetrieval(true);
 
-        await WrappedDisplay.fetchingTools.fetchEntity(id)
-            .then(fetchedEntity => setEntity(fetchedEntity))
+        await WrappedDisplay.fetchingTools
+            .fetchEntity(id)
+            .then((fetchedEntity) => setEntity(fetchedEntity))
             .catch((e) => setRetrieveError(true))
             .finally(() => {
                 setIsUnderRetrieval(false);
@@ -71,8 +73,9 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
 
     async function doSaveAndGetIdToRetrieve(command: S): Promise<number> {
         if (isCreatingNew) {
-            const createdId = await WrappedDisplay.fetchingTools.createNewEntity(command)
-                .then(id => {
+            const createdId = await WrappedDisplay.fetchingTools
+                .createNewEntity(command)
+                .then((id) => {
                     setEntityId(id);
                     return id;
                 })
@@ -87,11 +90,10 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
             return createdId;
         }
 
-        await WrappedDisplay.fetchingTools.editEntity(entityId, command)
-            .catch((e) => {
-                EventBus.notifyError('Error while editing content');
-                throw e;
-            });
+        await WrappedDisplay.fetchingTools.editEntity(entityId, command).catch((e) => {
+            EventBus.notifyError('Error while editing content');
+            throw e;
+        });
         return entityId;
     }
 
@@ -109,7 +111,8 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
 
     async function handleOnDelete(): Promise<void> {
         setIsPendingApiCall(true);
-        await WrappedDisplay.fetchingTools.deleteEntity(entityId)
+        await WrappedDisplay.fetchingTools
+            .deleteEntity(entityId)
             .then(() => setIsDeleted(true))
             .finally(() => setIsPendingApiCall(false));
     }
@@ -125,26 +128,22 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
 
     return (
         <>
-            {isDeleted && (
-                <p>Entity was deleted</p>
-            )}
+            {isDeleted && <p>Entity was deleted</p>}
 
-            {isCancelledNewCreation && (
+            {/*isCancelledNewCreation && (
                 <p>Entity creation was cancelled</p>
-            )}
+            )*/}
 
-            {(!isDeleted) && (!isCancelledNewCreation) && (
+            {!isDeleted && !isCancelledNewCreation && (
                 <>
-                    {isUnderRetrieval && (
-                        <CircularProgress size={250}/>
-                    )}
+                    {isUnderRetrieval && <CircularProgress size={250} />}
                     {retrieveError && (
                         <>
                             <p>Cannot retrieve entity :'(</p>
                             <button onClick={() => retrieveEntity(entityId)}>Retry</button>
                         </>
                     )}
-                    {(!retrieveError) && (!isUnderRetrieval) && (entity || isCreatingNew) && (
+                    {!retrieveError && !isUnderRetrieval && (entity || isCreatingNew) && (
                         <ErrorBoundary fallback={<p>Cannot display entity :'(</p>}>
                             <WrappedDisplay
                                 existingEntity={entity}
@@ -160,8 +159,8 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                 </>
             )}
         </>
-    )
-}
+    );
+};
 
 interface NewsPostDisplayContainerProps extends CallbackProps {
     entityId?: number;
@@ -180,7 +179,7 @@ export const NewsPostDisplayContainer: FC<NewsPostDisplayContainerProps> = (prop
             onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
-}
+};
 
 interface ObjectiveDisplayContainerProps extends CallbackProps {
     entityId?: number;
@@ -199,7 +198,7 @@ export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (pr
             onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
-}
+};
 
 interface SubmissionDisplayContainerProps extends CallbackProps {
     entityId?: number;
@@ -220,7 +219,7 @@ export const SubmissionDisplayContainer: FC<SubmissionDisplayContainerProps> = (
             onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
-}
+};
 
 interface SpeedDrinkingDisplayContainerProps extends CallbackProps {
     entityId?: number;
@@ -241,4 +240,4 @@ export const SpeedDrinkingDisplayContainer: FC<SpeedDrinkingDisplayContainerProp
             onCancelledNewCreation={props.onCancelledNewCreation}
         />
     );
-}
+};
