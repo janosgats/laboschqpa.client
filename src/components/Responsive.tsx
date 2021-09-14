@@ -1,5 +1,4 @@
-import {useMediaQuery} from '@material-ui/core';
-import {useTheme} from '@material-ui/styles';
+import {useMediaQuery, useTheme} from '@material-ui/core';
 import React from 'react';
 
 // This component selects the right property for the current screen size
@@ -13,7 +12,7 @@ interface ResponsiveProps {
 export default function Responsive({component, ...props}: ResponsiveProps) {
     const Component = component;
 
-    const theme = useTheme() as any;
+    const theme = useTheme();
     const matchesWith = [...theme.breakpoints.keys].reduce((output, key) => {
         const matches = useMediaQuery(theme.breakpoints.up(key));
         return matches ? [...output, key] : output;
