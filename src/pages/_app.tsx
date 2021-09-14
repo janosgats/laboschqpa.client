@@ -9,7 +9,7 @@ import CurrentUserProvider from '~/context/CurrentUserProvider';
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): React.CSSProperties {
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
-    let backgroundSize = '1500px';
+    let backgroundSize = '1600px';
     if (isDarkMode) {
         backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/dark-1.svg';
         backgroundSize = '2000px';
@@ -19,7 +19,7 @@ function getBackgroundImageDivStyle(isDarkMode: boolean): React.CSSProperties {
         minWidth: '100%',
         minHeight: '100vh',
         backgroundImage: `url("${backgroundImageUrl}")`,
-        opacity: '0.5',
+        opacity: '0.66',
         position: 'fixed',
         backgroundSize: backgroundSize,
         zIndex: -1000,
