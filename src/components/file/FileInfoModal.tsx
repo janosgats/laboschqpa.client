@@ -1,3 +1,16 @@
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Table,
+    TableBody,
+    TableCell,
+    TableRow,
+    Typography,
+} from '@material-ui/core';
 import React, {FC, useContext} from 'react';
 import Image from '~/components/image/Image';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
@@ -13,6 +26,7 @@ import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import EventBus from '~/utils/EventBus';
 import * as FileHostUtils from '~/utils/FileHostUtils';
 import UserNameFormatter from '~/utils/UserNameFormatter';
+import Responsive from '../Responsive';
 import Spinner from '../Spinner';
 
 interface FileInfo {
@@ -35,18 +49,19 @@ interface FileInfo {
 
 interface Props {
     fileId: number;
+    onClose: () => void;
 }
 
-const FileInfoModal: FC<Props> = (props) => {
+const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
     const currentUser = useContext(CurrentUserContext);
     const usedEndpoint: UsedEndpoint<FileInfo> = useEndpoint<FileInfo>({
         conf: {
             url: 'api/up/server/api/file/info',
             params: {
-                id: props.fileId,
+                id: fileId,
             },
         },
-        deps: [props.fileId],
+        deps: [fileId],
         customSuccessProcessor: (axiosResponse) => {
             const data = axiosResponse.data;
             if (data.creationTime) {
@@ -120,70 +135,127 @@ const FileInfoModal: FC<Props> = (props) => {
         }
 
         if (isImage) {
-            return <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name} />;
+            return (
+                <Box mx="auto" my={2} width="fit-content">
+                    <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name} />;
+                </Box>
+            );
         }
 
         return <p>No preview is available</p>;
     };
 
     return (
-        <div style={{borderStyle: 'dashed', borderColor: 'green', borderWidth: 1}}>
-            <p>TODO: This should be a modal</p>
-            {usedEndpoint.pending && <Spinner />}
+        <Responsive component={Dialog} onClose={onClose} open={true}>
+            <Box p={2}>
+                <DialogTitle>
+                    <Typography variant="h4">File info</Typography>
+                </DialogTitle>
+                <DialogContent>
+                    {usedEndpoint.pending && <Spinner minWidth="10em" />}
 
-            {usedEndpoint.failed && (
-                <>
-                    <p>Couldn't fetch file info :'(</p>
-                    <button onClick={() => usedEndpoint.reloadEndpoint()}>Retry</button>
-                </>
-            )}
-            {fileInfo && (
-                <>
-                    {fileInfo.status === IndexedFileStatus.AVAILABLE ? (
+                    {usedEndpoint.failed && (
                         <>
-                            <p>ID: {fileInfo.id}</p>
-                            <p>Mime: {fileInfo.mimeType}</p>
-                            <ImagePreview />
-                            <p>Name: {fileInfo.name}</p>
-
-                            <p>
-                                Owner user: {getOwnerUserNameToDisplay()} ({fileInfo.ownerUserId})
-                            </p>
-                            <p>
-                                Owner team: {fileInfo.ownerTeamName} ({fileInfo.ownerTeamId})
-                            </p>
-
-                            <p>Created at: {DateTimeFormatter.toFullBasic(fileInfo.creationTime)}</p>
-
-                            <p>Size: {fileInfo.size}</p>
-                            {isVisible && (
-                                <>
-                                    <a href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)} target="_blank">
-                                        <button>Download original</button>
-                                    </a>
-                                    <a href={FileHostUtils.getUrlOfFile(fileInfo.id)} target="_blank">
-                                        <button>Download optimized</button>
-                                    </a>
-                                </>
-                            )}
-
-                            {canUserEditFile() && (
-                                <>
-                                    <button onClick={onDeleteFileClick}>Delete this file</button>
-                                </>
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            <h3>This file is not available atm.</h3>
-                            <p>
-                                Current status: <b>{indexedFileStatusData[fileInfo.status]?.displayName}</b>
-                            </p>
+                            <p>Couldn't fetch file info :'(</p>
+                            <button onClick={() => usedEndpoint.reloadEndpoint()}>Retry</button>
                         </>
                     )}
-                </>
-            )}
-        </div>
+                    {usedEndpoint.succeeded && fileInfo && (
+                        <>
+                            {fileInfo.status === IndexedFileStatus.AVAILABLE ? (
+                                <>
+                                    <Table>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Id</b>
+                                                </TableCell>
+                                                <TableCell>{fileInfo.id}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Mime</b>
+                                                </TableCell>
+                                                <TableCell>{fileInfo.mimeType}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Name</b>
+                                                </TableCell>
+                                                <TableCell>{fileInfo.name}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Owner user</b>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {getOwnerUserNameToDisplay()} ({fileInfo.ownerUserId})
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Owner team</b>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {fileInfo.ownerTeamName} ({fileInfo.ownerTeamId})
+                                                </TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Created At</b>
+                                                </TableCell>
+                                                <TableCell>{DateTimeFormatter.toFullBasic(fileInfo.creationTime)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell>
+                                                    <b>Size</b>
+                                                </TableCell>
+                                                <TableCell>{fileInfo.size}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                    <ImagePreview />
+                                </>
+                            ) : (
+                                <>
+                                    <h3>This file is not available atm.</h3>
+                                    <p>
+                                        Current status: <b>{indexedFileStatusData[fileInfo.status]?.displayName}</b>
+                                    </p>
+                                </>
+                            )}
+                        </>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    {isVisible && (
+                        <>
+                            <Button
+                                component="a"
+                                href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)}
+                                target="_blank"
+                                children="Download original"
+                                color="primary"
+                                variant="outlined"
+                            />
+                            <Button
+                                component="a"
+                                href={FileHostUtils.getUrlOfFile(fileInfo.id)}
+                                target="_blank"
+                                children="Download optimized"
+                                color="primary"
+                                variant="outlined"
+                            />
+                        </>
+                    )}
+                    {canUserEditFile() && (
+                        <Button color="primary" variant="outlined" onClick={onDeleteFileClick}>
+                            Delete
+                        </Button>
+                    )}
+                </DialogActions>
+            </Box>
+        </Responsive>
     );
 };
 

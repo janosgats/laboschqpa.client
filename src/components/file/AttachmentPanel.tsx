@@ -189,7 +189,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                 );
             })}
 
-            {fileIdToShowInInfoModal && <FileInfoModal fileId={fileIdToShowInInfoModal} />}
+            {fileIdToShowInInfoModal && <FileInfoModal fileId={fileIdToShowInInfoModal} onClose={() => setFileIdToShowInInfoModal(null)} />}
         </Box>
     );
 };
