@@ -13,8 +13,6 @@ interface Props {
 const FileUploaderDialog: FC<Props> = (props) => {
     const [file, setFile] = useState<File>();
 
-    console.log(file);
-
     const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         if (e.target?.files?.length) {
             setFile(e.target.files[0]);
