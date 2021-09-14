@@ -2,12 +2,12 @@ import {ThemeProvider} from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {createTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
-import React, {useState} from 'react';
+import React, {CSSProperties, useState} from 'react';
 import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
 import NavBar from '~/components/nav/NavBar';
 import CurrentUserProvider from '~/context/CurrentUserProvider';
 
-function getBackgroundImageDivStyle(isDarkMode: boolean): React.CSSProperties {
+function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
     let backgroundSize = '1600px';
     if (isDarkMode) {
@@ -34,8 +34,6 @@ function MyApp({Component, pageProps}): JSX.Element {
             type: darkMode ? 'dark' : 'light',
         },
     });
-
-    console.log('theme', theme);
 
     return (
         <>

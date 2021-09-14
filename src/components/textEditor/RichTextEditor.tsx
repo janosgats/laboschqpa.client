@@ -1,4 +1,3 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core';
 import BackupIcon from '@material-ui/icons/Backup';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
@@ -13,9 +12,6 @@ import {UsedAttachments} from '~/hooks/useAttachments';
 import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
 import EventBus from '~/utils/EventBus';
 import MyPaper from '../mui/MyPaper';
-import {getStyles} from './styles/style';
-
-const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
 interface Props {
     isEdited: boolean;
@@ -48,8 +44,6 @@ function uploadImage(fileToUpload: FileToUpload, usedAttachments: UsedAttachment
 }
 
 const RichTextEditor: FC<Props> = (props) => {
-    const classes = useStyles();
-
     const editorContext = useContext(EditorContext);
 
     const ref = useRef<TMUIRichTextEditorRef>(null);
