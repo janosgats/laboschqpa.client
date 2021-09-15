@@ -1,6 +1,3 @@
-import React, {FC, useContext, useState} from "react";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Alert, AlertTitle} from '@material-ui/lab';
 import {
     Button,
     ButtonGroup,
@@ -10,13 +7,19 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Grid,
     makeStyles,
     Theme,
-    Typography
-} from "@material-ui/core";
-import {AddNewEmailAddressDialog} from "~/components/email/AddNewEmailAddressDialog";
-import EmailAddressesPanel from "~/components/email/EmailAddressesPanel";
-import {style} from "./styles/style";
+    Typography,
+    useTheme,
+} from '@material-ui/core';
+import {Alert, AlertTitle} from '@material-ui/lab';
+import React, {FC, useContext, useState} from 'react';
+import {AddNewEmailAddressDialog} from '~/components/email/AddNewEmailAddressDialog';
+import EmailAddressesPanel from '~/components/email/EmailAddressesPanel';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import MyPaper from '../mui/MyPaper';
+import {style} from './styles/style';
 
 interface AskYourTeamLeadForHelpDialogProps {
     onClose: () => void;
@@ -32,24 +35,20 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
             <DialogTitle>Resolve email issues</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    To make sure you are really a QPA participant, we asked the Team Leads
-                    to send us the e-mail addresses of the people in their team.
+                    To make sure you are really a QPA participant, we asked the Team Leads to send us the e-mail addresses of the people in
+                    their team.
                 </DialogContentText>
                 <DialogContentText>
-                    Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted!
-                    If yes, you can easily add it to your account by clicking the below button.
-                    If not, your Team Lead can still submit it.
+                    Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted! If yes, you can easily add it to
+                    your account by clicking the below button. If not, your Team Lead can still submit it.
                 </DialogContentText>
-                <DialogContentText style={{ marginBottom: 0 }}>
-                    <Typography variant="h6">
-                        Your current e-mail addresses:
-                    </Typography>
+                <DialogContentText style={{marginBottom: 0}}>
+                    <Typography variant="h6">Your current e-mail addresses:</Typography>
                 </DialogContentText>
-                <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ ul: { marginTop: 0 } }} />
+                <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ul: {marginTop: 0}}} />
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onSubmitNewAddressClicked}
-                    color="primary">
+                <Button onClick={props.onSubmitNewAddressClicked} color="primary">
                     Add new e-mail address
                 </Button>
 
@@ -64,11 +63,11 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
 const NotAcceptedByEmailBanner: FC = () => {
     const classes = useStyles();
     const currentUser = useContext(CurrentUserContext);
+    const theme = useTheme();
 
     const [isAddNewEmailDialogOpen, setAddNewEmailDialogOpen] = useState<boolean>(false);
     const [isAskYourTeamLeadDialogOpen, setAskYourTeamLeadDialogOpen] = useState<boolean>(false);
 
-    
     const displayBanner = currentUser.getUserInfo() && !currentUser.getUserInfo().isAcceptedByEmail;
 
     if (!displayBanner) {
@@ -76,25 +75,28 @@ const NotAcceptedByEmailBanner: FC = () => {
     }
 
     return (
-        <Alert variant="outlined" severity="warning" className={classes.banner}>
-            <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
-            <p>- which makes you unable to see submissions of other users :/</p>
-            <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
-                <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>
-                    Click here to fix this
-                </Button>
-            </ButtonGroup>
+        <Grid item>
+            <MyPaper p={0}>
+                <Alert variant="outlined" severity="warning">
+                    <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
+                    <p>- which makes you unable to see submissions of other users :/</p>
+                    <ButtonGroup color="inherit" aria-label="outlined primary button group">
+                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Click here to fix this</Button>
+                    </ButtonGroup>
 
-            <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
-            <AskYourTeamLeadForHelpDialog onClose={() => setAskYourTeamLeadDialogOpen(false)}
-                isOpen={isAskYourTeamLeadDialogOpen}
-                onSubmitNewAddressClicked={() => {
-                    setAskYourTeamLeadDialogOpen(false);
-                    setAddNewEmailDialogOpen(true);
-                }}
-            />
-        </Alert>
-    )
+                    <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
+                    <AskYourTeamLeadForHelpDialog
+                        onClose={() => setAskYourTeamLeadDialogOpen(false)}
+                        isOpen={isAskYourTeamLeadDialogOpen}
+                        onSubmitNewAddressClicked={() => {
+                            setAskYourTeamLeadDialogOpen(false);
+                            setAddNewEmailDialogOpen(true);
+                        }}
+                    />
+                </Alert>
+            </MyPaper>
+        </Grid>
+    );
 };
 
 export default NotAcceptedByEmailBanner;

@@ -1,24 +1,26 @@
-import Head from 'next/head'
-import {NextPage} from "next";
-import React from "react";
-import NotTeamMemberBanner from "~/components/banner/NotTeamMemberBanner";
-import NotAcceptedByEmailBanner from "~/components/banner/NotAcceptedByEmailBanner";
-import NewsFeedPanel from "~/components/panel/NewsFeedPanel";
+import {Box, Grid} from '@material-ui/core';
+import {NextPage} from 'next';
+import Head from 'next/head';
+import React from 'react';
+import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBanner';
+import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
+import NewsFeedPanel from '~/components/panel/NewsFeedPanel';
 
 const Index: NextPage = () => {
     return (
-        <div>
+        <Box>
             <Head>
                 <title>Home</title>
             </Head>
-
-            <NotTeamMemberBanner/>
-            <NotAcceptedByEmailBanner/>
-            
-            <NewsFeedPanel/>
-
-        </div>
-    )
+            <Box mb={2}>
+                <Grid container direction="column" spacing={2}>
+                    <NotTeamMemberBanner />
+                    <NotAcceptedByEmailBanner />
+                </Grid>
+            </Box>
+            <NewsFeedPanel></NewsFeedPanel>
+        </Box>
+    );
 };
 
 export default Index;

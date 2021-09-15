@@ -125,7 +125,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                                 <List component="div" disablePadding>
                                     {usedEndpoint.data.map((attachmentInfo) => {
                                         return (
-                                            <ListItem>
+                                            <ListItem button onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>
                                                 <ListItemAvatar>
                                                     <AttachFileOutlinedIcon />
                                                 </ListItemAvatar>
@@ -189,7 +189,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                 );
             })}
 
-            {fileIdToShowInInfoModal && <FileInfoModal fileId={fileIdToShowInInfoModal} />}
+            {fileIdToShowInInfoModal && <FileInfoModal fileId={fileIdToShowInInfoModal} onClose={() => setFileIdToShowInInfoModal(null)} />}
         </Box>
     );
 };

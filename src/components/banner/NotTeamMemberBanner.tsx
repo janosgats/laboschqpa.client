@@ -1,15 +1,28 @@
-import React, {FC, useContext, useEffect, useState} from "react";
-import {useRouter} from "next/router";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {
+    Button,
+    ButtonGroup,
+    createStyles,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    makeStyles,
+    TextField,
+    Theme,
+} from '@material-ui/core';
 import {Alert, AlertTitle} from '@material-ui/lab';
-import {Button, ButtonGroup, createStyles, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, makeStyles, TextField, Theme} from "@material-ui/core";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import {TeamInfo} from "~/model/Team";
-import EventBus from "~/utils/EventBus";
-import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import {teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM} from "~/enums/ApiErrors";
-import {TeamRole} from "~/enums/TeamRole";
-import { style } from "./styles/style";
+import {useRouter} from 'next/router';
+import React, {FC, useContext, useEffect, useState} from 'react';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM} from '~/enums/ApiErrors';
+import {TeamRole} from '~/enums/TeamRole';
+import ApiErrorDescriptorException from '~/exception/ApiErrorDescriptorException';
+import {TeamInfo} from '~/model/Team';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import EventBus from '~/utils/EventBus';
+import {style} from './styles/style';
 
 interface CreateNewTeamDialogProps {
     onClose: () => void;
@@ -19,18 +32,17 @@ interface CreateNewTeamDialogProps {
 const useStyles = makeStyles((theme: Theme) => createStyles(style));
 
 const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
-
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
-    const [teamName, setTeamName] = useState<string>('')
+    const [teamName, setTeamName] = useState<string>('');
     const [isCreatingNewTeamPending, setIsCreatingNewTeamPending] = useState<boolean>(false);
 
     useEffect(() => {
         if (props.isOpen) {
-            setTeamName('')
+            setTeamName('');
         }
-    }, [props.isOpen])
+    }, [props.isOpen]);
 
     function createNewTeam() {
         setIsCreatingNewTeamPending(true);
@@ -39,46 +51,45 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
                 url: '/api/up/server/api/team/createNewTeam',
                 method: 'POST',
                 data: {
-                    name: teamName
+                    name: teamName,
+                },
+            },
+        })
+            .then((res) => {
+                currentUser.reload();
+                EventBus.notifySuccess("You've just created a team");
+                router.push(`/teams/team/My/?id=${res.data.id}`);
+                props.onClose();
+            })
+            .catch((err) => {
+                if (err instanceof ApiErrorDescriptorException) {
+                    if (teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM.is(err.apiErrorDescriptor)) {
+                        EventBus.notifyWarning(
+                            'You have to leave your current team (or cancel your application) to create a new one',
+                            'You are already in a team'
+                        );
+                        return;
+                    }
                 }
-            }
-        }).then(res => {
-            currentUser.reload();
-            EventBus.notifySuccess("You've just created a team")
-            router.push(`/teams/team/My/?id=${res.data.id}`);
-            props.onClose();
-        }).catch(err => {
-            if (err instanceof ApiErrorDescriptorException) {
-                if (teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM.is(err.apiErrorDescriptor)) {
-                    EventBus.notifyWarning('You have to leave your current team (or cancel your application) to create a new one', 'You are already in a team');
-                    return;
-                }
-            }
-        }).finally(() => {
-            setIsCreatingNewTeamPending(false)
-        });
+            })
+            .finally(() => {
+                setIsCreatingNewTeamPending(false);
+            });
     }
 
     return (
         <Dialog open={props.isOpen} onClose={props.onClose} aria-labelledby="form-dialog-title">
-            <DialogTitle >Create Team</DialogTitle>
+            <DialogTitle>Create Team</DialogTitle>
             <DialogContent>
                 <DialogContent>
                     <DialogContentText>
                         To create a team you have to give a name to your team. After your team is created you will be the lead of that team.
                     </DialogContentText>
-                    <TextField
-                        autoFocus
-                        label="Team name"
-                        value={teamName}
-                        onChange={e => setTeamName(e.target.value)}
-                    />
+                    <TextField autoFocus label="Team name" value={teamName} onChange={(e) => setTeamName(e.target.value)} />
                 </DialogContent>
             </DialogContent>
             <DialogActions>
-                <Button onClick={createNewTeam}
-                        color="primary"
-                        disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
+                <Button onClick={createNewTeam} color="primary" disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
                     Create my team
                 </Button>
                 <Button onClick={props.onClose} color="secondary">
@@ -94,7 +105,7 @@ const NotTeamMemberBanner: FC = () => {
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
-    const [isCreateNewTeamDialogOpen, setIsCreateNewTeamDialogOpen] = useState<boolean>(false)
+    const [isCreateNewTeamDialogOpen, setIsCreateNewTeamDialogOpen] = useState<boolean>(false);
 
     const displayBanner = currentUser.getUserInfo() && !currentUser.isMemberOrLeaderOfAnyTeam();
     const isApplicant = currentUser.getUserInfo() && currentUser.getUserInfo().teamRole === TeamRole.APPLICANT;
@@ -105,8 +116,8 @@ const NotTeamMemberBanner: FC = () => {
 
     if (isApplicant) {
         return (
-            <>
-                <Alert variant="outlined" severity="info" className={classes.banner}>
+            <Grid item>
+                <Alert variant="outlined" severity="info">
                     <AlertTitle>You applied for a membership at {currentUser.getUserInfo()?.teamName}</AlertTitle>
                     <p>- the leaders of the team should review your application soon</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
@@ -115,15 +126,14 @@ const NotTeamMemberBanner: FC = () => {
                         </Button>
                     </ButtonGroup>
                 </Alert>
-                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
-                                     isOpen={isCreateNewTeamDialogOpen}/>
-            </>
+                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
+            </Grid>
         );
     }
 
     return (
-        <>
-            <Alert variant="outlined" severity="info" className={classes.banner}>
+        <Grid item>
+            <Alert variant="outlined" severity="info">
                 <AlertTitle>You are not a team member</AlertTitle>
                 <p>- which makes a few features unavailable for your solo self :/</p>
                 <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
@@ -131,10 +141,9 @@ const NotTeamMemberBanner: FC = () => {
                     <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
                 </ButtonGroup>
             </Alert>
-            <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
-                                 isOpen={isCreateNewTeamDialogOpen}/>
-        </>
-    )
+            <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
+        </Grid>
+    );
 };
 
 export default NotTeamMemberBanner;
