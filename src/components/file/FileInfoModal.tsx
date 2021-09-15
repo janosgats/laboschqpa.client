@@ -25,6 +25,7 @@ import {getSurelyDate} from '~/utils/DateHelpers';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import EventBus from '~/utils/EventBus';
 import * as FileHostUtils from '~/utils/FileHostUtils';
+import {FileSizeFormatter} from '~/utils/FileSizeFormatter';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import Responsive from '../Responsive';
 import Spinner from '../Spinner';
@@ -137,7 +138,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
         if (isImage) {
             return (
                 <Box mx="auto" my={2} width="fit-content">
-                    <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name} />;
+                    <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name} />
                 </Box>
             );
         }
@@ -210,7 +211,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
                                                 <TableCell>
                                                     <b>Size</b>
                                                 </TableCell>
-                                                <TableCell>{fileInfo.size}</TableCell>
+                                                <TableCell>{FileSizeFormatter(fileInfo.size)}</TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -249,7 +250,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
                         </>
                     )}
                     {canUserEditFile() && (
-                        <Button color="primary" variant="outlined" onClick={onDeleteFileClick}>
+                        <Button color="secondary" variant="outlined" onClick={onDeleteFileClick}>
                             Delete
                         </Button>
                     )}
