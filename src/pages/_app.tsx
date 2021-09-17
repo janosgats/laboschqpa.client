@@ -39,7 +39,7 @@ function MyApp({Component, pageProps}): JSX.Element {
         <>
             <Head>
                 <title>Qpa</title>
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/favicon/yellow.svg" />
                 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
             </Head>
 
