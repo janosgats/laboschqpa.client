@@ -8,6 +8,7 @@ import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 import useEndpoint from '~/hooks/useEndpoint';
 import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
+import {UniqueValueIndexer} from "~/utils/UniqueValueIndexer";
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -32,6 +33,8 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
     });
 
     const [newlyCreatedSpeedDrinkingIds, setNewlyCreatedSpeedDrinkingIds] = useState<number[]>([]);
+
+    const uniqueValueIndexer = new UniqueValueIndexer(1);
 
     return (
         <div>
@@ -97,8 +100,8 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 </div>
             )}
 
-            {usedEndpoint.pending && <Spinner />}
-            {usedEndpoint.failed && <p>Couldn't load news :'(</p>}
+            {usedEndpoint.pending && <Spinner/>}
+            {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
                 <MUIPaper>
                     <Table>
@@ -120,7 +123,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                     overriddenBeginningEntity={speedDrinking}
                                     shouldCreateNew={false}
                                     displayExtraProps={{
-                                        rowNumber: index + 1,
+                                        rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
                                         showCategory: false,
                                         showName: true,
                                         showTeam: true,
