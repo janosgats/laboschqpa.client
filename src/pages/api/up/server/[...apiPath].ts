@@ -109,6 +109,13 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
 
     "/api/admin/authority/user/add": ["POST"],
     "/api/admin/authority/user/delete": ["DELETE"],
+
+    "/api/event/listPersonalEventsForUser": ["GET"],
+    "/api/event/listTeamEventsForUser": ["GET"],
+    "/api/event/registration/personal/register": ["POST"],
+    "/api/event/registration/personal/deRegister": ["POST"],
+    "/api/event/registration/team/register": ["POST"],
+    "/api/event/registration/team/deRegister": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

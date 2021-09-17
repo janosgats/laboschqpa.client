@@ -1,53 +1,71 @@
-import { getSurelyDate } from "~/utils/DateHelpers";
+import {getSurelyDate} from "~/utils/DateHelpers";
 
 const fullBasicFormatterOptions: Intl.DateTimeFormatOptions = {
-  dateStyle: "medium",
-  timeStyle: "medium",
+    dateStyle: "medium",
+    timeStyle: "medium",
 };
 const fullBasicFormatter = new Intl.DateTimeFormat(
-  "hu-HU",
-  fullBasicFormatterOptions
+    "hu-HU",
+    fullBasicFormatterOptions
 );
 
 const dayFormatterOptions: Intl.DateTimeFormatOptions = {
-  month: "long",
-  day: "2-digit",
+    month: "long",
+    day: "2-digit",
 };
 const dayFormatter = new Intl.DateTimeFormat(
-  "hu-HU",
-  dayFormatterOptions
+    "hu-HU",
+    dayFormatterOptions
 );
 
 const fullShortFormatterOptions: Intl.DateTimeFormatOptions = {
-  year: "2-digit",
-  month: "short",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
+    year: "2-digit",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
 };
 const fullShortFormatter = new Intl.DateTimeFormat(
-  "hu-HU",
-  fullShortFormatterOptions
+    "hu-HU",
+    fullShortFormatterOptions
 );
 
 function toFullBasic(date: Date | string): string {
-  date = getSurelyDate(date);
-  return fullBasicFormatter.format(date);
+    if (!date) {
+        return "-";
+    }
+    date = getSurelyDate(date);
+    if (!date) {
+        return "-";
+    }
+    return fullBasicFormatter.format(date);
 }
 
 function toFullShort(date: Date | string): string {
-  date = getSurelyDate(date);
-  return "'" + fullShortFormatter.format(date);
+    if (!date) {
+        return "-";
+    }
+    date = getSurelyDate(date);
+    if (!date) {
+        return "-";
+    }
+    return "'" + fullShortFormatter.format(date);
 }
 
 function toDay(date: Date | string): string {
-  date = getSurelyDate(date);
-  return dayFormatter.format(date);
+    if (!date) {
+        return "-";
+    }
+    date = getSurelyDate(date);
+    if (!date) {
+        return "-";
+    }
+    return dayFormatter.format(date);
 }
 
 const DateTimeFormatter = {
-  toFullBasic,
-  toFullShort,
-  toDay,
+    toFullBasic,
+    toFullShort,
+    toDay,
 };
 export default DateTimeFormatter;

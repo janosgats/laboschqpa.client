@@ -23,6 +23,7 @@ import {TeamInfo} from '~/model/Team';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import {style} from './styles/style';
+import MyPaper from "~/components/mui/MyPaper";
 
 interface CreateNewTeamDialogProps {
     onClose: () => void;
@@ -83,13 +84,16 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
             <DialogContent>
                 <DialogContent>
                     <DialogContentText>
-                        To create a team you have to give a name to your team. After your team is created you will be the lead of that team.
+                        To create a team you have to give a name to your team. After your team is created you will be
+                        the lead of that team.
                     </DialogContentText>
-                    <TextField autoFocus label="Team name" value={teamName} onChange={(e) => setTeamName(e.target.value)} />
+                    <TextField autoFocus label="Team name" value={teamName}
+                               onChange={(e) => setTeamName(e.target.value)}/>
                 </DialogContent>
             </DialogContent>
             <DialogActions>
-                <Button onClick={createNewTeam} color="primary" disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
+                <Button onClick={createNewTeam} color="primary"
+                        disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
                     Create my team
                 </Button>
                 <Button onClick={props.onClose} color="secondary">
@@ -126,22 +130,26 @@ const NotTeamMemberBanner: FC = () => {
                         </Button>
                     </ButtonGroup>
                 </Alert>
-                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
+                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
+                                     isOpen={isCreateNewTeamDialogOpen}/>
             </Grid>
         );
     }
 
     return (
         <Grid item>
-            <Alert variant="outlined" severity="info">
-                <AlertTitle>You are not a team member</AlertTitle>
-                <p>- which makes a few features unavailable for your solo self :/</p>
-                <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
-                    <Button onClick={() => router.push('/teams')}>Join a team</Button>
-                    <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
-                </ButtonGroup>
-            </Alert>
-            <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
+            <MyPaper p={0}>
+                <Alert variant="outlined" severity="info">
+                    <AlertTitle>You are not a team member</AlertTitle>
+                    <p>- which makes a few features unavailable for your solo self :/</p>
+                    <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
+                        <Button onClick={() => router.push('/teams')}>Join a team</Button>
+                        <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
+                    </ButtonGroup>
+                </Alert>
+                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
+                                     isOpen={isCreateNewTeamDialogOpen}/>
+            </MyPaper>
         </Grid>
     );
 };
