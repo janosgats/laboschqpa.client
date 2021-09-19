@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Authority} from "~/enums/Authority";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
@@ -13,7 +13,7 @@ import {Objective} from "~/model/usergeneratedcontent/Objective";
 import {ObjectiveType, objectiveTypeData} from "~/enums/ObjectiveType";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
-import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
+import {getSurelyDate} from "~/utils/DateHelpers";
 import Scorer from "~/components/Scorer";
 import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
 import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
@@ -45,6 +45,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import {getStyles} from "./styles/ObjectiveDisplayStyle";
+import TempDatetimePicker from "~/components/TempDatetimePicker";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
@@ -72,7 +73,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const classes = useStyles();
     const theme = useTheme();
 
-    const defaultProgramId = props.isCreatingNew ? null: props.existingEntity.programId;
+    const defaultProgramId = props.isCreatingNew ? null : props.existingEntity.programId;
     const defaultTitle = props.isCreatingNew ? "" : props.existingEntity.title;
     const defaultDescription = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.description;
     const defaultSubmittable = props.isCreatingNew ? true : props.existingEntity.submittable;
@@ -185,12 +186,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
 
                 {isEdited ? (
                     <Grid>
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                            justify="center"
-                        >
+                        <Grid container direction="row" alignItems="center" justify="center">
                             <Typography variant="subtitle1" className={classes.typeSelectorLabel}>
                                 Feladat típusa:
                             </Typography>
@@ -199,24 +195,16 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 onChange={setObjectiveType}
                             />
                         </Grid>
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                            justify="space-between"
-                            style={{marginBottom: "8px"}}
-                        >
-                            <Grid>
-                            <TextField label="Program ID" defaultValue={programId}
-                                //TODO: This should be a dropdown where people can select a program
-                                       onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
-                                       type="number"
-                                       variant="outlined"
-                            style={{paddingRight: theme.spacing(2)}}/>
-                            <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)}
-                                       variant="outlined"/>
+                        <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: "8px"}}>
+                            <Grid item>
+                                <TextField label="Program ID" defaultValue={programId}
+                                    //TODO: This should be a dropdown where people can select a program
+                                           onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
+                                           type="number"
+                                           variant="outlined"
+                                           style={{padding: theme.spacing(1)}}/>
                             </Grid>
-                            <Grid>
+                            <Grid item>
                                 {props.isCreatingNew && (
                                     <>
                                         <ButtonGroup
@@ -279,6 +267,10 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 )}
                             </Grid>
                         </Grid>
+                        <Grid>
+                            <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)}
+                                       variant="outlined" style={{padding: theme.spacing(1)}} fullWidth={true}/>
+                        </Grid>
                     </Grid>
 
 
@@ -290,31 +282,26 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                         justify="space-between"
                     >
                         <Grid item>
-                            {objectiveTypeData[props.existingEntity.objectiveType] && (
-                                <Grid
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                >
-                                    {React.createElement(
-                                        objectiveTypeData[props.existingEntity.objectiveType].icon,
-                                        {style: {width: 50, height: 50}}
-                                    )}
-                                    <Typography variant="h4" className={classes.title}>{title}</Typography>
-                                </Grid>
-                            )}
+                            <Grid
+                                container
+                                direction="row"
+                                alignItems="center"
+                            >
+                                {objectiveTypeData[props.existingEntity.objectiveType] && (<>
+                                        {React.createElement(
+                                            objectiveTypeData[props.existingEntity.objectiveType].icon,
+                                            {style: {width: 50, height: 50}}
+                                        )}
+                                    </>
+                                )}
+                                <Typography variant="h4" className={classes.title}>{title}</Typography>
+                            </Grid>
                         </Grid>
 
                         {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                            <Grid
-                                item
-                            >
-                                <IconButton
-                                    onClick={() => setIsEdited(true)}
-                                >
-                                    <EditIcon
-                                        color="action"
-                                    />
+                            <Grid item>
+                                <IconButton onClick={() => setIsEdited(true)}>
+                                    <EditIcon color="action"/>
                                 </IconButton>
                             </Grid>
                         )}
@@ -489,7 +476,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                         >
                             {props.existingEntity.creationTime === props.existingEntity.editTime ? (
                                     <Typography
-                                        variant="caption">Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
+                                        variant="caption">Létrehozva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
                                 ) :
                                 <Typography
                                     variant="caption">Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
@@ -515,11 +502,11 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                         alignItems="center"
                                         justify="space-between"
                                     >
-                                        <Typography variant="caption">Posztolta:{" "}
+                                        <Typography variant="caption">Létrehozta:{" "}
                                             {UserNameFormatter.getBasicDisplayName(author.creator)}
                                         </Typography>
                                         <Typography variant="caption">
-                                            Posztolva:{" "}
+                                            Létrehozva:{" "}
                                             {DateTimeFormatter.toFullBasic(
                                                 props.existingEntity.creationTime
                                             )}
@@ -550,54 +537,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     );
 };
 
-interface TempDatetimePickerProps {
-    value: Date;
-    onChange: (date: Date) => void;
-    disabled: boolean;
-}
-
-function padToTwoChars(num: number): string {
-    if (num >= 10) {
-        return num.toString();
-    }
-    return "0" + num.toString();
-}
-
-/**
- * TODO: Replace this ugliness with a MUI component
- */
-const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disabled}) => {
-    const valueDate = getSurelyDate(value);
-    const [internalValue, setInternalValue] = useState<string>(
-        valueDate
-            ? `${valueDate.getFullYear()}-${padToTwoChars(valueDate.getMonth() + 1)}-${padToTwoChars(valueDate.getDate())} ` +
-            `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(valueDate.getMinutes())}:${padToTwoChars(valueDate.getSeconds())}`
-            : ""
-    );
-    const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue));
-
-    return (
-        <>
-            <input
-                value={internalValue}
-                onChange={(e) => {
-                    setInternalValue(e.target.value);
-                    if (isDateTextInputValid(e.target.value)) {
-                        setIsError(false);
-                        onChange(new Date(e.target.value));
-                    } else {
-                        setIsError(true);
-                    }
-                }}
-                disabled={disabled}
-            />
-            {isError && "datetime error TODO: use MUI"}
-        </>
-    );
-};
-
-class FetchingToolsImpl
-    implements FetchingTools<Objective, SaveObjectiveCommand> {
+class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand> {
     createNewEntity(command: SaveObjectiveCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
             conf: {

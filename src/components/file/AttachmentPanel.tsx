@@ -33,6 +33,7 @@ import useEndpoint from '~/hooks/useEndpoint';
 import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
 import Spinner from '../Spinner';
 import styles from './styles/attachmentPanelStyle';
+
 interface AttachmentInfo {
     fileId: number;
     fileName: string;
@@ -64,6 +65,10 @@ const AttachmentPanel: FC<Props> = (props) => {
         },
         deps: [props.usedAttachments.firmAttachmentIds],
         keepOldDataWhileFetchingNew: true,
+        mockConfig: {
+            shouldMock: props.usedAttachments.firmAttachmentIds.length === 0,
+            mockData: []
+        }
     });
 
     function removeAttachment(id: number) {
