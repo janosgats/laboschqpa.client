@@ -381,7 +381,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 />
                             }
                             labelPlacement="start"
-                            label="A feladat nem lehet elérhető hamarabb mint egy adott idő."
+                            label="A beadások ne legyenek nyilvánosak egy adott idő előtt"
                         />
 
                         {isHideSubmissionsBeforeChecked && (
@@ -395,7 +395,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                         />
                                     }
                                     labelPlacement="start"
-                                    label="A feladat nem érhető el egészen: "
+                                    label="A beadások el lesznek rejtve eddig: "
                                 />
                             </>
                         )}
