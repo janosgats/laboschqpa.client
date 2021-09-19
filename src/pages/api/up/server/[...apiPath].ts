@@ -119,6 +119,8 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/event/registration/team/deRegister": ["POST"],
 
     "/api/program/listAll": ["GET"],
+    "/api/program/listAllWithTeamScore": ["GET"],
+    "/api/program/teamScore": ["GET"],
     "/api/program/createNew": ["POST"],
     "/api/program/delete": ["DELETE"],
     "/api/program/edit": ["POST"],

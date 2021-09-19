@@ -53,8 +53,6 @@ const NewsFeedPanel: FC = ({children}) => {
                 </MyPaper>
             </Grid>
 
-            {children}
-
             {wasCreateNewPostClicked && (
                 <Grid item>
                     <NewsPostDisplayContainer shouldCreateNew={true}

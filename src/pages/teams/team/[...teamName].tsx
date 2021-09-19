@@ -40,6 +40,7 @@ import {UserNameContainer} from '~/model/UserInfo';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import UserNameFormatter from '~/utils/UserNameFormatter';
+import ProgramScoresOfTeam from "~/components/pages/team/ProgramScoresOfTeam";
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -51,6 +52,8 @@ const Index: NextPage = () => {
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
+    const teamId: number = Number.parseInt(router.query['id'] as string);
+
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editedTeamName, setEditedTeamName] = useState<string>();
 
@@ -61,7 +64,7 @@ const Index: NextPage = () => {
                 id: router.query['id'],
             },
         },
-        deps: [router.query['id'], router.isReady],
+        deps: [teamId, router.isReady],
         enableRequest: router.isReady,
     });
 
@@ -119,6 +122,7 @@ const Index: NextPage = () => {
         }).then(() => {
             setIsEditing(false);
             usedTeamInfo.reloadEndpoint();
+            currentUser.reload();
         });
     }
 
@@ -390,7 +394,7 @@ const Index: NextPage = () => {
                         )}
 
                         {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
-                            <Tooltip title="Csatlakozási kérelem.">
+                            <Tooltip title="Csatlakozás a csapathoz">
                                 <IconButton onClick={() => submitApply()}>
                                     <PersonAddIcon />
                                 </IconButton>
@@ -398,7 +402,7 @@ const Index: NextPage = () => {
                         )}
 
                         {isViewedByMemberOrLeaderOfTeam && (
-                            <Tooltip title="Csapat elhagyása.">
+                            <Tooltip title="Csapat elhagyása">
                                 <IconButton onClick={() => submitLeave()}>
                                     <ExitToAppIcon />
                                 </IconButton>
@@ -406,14 +410,14 @@ const Index: NextPage = () => {
                         )}
                         {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id &&
                             currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
-                                <Tooltip title="Csatlakozási kérelem visszavonása.">
+                                <Tooltip title="Csatlakozási kérelem visszavonása">
                                     <IconButton onClick={() => submitCancelApplication()}>
                                         <CloseIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}
                         {isViewedByLeaderOfTeam && (
-                            <Tooltip title="Visszalépés mint csapatkapitány.">
+                            <Tooltip title="Visszalépés a csapatkapitányságtól">
                                 <IconButton onClick={() => submitResignFromLeadership()}>
                                     <RedoIcon />
                                 </IconButton>
@@ -444,7 +448,7 @@ const Index: NextPage = () => {
                                                 </Grid>
                                             </Link>
                                             <ListItemSecondaryAction>
-                                                <Tooltip title="Engedélyez">
+                                                <Tooltip title="Elfogad">
                                                     <IconButton onClick={() => submitApproveApplication(applicant.userId)}>
                                                         <PersonAddIcon />
                                                     </IconButton>
@@ -462,8 +466,10 @@ const Index: NextPage = () => {
                         <Divider variant="middle" />
                     </>
                 )}
-                {usedTeamMembers.pending && <Spinner />}
 
+                {router.isReady && <ProgramScoresOfTeam teamId={teamId}/>}
+
+                {usedTeamMembers.pending && <Spinner />}
                 {usedTeamMembers.failed && <p>Couldn't load members :'(</p>}
                 <>
                     <Typography variant="h4">Tagok</Typography>
@@ -501,7 +507,7 @@ const Index: NextPage = () => {
                                                     </Tooltip>
                                                 )}
                                                 {member.teamRole === TeamRole.LEADER && (
-                                                    <Tooltip title="Inasba rakni">
+                                                    <Tooltip title="Inasba rakás (CSK jog elvétele)">
                                                         <IconButton onClick={() => submitTakeAwayLeaderRights(member.userId)}>
                                                             <ArrowDownwardIcon />
                                                         </IconButton>
