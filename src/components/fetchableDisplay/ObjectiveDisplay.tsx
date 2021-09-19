@@ -36,6 +36,7 @@ import {
     TextField,
     Theme,
     Typography,
+    useTheme,
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
@@ -49,6 +50,7 @@ import {getStyles} from "./styles/ObjectiveDisplayStyle";
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
 
 export interface SaveObjectiveCommand {
+    programId: number;
     title: string;
     description: string;
     submittable: boolean;
@@ -68,7 +70,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     props
 ) => {
     const classes = useStyles();
+    const theme = useTheme();
 
+    const defaultProgramId = props.isCreatingNew ? null: props.existingEntity.programId;
     const defaultTitle = props.isCreatingNew ? "" : props.existingEntity.title;
     const defaultDescription = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.description;
     const defaultSubmittable = props.isCreatingNew ? true : props.existingEntity.submittable;
@@ -87,6 +91,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const [isSubmissionDisplayOpen, setIsSubmissionDisplayOpen] = useState<boolean>(false);
     const [isHideSubmissionsBeforeChecked, setIsHideSubmissionsBeforeChecked] = useState<boolean>(defaultIsHideSubmissionsBeforeChecked);
 
+    const [programId, setProgramId] = useState<number>(defaultProgramId);
     const [title, setTitle] = useState<string>(defaultTitle);
     const [description, setDescription] = useState<string>(defaultDescription);
     const [submittable, setSubmittable] = useState<boolean>(defaultSubmittable);
@@ -112,6 +117,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         }
 
         return {
+            programId: programId,
             title: title,
             description: description,
             submittable: submittable,
@@ -134,6 +140,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     function doCancelEdit() {
         setIsEdited(false);
         setResetTrigger(resetTrigger + 1);
+        setProgramId(defaultProgramId);
         setTitle(defaultTitle);
         setDescription(defaultDescription);
         setSubmittable(defaultSubmittable);
@@ -199,8 +206,16 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                             justify="space-between"
                             style={{marginBottom: "8px"}}
                         >
+                            <Grid>
+                            <TextField label="Program ID" defaultValue={programId}
+                                //TODO: This should be a dropdown where people can select a program
+                                       onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
+                                       type="number"
+                                       variant="outlined"
+                            style={{paddingRight: theme.spacing(2)}}/>
                             <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)}
                                        variant="outlined"/>
+                            </Grid>
                             <Grid>
                                 {props.isCreatingNew && (
                                     <>
@@ -559,7 +574,7 @@ const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disab
             `${padToTwoChars(valueDate.getHours())}:${padToTwoChars(valueDate.getMinutes())}:${padToTwoChars(valueDate.getSeconds())}`
             : ""
     );
-    const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue)    );
+    const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue));
 
     return (
         <>
@@ -589,6 +604,7 @@ class FetchingToolsImpl
                 url: "/api/up/server/api/objective/createNew",
                 method: "post",
                 data: {
+                    programId: command.programId,
                     title: command.title,
                     description: command.description,
                     submittable: command.submittable,
@@ -620,6 +636,7 @@ class FetchingToolsImpl
                 method: "post",
                 data: {
                     id: id,
+                    programId: command.programId,
                     title: command.title,
                     description: command.description,
                     submittable: command.submittable,
