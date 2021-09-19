@@ -2,6 +2,7 @@ import {UserGeneratedContent} from "~/model/usergeneratedcontent/UserGeneratedCo
 import {ObjectiveType} from "~/enums/ObjectiveType";
 
 export interface Objective extends UserGeneratedContent {
+    programId: number;
     title: string;
     description: string;
     submittable: boolean;

@@ -112,6 +112,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     if(currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         links.push({href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`, displayName: "My Team", authority: Authority.User, icon: 'groups'});
     }
+    links.push({ href: "/programs", displayName: "Programok", authority: Authority.User, icon: 'emoji_events' });
     links.push({ href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' });
     links.push({ href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' });
     links.push({ href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' });

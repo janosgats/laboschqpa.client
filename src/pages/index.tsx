@@ -18,7 +18,7 @@ const Index: NextPage = () => {
                     <NotAcceptedByEmailBanner />
                 </Grid>
             </Box>
-            <NewsFeedPanel></NewsFeedPanel>
+            <NewsFeedPanel/>
         </Box>
     );
 };

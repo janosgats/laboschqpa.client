@@ -12,6 +12,8 @@ import {Objective} from '~/model/usergeneratedcontent/Objective';
 import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import {Submission} from '~/model/usergeneratedcontent/Submission';
 import EventBus from '~/utils/EventBus';
+import {Program} from "~/model/usergeneratedcontent/Program";
+import ProgramDisplay from "~/components/fetchableDisplay/ProgramDisplay";
 
 interface CallbackProps {
     onCreatedNew?: (createdId: number) => void;
@@ -130,9 +132,9 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
         <>
             {isDeleted && <p>Entity was deleted</p>}
 
-            {/*isCancelledNewCreation && (
+            {isCancelledNewCreation && (
                 <p>Entity creation was cancelled</p>
-            )*/}
+            )}
 
             {!isDeleted && !isCancelledNewCreation && (
                 <>
@@ -191,6 +193,25 @@ export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (pr
     return (
         <FetchableDisplayContainer
             displayComponent={ObjectiveDisplay}
+            shouldCreateNew={props.shouldCreateNew}
+            entityId={props.entityId}
+            overriddenBeginningEntity={props.overriddenBeginningEntity}
+            onCreatedNew={props.onCreatedNew}
+            onCancelledNewCreation={props.onCancelledNewCreation}
+        />
+    );
+};
+
+interface ProgramDisplayContainerProps extends CallbackProps {
+    entityId?: number;
+    overriddenBeginningEntity?: Program;
+    shouldCreateNew: boolean;
+}
+
+export const ProgramDisplayContainer: FC<ProgramDisplayContainerProps> = (props) => {
+    return (
+        <FetchableDisplayContainer
+            displayComponent={ProgramDisplay}
             shouldCreateNew={props.shouldCreateNew}
             entityId={props.entityId}
             overriddenBeginningEntity={props.overriddenBeginningEntity}

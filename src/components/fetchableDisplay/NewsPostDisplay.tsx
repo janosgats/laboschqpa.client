@@ -1,4 +1,15 @@
-import {Button, ButtonGroup, Collapse, createStyles, Grid, IconButton, makeStyles, Theme, Tooltip, Typography} from '@material-ui/core';
+import {
+    Button,
+    ButtonGroup,
+    Collapse,
+    createStyles,
+    Grid,
+    IconButton,
+    makeStyles,
+    Theme,
+    Tooltip,
+    Typography
+} from '@material-ui/core';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DescriptionIcon from '@material-ui/icons/Description';
@@ -165,11 +176,11 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                     <Grid container direction="row" alignItems="center" justify="space-between">
                         {props.existingEntity.creationTime === props.existingEntity.editTime ? (
                             <Typography variant="caption">
-                                Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
+                                Létrehozva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
                             </Typography>
                         ) : (
                             <Typography variant="caption">
-                                módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
+                                Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
                             </Typography>
                         )}
                         <Tooltip title="Show Author" leaveDelay={300}>
@@ -184,10 +195,10 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                             <Grid container direction="column">
                                 <Grid container direction="row" alignItems="center" justify="space-between">
                                     <Typography variant="caption">
-                                        Posztolta: {UserNameFormatter.getBasicDisplayName(author.creator)}
+                                        Létrehozta: {UserNameFormatter.getBasicDisplayName(author.creator)}
                                     </Typography>
                                     <Typography variant="caption">
-                                        Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
+                                        Létrehozva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}
                                     </Typography>
                                 </Grid>
                                 <Grid container direction="row" alignItems="center" justify="space-between">
