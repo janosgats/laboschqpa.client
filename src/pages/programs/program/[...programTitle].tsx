@@ -34,7 +34,7 @@ const Index: NextPage = () => {
             },
         },
         deps: [currentUser.getUserInfo()?.teamId, programId],
-        enableRequest: !!currentUser.getUserInfo(),
+        enableRequest: router.isReady && currentUser.isMemberOrLeaderOrApplicantOfAnyTeam(),
     });
 
 
@@ -45,16 +45,18 @@ const Index: NextPage = () => {
                     <ProgramDisplayContainer entityId={programId} shouldCreateNew={false}/>
 
                     <br/>
-                    <MyPaper>
-                        {usedEndpoint.pending && <Spinner/>}
-                        {usedEndpoint.failed && <p>Couldn't load team score on this Program :/ </p>}
-                        {usedEndpoint.succeeded && (
-                            <p>
-                                {prefixWordWithArticle(currentUser.getUserInfo()?.teamName, true)} pontszáma
-                                ezen a programon: {usedEndpoint.data.teamScore}
-                            </p>
-                        )}
-                    </MyPaper>
+                    {currentUser.isMemberOrLeaderOrApplicantOfAnyTeam() && (
+                        <MyPaper>
+                            {usedEndpoint.pending && <Spinner/>}
+                            {usedEndpoint.failed && <p>Couldn't load team score on this Program :/ </p>}
+                            {usedEndpoint.succeeded && (
+                                <p>
+                                    {prefixWordWithArticle(currentUser.getUserInfo()?.teamName, true)} pontszáma
+                                    ezen a programon: {usedEndpoint.data.teamScore}
+                                </p>
+                            )}
+                        </MyPaper>
+                    )}
 
                     <h1>A programhoz kapcsolódó feladatok</h1>
                     <ObjectivesBelongingToProgramPanel programId={programId}/>
