@@ -7,6 +7,7 @@ import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Button, ButtonGroup, CardContent, Grid, Typography} from "@material-ui/core";
 import GitHubIcon from '@material-ui/icons/GitHub';
+import GTranslateIcon from "@material-ui/icons/GTranslate";
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -92,11 +93,12 @@ const LoginForm: FC<Props> = (props) => {
                 <Button
                     variant="contained"
                     onClick={() => doStartLogin("google")}
+                    endIcon={<GTranslateIcon />}
                 >
                     Google
                 </Button>
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     onClick={() => doStartLogin("github")}
                     endIcon={<GitHubIcon />}
                 >
