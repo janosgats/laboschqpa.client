@@ -65,6 +65,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/newsPost/delete": ["DELETE"],
 
     "/api/objective/listAll": ["GET"],
+    "/api/objective/listObjectivesBelongingToProgram": ["GET"],
     "/api/objective/listForDisplay": ["POST"],
     "/api/objective/objective": ["GET"],
     "/api/objective/edit": ["POST"],
@@ -109,6 +110,21 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
 
     "/api/admin/authority/user/add": ["POST"],
     "/api/admin/authority/user/delete": ["DELETE"],
+
+    "/api/event/listPersonalEventsForUser": ["GET"],
+    "/api/event/listTeamEventsForUser": ["GET"],
+    "/api/event/registration/personal/register": ["POST"],
+    "/api/event/registration/personal/deRegister": ["POST"],
+    "/api/event/registration/team/register": ["POST"],
+    "/api/event/registration/team/deRegister": ["POST"],
+
+    "/api/program/listAll": ["GET"],
+    "/api/program/listAllWithTeamScore": ["GET"],
+    "/api/program/teamScore": ["GET"],
+    "/api/program/createNew": ["POST"],
+    "/api/program/delete": ["DELETE"],
+    "/api/program/edit": ["POST"],
+    "/api/program/program": ["GET"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

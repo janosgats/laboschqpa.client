@@ -1,13 +1,30 @@
-import React, { FC, useContext } from "react";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
+import React, {FC, useContext, useState} from "react";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import { useRouter } from "next/router";
-import { AppBar, Button, createStyles, Divider, Drawer, Hidden, Icon, IconButton, List, ListItemIcon, ListItemText, makeStyles, Switch, Theme, Toolbar, Typography, useTheme } from "@material-ui/core";
-import { ListItem } from "@material-ui/core";
+import {useRouter} from "next/router";
+import {
+    AppBar,
+    Button,
+    createStyles,
+    Divider,
+    Drawer,
+    Hidden,
+    Icon,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles,
+    Switch,
+    Theme,
+    Toolbar,
+    Typography,
+    useTheme
+} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
-import { useState } from "react";
 import Link from "next/link";
 
 
@@ -89,20 +106,24 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     }
 
 
-    const Links: LinkParams[] = [
-        { href: "/", displayName: "Home", authority: Authority.User, icon: 'home' },
-        { href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' },
-        { href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' },
-        { href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' },
-        { href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' },
-        { href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' },
-        { href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' },
-        { href: "/speedDrinking", displayName: "Speed Drinking", authority: Authority.User, icon: 'sports_bar' },
-        { href: "/riddles", displayName: "Riddles", authority: Authority.User, icon: 'quiz' },
-        { href: "/riddleEditor", displayName: "Riddle Editor", authority: Authority.RiddleEditor, icon: 'mode' },
-        { href: "/acceptedEmails", displayName: "Accepted Emails", authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read' },
-        { href: "/admin", displayName: "Admin", authority: Authority.Admin, icon: 'admin_panel_settings' },
-    ]
+    const links: LinkParams[] = [];
+    links.push({ href: "/", displayName: "Home", authority: Authority.User, icon: 'home' });
+    links.push({ href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' });
+    if(currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
+        links.push({href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`, displayName: "My Team", authority: Authority.User, icon: 'groups'});
+    }
+    links.push({ href: "/programs", displayName: "Programok", authority: Authority.User, icon: 'emoji_events' });
+    links.push({ href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' });
+    links.push({ href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' });
+    links.push({ href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' });
+    links.push({ href: "/events", displayName: "Események", authority: Authority.User, icon: 'book_online' });
+    links.push({ href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' });
+    links.push({ href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' });
+    links.push({ href: "/speedDrinking", displayName: "Speed Drinking", authority: Authority.User, icon: 'sports_bar' });
+    links.push({ href: "/riddles", displayName: "Riddles", authority: Authority.User, icon: 'quiz' });
+    links.push({ href: "/riddleEditor", displayName: "Riddle Editor", authority: Authority.RiddleEditor, icon: 'mode' });
+    links.push({ href: "/acceptedEmails", displayName: "Accepted Emails", authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read' });
+    links.push({ href: "/admin", displayName: "Admin", authority: Authority.Admin, icon: 'admin_panel_settings' });
 
     const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
@@ -111,7 +132,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             <div className={classes.toolbar} />
             <Divider />
             <List>
-                {Links.map((link: LinkParams, index: number) => {
+                {links.map((link: LinkParams, index: number) => {
                     return currentUser.hasAuthority(link.authority) ? (
                         <Link
                             key={"link" + link.displayName + index}

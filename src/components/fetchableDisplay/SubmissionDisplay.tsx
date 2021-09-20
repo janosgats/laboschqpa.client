@@ -1,33 +1,41 @@
-import React, { useContext, useEffect, useState } from "react";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import React, {useContext, useEffect, useState} from "react";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
+import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, { Author } from "~/service/UserInfoService";
+import UserInfoService, {Author} from "~/service/UserInfoService";
 import UserNameFormatter from "~/utils/UserNameFormatter";
 import EventBus from "~/utils/EventBus";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import { Submission } from "~/model/usergeneratedcontent/Submission";
-import { TeamRole } from "~/enums/TeamRole";
+import {Submission} from "~/model/usergeneratedcontent/Submission";
+import {TeamRole} from "~/enums/TeamRole";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import {
-  submission_OBJECTIVE_DEADLINE_HAS_PASSED,
-  submission_OBJECTIVE_IS_NOT_SUBMITTABLE,
-} from "~/enums/ApiErrors";
-import { getSurelyDate } from "~/utils/DateHelpers";
-import { Authority } from "~/enums/Authority";
+import {submission_OBJECTIVE_DEADLINE_HAS_PASSED, submission_OBJECTIVE_IS_NOT_SUBMITTABLE,} from "~/enums/ApiErrors";
+import {getSurelyDate} from "~/utils/DateHelpers";
+import {Authority} from "~/enums/Authority";
 import Scorer from "~/components/Scorer";
-import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
-import { Box, Button, ButtonGroup, Collapse, createStyles, DialogContent, DialogContentText, Grid, IconButton, makeStyles, Paper, Theme, Typography } from "@material-ui/core";
+import {
+  Button,
+  ButtonGroup,
+  Collapse,
+  createStyles,
+  Grid,
+  IconButton,
+  makeStyles,
+  Paper,
+  Theme,
+  Typography
+} from "@material-ui/core";
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import {styles} from'~/components/fetchableDisplay/styles/SubmissionDisplayStyle'
+import {styles} from '~/components/fetchableDisplay/styles/SubmissionDisplayStyle'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles(styles)
@@ -317,7 +325,7 @@ const SubmissionDisplay: FetchableDisplay<
             justify="space-between"
           >
             {props.existingEntity.creationTime === props.existingEntity.editTime ? (
-              <Typography variant="caption" >Posztolva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
+              <Typography variant="caption" >Létrehozva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
             ) :
               <Typography variant="caption">Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
             }
@@ -343,11 +351,11 @@ const SubmissionDisplay: FetchableDisplay<
                   alignItems="center"
                   justify="space-between"
                 >
-                  <Typography variant="caption">Posztolta:{" "}
+                  <Typography variant="caption">Létrehozta:{" "}
                     {UserNameFormatter.getBasicDisplayName(author.creator)}
                   </Typography>
                   <Typography variant="caption">
-                    Posztolva:{" "}
+                    Létrehozva:{" "}
                     {DateTimeFormatter.toFullBasic(
                       props.existingEntity.creationTime
                     )}

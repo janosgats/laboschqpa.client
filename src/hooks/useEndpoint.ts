@@ -12,6 +12,7 @@ export interface UseEndpointCommand<T, R = T> {
     enableRequest?: boolean;
     keepOldDataWhileFetchingNew?: boolean;
     delayPendingState?: boolean;
+    mockConfig?: MockResponseConfig<T>
 }
 
 export interface UsedEndpoint<R> {
@@ -24,6 +25,13 @@ export interface UsedEndpoint<R> {
     reloadEndpoint: () => void;
 }
 
+export interface MockResponseConfig<R> {
+    shouldMock: boolean;
+    mockData?: R;
+}
+
+const defaultMockConfig: MockResponseConfig<any> = {shouldMock: false}
+
 const useEndpoint = <T, R = T>({
     conf,
     deps = [],
@@ -33,11 +41,25 @@ const useEndpoint = <T, R = T>({
     onError,
     onSuccess,
     delayPendingState = true,
+    mockConfig = defaultMockConfig,
 }: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
     const [pending, setPending] = useDelayedToggle(true, delayPendingState ? 250 : 0);
     const [succeeded, setSucceeded] = React.useState(false);
+
+
+    function getResponsePromiseProvider() {
+        if (mockConfig.shouldMock) {
+            return new Promise<AxiosResponse<T>>(resolve => {
+                resolve({
+                    data: mockConfig.mockData
+                } as AxiosResponse<T>);
+            });
+        }
+        return callJsonEndpoint<T>({conf: conf});
+
+    }
 
     const refreshOnChange = () => {
         setPending(true);
@@ -46,7 +68,8 @@ const useEndpoint = <T, R = T>({
         if (!keepOldDataWhileFetchingNew) {
             setData(null);
         }
-        callJsonEndpoint<T>({conf: conf})
+
+        getResponsePromiseProvider()
             .then((axiosResponse) => {
                 if (customSuccessProcessor) {
                     setData(customSuccessProcessor(axiosResponse));

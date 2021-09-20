@@ -1,12 +1,13 @@
-import React, { FC, useContext } from "react";
+import React, {FC, useContext} from "react";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import { auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER } from "~/enums/ApiErrors";
-import { useRouter } from "next/router";
+import {auth_OAUTH2_AUTHORIZATION_REQUEST_FROM_ALREADY_LOGGED_IN_USER} from "~/enums/ApiErrors";
+import {useRouter} from "next/router";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Button, ButtonGroup, CardContent, Grid, Typography } from "@material-ui/core";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Button, ButtonGroup, CardContent, Grid, Typography} from "@material-ui/core";
 import GitHubIcon from '@material-ui/icons/GitHub';
+import GTranslateIcon from "@material-ui/icons/GTranslate";
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -81,22 +82,23 @@ const LoginForm: FC<Props> = (props) => {
         >
             {props.addLoginMethod ? (
                 <Grid item xs={12}>
-                    <Typography variant="h5">Új bejelentkezésimód hozzáadása</Typography>
+                    <Typography variant="h5">Új bejelentkezési mód hozzáadása</Typography>
                 </Grid>
             ) : (
                 <Grid item xs={12}>
-                    <Typography variant="h5">Válasz bejelentkezésimódot</Typography>
+                    <Typography variant="h5">Válasz bejelentkezési módot</Typography>
                 </Grid>
             )}
             <ButtonGroup variant="contained" color="primary">
                 <Button
                     variant="contained"
                     onClick={() => doStartLogin("google")}
+                    endIcon={<GTranslateIcon />}
                 >
                     Google
                 </Button>
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     onClick={() => doStartLogin("github")}
                     endIcon={<GitHubIcon />}
                 >

@@ -1,6 +1,7 @@
 export enum Authority {
     User = "User",
     NewsPostEditor = "NewsPostEditor",
+    ProgramEditor = "ProgramEditor",
     ObjectiveEditor = "ObjectiveEditor",
     RiddleEditor = "RiddleEditor",
     TeamScorer = "TeamScorer",
@@ -20,6 +21,9 @@ export const authorityData: Record<Authority, AuthorityDataEntry> = {
     },
     [Authority.NewsPostEditor]: {
         authority: Authority.NewsPostEditor,
+    },
+    [Authority.ProgramEditor]: {
+        authority: Authority.ProgramEditor,
     },
     [Authority.ObjectiveEditor]: {
         authority: Authority.ObjectiveEditor,

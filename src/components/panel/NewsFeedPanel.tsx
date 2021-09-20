@@ -53,11 +53,10 @@ const NewsFeedPanel: FC = ({children}) => {
                 </MyPaper>
             </Grid>
 
-            {children}
-
             {wasCreateNewPostClicked && (
                 <Grid item>
-                    <NewsPostDisplayContainer shouldCreateNew={true} />
+                    <NewsPostDisplayContainer shouldCreateNew={true}
+                                              onCancelledNewCreation={() => setWasCreateNewPostClicked(false)}/>
                 </Grid>
             )}
 

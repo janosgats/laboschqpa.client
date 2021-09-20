@@ -1,22 +1,13 @@
-import {
-  Button,
-  createStyles,
-  Fab,
-  Grid,
-  makeStyles,
-  Theme
-} from "@material-ui/core";
+import {Button, createStyles, Fab, Grid, makeStyles, Theme} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import React, { FC, useContext, useEffect, useState } from "react";
-import { ObjectiveDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
-import { ObjectiveType } from "~/enums/ObjectiveType";
+import React, {FC, useContext, useEffect, useState} from "react";
+import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
+import {ObjectiveType} from "~/enums/ObjectiveType";
 import useEndpoint from "~/hooks/useEndpoint";
-import useInfiniteScroller, {
-  InfiniteScroller
-} from "~/hooks/useInfiniteScroller";
-import { Objective } from "~/model/usergeneratedcontent/Objective";
+import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
+import {Objective} from "~/model/usergeneratedcontent/Objective";
 import Spinner from "../Spinner";
 import styles from "./styles/ObjectivePanelStyle";
 
@@ -34,8 +25,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     startingShowCount: 5,
   });
 
-  const [wasCreateNewObjectiveClicked, setWasCreateNewPostClicked] =
-    useState<boolean>(false);
+  const [wasCreateNewObjectiveClicked, setWasCreateNewObjectiveClicked] = useState<boolean>(false);
 
   const usedEndpoint = useEndpoint<Objective[]>({
     conf: {
@@ -52,7 +42,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
   });
 
   useEffect(() => {
-    setWasCreateNewPostClicked(false);
+    setWasCreateNewObjectiveClicked(false);
   }, [usedEndpoint.data]);
 
   return (
@@ -66,7 +56,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
               color="secondary"
               style={{ position: "fixed" }}
               className={classes.floatingActionButton}
-              onClick={() => setWasCreateNewPostClicked(true)}
+              onClick={() => setWasCreateNewObjectiveClicked(true)}
             >
               <AddIcon />
             </Fab>
@@ -74,7 +64,8 @@ const ObjectivesPanel: FC<Props> = (props) => {
         )}
 
       {wasCreateNewObjectiveClicked && (
-        <ObjectiveDisplayContainer shouldCreateNew={true} />
+        <ObjectiveDisplayContainer shouldCreateNew={true}
+                                   onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)}/>
       )}
 
       {usedEndpoint.pending && <Spinner />}

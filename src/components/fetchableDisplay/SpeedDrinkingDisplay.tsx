@@ -114,6 +114,8 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
     return (
         <>
             <TableHead>
+                {!props.isCreatingNew && (
+                    <>
                 <TableCell>
                     {isValidNumber(props.rowNumber) && props.rowNumber}
                 </TableCell>
@@ -203,6 +205,8 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                             Edit
                         </Button>
                     </TableCell>
+                )}
+                    </>
                 )}
             </TableHead>
 

@@ -32,6 +32,10 @@ export interface CurrentUser {
      * Returns false until the UserInfo was fetched. After that, it checks for team membership.
      */
     isMemberOrLeaderOfAnyTeam: () => boolean;
+    /**
+     * Returns false until the UserInfo was fetched. After that, it checks for team leadership.
+     */
+    isLeaderOfAnyTeam: () => boolean;
     isLoggedIn: () => boolean;
     setLoggedInState: (isLoggedIn: boolean) => void;
     reload: () => Promise<void>;
@@ -44,6 +48,7 @@ export const CurrentUserContext = createContext<CurrentUser>({
     isMemberOrLeaderOfTeam: null,
     isMemberOrLeaderOfAnyTeam: null,
     isLeaderOfTeam: null,
+    isLeaderOfAnyTeam: null,
     isLoggedIn: null,
     setLoggedInState: null,
     reload: null,
@@ -53,7 +58,7 @@ interface Props {
     children: ReactNode;
 }
 
-const FetchErrorBlock: FC<{onRetryClick: () => void}> = (props) => {
+const FetchErrorBlock: FC<{ onRetryClick: () => void }> = (props) => {
     return (
         <>
             <p>Error while fetching your login info</p>
@@ -156,6 +161,10 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         return getUserInfo() && (getUserInfo().teamRole == TeamRole.MEMBER || getUserInfo().teamRole == TeamRole.LEADER);
     }
 
+    function isLeaderOfAnyTeam(): boolean {
+        return getUserInfo() && getUserInfo().teamRole == TeamRole.LEADER;
+    }
+
     function setLoggedInState(isLoggedIn: boolean) {
         setIsUserLoggedIn(isLoggedIn);
         setUserInfo(null);
@@ -175,6 +184,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         isMemberOrLeaderOfTeam: isMemberOrLeaderOfTeam,
         isLeaderOfTeam: isLeaderOfTeam,
         isMemberOrLeaderOfAnyTeam: isMemberOrLeaderOfAnyTeam,
+        isLeaderOfAnyTeam: isLeaderOfAnyTeam,
     };
 
     EventBus.subscribe(EventType.TRIGGER_USER_CONTEXT_RELOAD, 'CurrentUserProvider', (event) => {
@@ -187,16 +197,16 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
         }
 
         if (errorWhileFetchingUserInfo && !pendingFetchingUserInfo) {
-            return <FetchErrorBlock onRetryClick={reload} />;
+            return <FetchErrorBlock onRetryClick={reload}/>;
         }
 
         if (isLoggedIn() === null) {
-            return <Spinner />;
+            return <Spinner/>;
         }
         if (isLoggedIn()) {
             return children;
         }
-        return <LoginWall />;
+        return <LoginWall/>;
     }
 
     return <CurrentUserContext.Provider value={contextValue}>{getPageContent()}</CurrentUserContext.Provider>;
