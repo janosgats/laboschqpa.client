@@ -94,7 +94,7 @@ const Index: NextPage = () => {
             <Head>
                 <title>QR Fight Report</title>
             </Head>
-            <h1>QR Fight Report</h1>
+            <h1>QR Fight - Csapatok befolyásossága egyes területeken</h1>
             <MyPaper>
                 {(usedAreas.pending || usedStatistics.pending) && (
                     <Spinner/>
