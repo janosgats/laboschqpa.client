@@ -8,6 +8,7 @@ import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import {Button, ButtonGroup, CardContent, Grid, Typography} from "@material-ui/core";
 import GitHubIcon from '@material-ui/icons/GitHub';
 import GTranslateIcon from "@material-ui/icons/GTranslate";
+import LoginRedirectionService from "~/service/LoginRedirectionService";
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -52,6 +53,8 @@ const LoginForm: FC<Props> = (props) => {
                 return;
             }
             EventBus.notifyInfo(`Redirecting you to ${oauthProvider}`, "Logging in")
+            LoginRedirectionService.saveRedirectionUrl(location.pathname + location.search);
+
             router.push(redirectLocation);
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
@@ -74,38 +77,33 @@ const LoginForm: FC<Props> = (props) => {
 
     return (
         <CardContent>
-        <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-        >
-            {props.addLoginMethod ? (
-                <Grid item xs={12}>
-                    <Typography variant="h5">Új bejelentkezési mód hozzáadása</Typography>
-                </Grid>
-            ) : (
-                <Grid item xs={12}>
-                    <Typography variant="h5">Válasz bejelentkezési módot</Typography>
-                </Grid>
-            )}
-            <ButtonGroup variant="contained" color="primary">
-                <Button
-                    variant="contained"
-                    onClick={() => doStartLogin("google")}
-                    endIcon={<GTranslateIcon />}
-                >
-                    Google
-                </Button>
-                <Button
-                    variant="outlined"
-                    onClick={() => doStartLogin("github")}
-                    endIcon={<GitHubIcon />}
-                >
-                    GitHub
-                </Button>
-            </ButtonGroup>
-        </Grid>
+            <Grid container direction="column" justify="center" alignItems="center">
+                {props.addLoginMethod ? (
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Új bejelentkezési mód hozzáadása</Typography>
+                    </Grid>
+                ) : (
+                    <Grid item xs={12}>
+                        <Typography variant="h5">Válasz bejelentkezési módot</Typography>
+                    </Grid>
+                )}
+                <ButtonGroup variant="contained" color="primary">
+                    <Button
+                        variant="contained"
+                        onClick={() => doStartLogin("google")}
+                        endIcon={<GTranslateIcon/>}
+                    >
+                        Google
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => doStartLogin("github")}
+                        endIcon={<GitHubIcon/>}
+                    >
+                        GitHub
+                    </Button>
+                </ButtonGroup>
+            </Grid>
         </CardContent>
     )
 };

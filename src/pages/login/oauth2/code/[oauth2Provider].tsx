@@ -12,6 +12,7 @@ import {
     auth_CANNOT_FIND_EXISTING_ACCOUNT_TO_LOG_IN
 } from "~/enums/ApiErrors";
 import {Button, ButtonGroup, Typography} from "@material-ui/core";
+import LoginRedirectionService from "~/service/LoginRedirectionService";
 
 
 const nextPage: NextPage = () => {
@@ -45,7 +46,11 @@ const nextPage: NextPage = () => {
             setLoginSucceeded(true);
             currentUser
                 .reload()
-                .finally(() => router.push("/"));
+                .finally(() => {
+                    setTimeout(() => {
+                        router.push(LoginRedirectionService.popRedirectionUrl('/'))
+                    }, 500)
+                });
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {
