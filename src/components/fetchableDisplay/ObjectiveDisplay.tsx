@@ -178,8 +178,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
     }
 
-    const observerTeamHasScore = props.existingEntity && props.existingEntity.observerTeamScore > 0;
-
     return (
         <>
             <Paper className={classes.objectiveDisplayWrapper}>
@@ -310,9 +308,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                 )}
 
 
-                {observerTeamHasScore && (
+                {props.existingEntity?.observerTeamHasScore && (
                     <Typography variant="subtitle1" className={classes.subtitle}>
-                        -A csapatod pontszáma: {props.existingEntity.observerTeamScore}
+                        - A csapatod már teljesítette e feladatot.
                     </Typography>
                 )}
                 <Box className={classes.richTextEditor}>

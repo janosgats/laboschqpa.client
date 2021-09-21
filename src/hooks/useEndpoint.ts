@@ -45,7 +45,7 @@ const useEndpoint = <T, R = T>({
 }: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
     const [error, setError] = React.useState(false);
-    const [pending, setPending] = useDelayedToggle(true, delayPendingState ? 250 : 0);
+    const [pending, setPending] = useDelayedToggle(false, delayPendingState ? 250 : 0);
     const [succeeded, setSucceeded] = React.useState(false);
 
 

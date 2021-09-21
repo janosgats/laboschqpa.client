@@ -10,5 +10,5 @@ export interface Objective extends UserGeneratedContent {
     hideSubmissionsBefore: string | Date;
     objectiveType: ObjectiveType;
 
-    observerTeamScore?: number;
+    observerTeamHasScore?: boolean;
 }
