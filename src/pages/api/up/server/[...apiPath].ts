@@ -126,6 +126,10 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/program/delete": ["DELETE"],
     "/api/program/edit": ["POST"],
     "/api/program/program": ["GET"],
+
+    "/api/qrFight/fightStats": ["GET"],
+    "/api/qrFight/listAllAreas": ["GET"],
+    "/api/qrFight/submit": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {
