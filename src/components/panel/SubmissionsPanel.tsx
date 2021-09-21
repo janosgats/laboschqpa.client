@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
 const SubmissionsPanel: FC<Props> = (props) => {
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 5,
+        startingShowCount: 3,
     });
 
     const classes = useStyles();
@@ -62,7 +62,7 @@ const SubmissionsPanel: FC<Props> = (props) => {
 
             {usedEndpoint.succeeded && (
                 <>
-                    {objectivesIdList.map((objectiveId: number, index: number) => {
+                    {objectivesIdList.slice(0, infiniteScroller.shownCount).map((objectiveId: number, index: number) => {
                         return (
                             <Paper
                                 className={classes.submissionPanelWrapper}
@@ -78,7 +78,6 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                 </Typography>
                                 {objectiveSubmissionMap
                                     .get(objectiveId)
-                                    .slice(0, infiniteScroller.shownCount)
                                     .map((submission) => {
                                         return (
                                             <>
@@ -94,9 +93,12 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                             </>
                                         );
                                     })}
-                                {infiniteScroller.canShownCountBeIncreased && (
+                                
+                            </Paper>
+                        );
+                    })}
+                    {infiniteScroller.canShownCountBeIncreased && (
                                     <Grid container justify="center">
-                                        {/* TO DO VALAKI FIX THIS SHIT XD */}
                                         <Button
                                             size="large"
                                             variant="text"
@@ -108,9 +110,6 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                         </Button>
                                     </Grid>
                                 )}
-                            </Paper>
-                        );
-                    })}
                 </>
             )}
         </div>
