@@ -1,14 +1,37 @@
-export const  style ={
+import { Theme } from "@material-ui/core/styles";
+import { alpha } from "@material-ui/core";
 
-    tableContainer:{
-        borderRadius: "16px",
-        padding: "16px"
-    },
+export function getStyles(theme: Theme) {
+    return {
 
-
-    tableRow:{
-        '&:hover': {
-            cursor: "pointer",
+        teamPaper: {
+            padding: "16px",
+            borderRadius: "16px",
+            backgroundColor: alpha(theme.palette.background.paper, 0.5),
+            minHeight: "70rem",
         },
-    },
+
+        listHover:{  
+            '&:hover':{
+                backgroundColor: alpha(theme.palette.background.paper, 0.75),
+                cursor: "pointer",
+            },
+        },
+
+        requestToTeamButtons: {
+
+        },
+
+        tableContainer: {
+            borderRadius: "16px",
+            padding: "16px"
+        },
+
+
+        tableRow: {
+            '&:hover': {
+                cursor: "pointer",
+            },
+        },
+    };
 }

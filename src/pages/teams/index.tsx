@@ -6,7 +6,7 @@ import React from 'react';
 import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
 import Spinner from '~/components/Spinner';
 import useEndpoint from '~/hooks/useEndpoint';
-import { style } from '~/components/team/styles/TeamStyle';
+import { getStyles } from '~/components/team/styles/TeamStyle';
 
 interface TeamWithScore {
   id: number;
@@ -15,7 +15,7 @@ interface TeamWithScore {
   score: number;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles(style))
+const useStyles = makeStyles((theme: Theme) => getStyles(theme))
 const baseUrl = "https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/qpatrophy/";
 const svgEndPoints = ["gold.svg", "silver.svg", "bronze.svg"];
 
@@ -31,18 +31,15 @@ const Index: NextPage = () => {
 
   const separatedPoints = (score: number) => score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  const loadQpaIcon = (index: number) => {
-    console.log("Calling : " + baseUrl + svgEndPoints[index])
-    return (
-      <>
-        <img
-          src={baseUrl + svgEndPoints[index]}
-          width={125 - index * 25}
-          height={125 - index * 25}
-        />
-      </>
-    )
-  }
+  const loadQpaIcon = (index: number) => <img
+    src={baseUrl + svgEndPoints[index]}
+    width={125 - index * 25}
+    height={125 - index * 25}
+  />
+
+
+
+
 
   return (
     <Container maxWidth="lg">
@@ -77,11 +74,11 @@ const Index: NextPage = () => {
                       className={classes.tableRow}
                     >
                       <TableCell align="center">
-                          {index < 3 ? loadQpaIcon(index) :
-                            <Typography variant="h5">
-                              {index + 1}.
-                            </Typography>
-                          }
+                        {index < 3 ? loadQpaIcon(index) :
+                          <Typography variant="h5">
+                            {index + 1}.
+                          </Typography>
+                        }
                       </TableCell>
                       <TableCell align="center"><Typography variant="h5">{team.name}</Typography></TableCell>
                       <TableCell align="center"><Typography variant="h5">{separatedPoints(team.score)}</Typography></TableCell>
