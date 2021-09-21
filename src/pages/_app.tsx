@@ -27,7 +27,7 @@ function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
 }
 
 function MyApp({Component, pageProps}): JSX.Element {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
 
     const theme = createTheme({
         palette: {

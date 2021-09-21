@@ -163,27 +163,13 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     
     return (
         <div className={classes.root}>
-            <AppBar
-                position="fixed"
-                color="inherit"
-                className={classes.appBar}
-            >
+            <AppBar position="fixed" color="inherit" className={classes.appBar}>
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
+                    <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} className={classes.menuButton}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        className={classes.title}
-                    >
-                        QPA 2021
+                    <Typography variant="h5" noWrap className={classes.title}>
+                        49. Aki másnak vermet ás SCH QPA
                     </Typography>
                     <Switch checked={darkMode} onChange={() => { setDarkMode(!darkMode) }} />
                     <Button color="inherit" onClick={() => doLogout()}>Logout</Button>
