@@ -210,7 +210,7 @@ const SubmissionDisplay: FetchableDisplay<
           className={classes.header}>
 
       
-      {props.existingEntity.teamName && (
+      {props.existingEntity && (
         <Typography variant="h6">Beadta <b><i>{props.existingEntity.teamName}</i></b> csapata.</Typography>
       )}
 

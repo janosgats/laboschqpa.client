@@ -1,5 +1,5 @@
 import {Button, createStyles, Grid, makeStyles, Paper, Theme, Typography} from '@material-ui/core';
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {SubmissionDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
 import useEndpoint from '~/hooks/useEndpoint';
 import useInfiniteScroller, {InfiniteScroller} from '~/hooks/useInfiniteScroller';
@@ -8,19 +8,83 @@ import {isValidNumber} from '~/utils/CommonValidators';
 import Spinner from '../Spinner';
 import {styles} from './styles/SubmissionsPanelStyle';
 
+const OUTER_SCROLLER_STARTING_SHOW_COUNT = 3;
+const INNER_SCROLLER_STARTING_SHOW_COUNT = 3;
+
+const useStyles = makeStyles((theme: Theme) => createStyles(styles));
+
+interface SubmissionsInObjectiveProps{
+    submissions: Submission[];
+    filteredObjectiveId?: number;
+    filteredTeamId?: number;
+}
+
+const SubmissionsInObjective: FC<SubmissionsInObjectiveProps> = (props)=>{
+    const classes = useStyles();
+
+    const infiniteScroller: InfiniteScroller = useInfiniteScroller({
+        startingShowCount: INNER_SCROLLER_STARTING_SHOW_COUNT,
+    });
+
+    useEffect(() => {
+        infiniteScroller.setMaxLength(props.submissions.length);
+    }, [props.submissions]);
+
+    return (
+        <Paper
+            className={classes.submissionPanelWrapper}
+            elevation={0}
+            variant="outlined"
+        >
+            <Typography variant="h4">
+                <b>{props.submissions[0].objectiveTitle}</b> feladat beadásai
+            </Typography>
+            <Typography variant="subtitle1" className={classes.subtitle}>
+                Beadások:{' '}
+            </Typography>
+            {props.submissions
+                .slice(0, infiniteScroller.shownCount)
+                .map((submission) => {
+                    return (
+                            <SubmissionDisplayContainer
+                                key={submission.id}
+                                overriddenBeginningEntity={submission}
+                                shouldCreateNew={false}
+                                displayExtraProps={{
+                                    showObjectiveTitle: !isValidNumber(props.filteredObjectiveId),
+                                    showTeamName: !isValidNumber(props.filteredTeamId),
+                                }}
+                            />
+                    );
+                })}
+
+            {infiniteScroller.canShownCountBeIncreased && (
+                <Grid container justify="center">
+                    <Button
+                        size="large"
+                        variant="text"
+                        fullWidth
+                        color="secondary"
+                        onClick={() => infiniteScroller.increaseShownCount(3)}
+                    >
+                        &darr; Show more submissions &darr;
+                    </Button>
+                </Grid>
+            )}
+
+        </Paper>
+    );
+}
+
 interface Props {
     filteredObjectiveId?: number;
     filteredTeamId?: number;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles(styles));
-
 const SubmissionsPanel: FC<Props> = (props) => {
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 3,
+        startingShowCount: OUTER_SCROLLER_STARTING_SHOW_COUNT,
     });
-
-    const classes = useStyles();
 
     const [objectiveSubmissionMap, setObjectiveSubmissionMap] = useState<Map<number, Submission[]>>(null);
 
@@ -37,7 +101,6 @@ const SubmissionsPanel: FC<Props> = (props) => {
         },
         deps: [props.filteredObjectiveId, props.filteredTeamId],
         onSuccess: (res) => {
-            infiniteScroller.setMaxLength(res.data.length);
             const tempHashMap = new Map();
             const tempObjectives = [];
             res.data.map((submission: Submission) => {
@@ -50,6 +113,8 @@ const SubmissionsPanel: FC<Props> = (props) => {
                     tempObjectives.push(submission.objectiveId);
                 }
             });
+            infiniteScroller.setMaxLength(tempHashMap.size);
+            infiniteScroller.setCurrentShownCount(OUTER_SCROLLER_STARTING_SHOW_COUNT);
             setObjectiveSubmissionMap(tempHashMap);
             setObjectivesIdList(tempObjectives);
         },
@@ -64,37 +129,12 @@ const SubmissionsPanel: FC<Props> = (props) => {
                 <>
                     {objectivesIdList.slice(0, infiniteScroller.shownCount).map((objectiveId: number, index: number) => {
                         return (
-                            <Paper
-                                className={classes.submissionPanelWrapper}
-                                key={objectiveId * objectiveId + index * 2}
-                                elevation={0}
-                                variant="outlined"
-                            >
-                                <Typography variant="h4">
-                                    <b>{objectiveSubmissionMap.get(objectiveId)[0].objectiveTitle}</b> feladat beadásai
-                                </Typography>
-                                <Typography variant="subtitle1" className={classes.subtitle}>
-                                    Beadások:{' '}
-                                </Typography>
-                                {objectiveSubmissionMap
-                                    .get(objectiveId)
-                                    .map((submission) => {
-                                        return (
-                                            <>
-                                                <SubmissionDisplayContainer
-                                                    key={submission.id}
-                                                    overriddenBeginningEntity={submission}
-                                                    shouldCreateNew={false}
-                                                    displayExtraProps={{
-                                                        showObjectiveTitle: !isValidNumber(props.filteredObjectiveId),
-                                                        showTeamName: !isValidNumber(props.filteredTeamId),
-                                                    }}
-                                                />
-                                            </>
-                                        );
-                                    })}
-                                
-                            </Paper>
+                            <SubmissionsInObjective
+                            key={objectiveId}
+                            filteredObjectiveId={props.filteredObjectiveId}
+                            filteredTeamId={props.filteredTeamId}
+                            submissions={objectiveSubmissionMap.get(objectiveId)}
+                        />
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
@@ -104,9 +144,9 @@ const SubmissionsPanel: FC<Props> = (props) => {
                                             variant="text"
                                             fullWidth
                                             color="secondary"
-                                            onClick={() => infiniteScroller.increaseShownCount(5)}
+                                            onClick={() => infiniteScroller.increaseShownCount(3)}
                                         >
-                                            &darr; Show more &darr;
+                                            &darr; Show more Objectives &darr;
                                         </Button>
                                     </Grid>
                                 )}
