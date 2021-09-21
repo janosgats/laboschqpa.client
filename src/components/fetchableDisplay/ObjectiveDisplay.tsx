@@ -58,7 +58,7 @@ export interface SaveObjectiveCommand {
     deadline: Date;
     hideSubmissionsBefore: Date;
     objectiveType: ObjectiveType;
-    isFraction: boolean;
+    isHidden: boolean;
     attachments: number[];
 }
 
@@ -81,7 +81,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const defaultDeadline = props.isCreatingNew ? getDefaultDeadline() : getSurelyDate(props.existingEntity.deadline);
     const defaultHideSubmissionsBefore = props.isCreatingNew ? null : getSurelyDate(props.existingEntity.hideSubmissionsBefore);
     const defaultObjectiveType = props.isCreatingNew ? ObjectiveType.MAIN_OBJECTIVE : props.existingEntity.objectiveType;
-    const defaultIsFraction = props.isCreatingNew ? false : props.existingEntity.isFraction;
+    const defaultIsHidden = props.isCreatingNew ? false : props.existingEntity.isHidden;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
     const defaultIsHideSubmissionsBeforeChecked = !!defaultHideSubmissionsBefore;
@@ -101,7 +101,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const [deadline, setDeadline] = useState<Date>(defaultDeadline);
     const [hideSubmissionsBefore, setHideSubmissionsBefore] = useState<Date>(defaultHideSubmissionsBefore);
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
-    const [isFraction, setIsFraction] = useState<boolean>(defaultIsFraction);
+    const [isHidden, setIsHidden] = useState<boolean>(defaultIsHidden);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
@@ -128,7 +128,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
             deadline: deadline,
             hideSubmissionsBefore: hideSubmissionsBeforeToSave,
             objectiveType: objectiveType,
-            isFraction: isFraction,
+            isHidden: isHidden,
             attachments: usedAttachments.firmAttachmentIds,
         };
     }
@@ -153,7 +153,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         setHideSubmissionsBefore(defaultHideSubmissionsBefore);
         setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
         setObjectiveType(defaultObjectiveType);
-        setIsFraction(defaultIsFraction);
+        setIsHidden(defaultIsHidden);
         usedAttachments.reset(defaultAttachments);
         props.onCancelEditing();
     }
@@ -358,13 +358,13 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={isFraction}
-                                    onChange={(e) => setIsFraction(e.target.checked)}
+                                    checked={isHidden}
+                                    onChange={(e) => setIsHidden(e.target.checked)}
                                     color="primary"
                                 />
                             }
                             labelPlacement="start"
-                            label="Részobjektív (elrejtés a qpázók elől): "
+                            label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
                         />
                         <br/>
                     </>
@@ -566,7 +566,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
-                    isFraction: command.isFraction,
+                    isHidden: command.isHidden,
                     attachments: command.attachments,
                 },
             },
@@ -599,7 +599,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
-                    isFraction: command.isFraction,
+                    isHidden: command.isHidden,
                     attachments: command.attachments,
                 },
             },

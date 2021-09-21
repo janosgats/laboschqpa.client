@@ -9,7 +9,7 @@ export interface Objective extends UserGeneratedContent {
     deadline: string | Date;
     hideSubmissionsBefore: string | Date;
     objectiveType: ObjectiveType;
-    isFraction: boolean;
+    isHidden: boolean;
 
     observerTeamHasScore?: boolean;
 }
