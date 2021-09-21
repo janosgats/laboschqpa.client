@@ -360,7 +360,6 @@ const Index: NextPage = () => {
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setSelectedTab(newValue.toString());
-        //TOTDO
     }
 
     return (
