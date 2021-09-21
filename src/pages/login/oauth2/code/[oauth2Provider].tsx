@@ -42,15 +42,15 @@ const nextPage: NextPage = () => {
             },
             publishExceptionEvents: false
         }).then(res => {
-            EventBus.notifySuccess("You just logged in", "Hello there");
+            console.log("User logged in");
             setLoginSucceeded(true);
-            currentUser
-                .reload()
-                .finally(() => {
-                    setTimeout(() => {
+            setTimeout(() => {
+                currentUser
+                    .reload()
+                    .finally(() => {
                         router.push(LoginRedirectionService.popRedirectionUrl('/'))
-                    }, 500)
-                });
+                    });
+            }, 500);
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {
