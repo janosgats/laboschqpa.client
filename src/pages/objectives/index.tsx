@@ -46,7 +46,6 @@ const Index: NextPage = () => {
                         variant="fullWidth"
                         indicatorColor="secondary"
                         textColor="secondary"
-                        aria-label="icon label tabs example"
                     >
                         <Tab label="Elő feladatok" value={ObjectiveType.PRE_WEEK_TASK} />
                         <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
