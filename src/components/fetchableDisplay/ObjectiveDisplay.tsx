@@ -58,6 +58,7 @@ export interface SaveObjectiveCommand {
     deadline: Date;
     hideSubmissionsBefore: Date;
     objectiveType: ObjectiveType;
+    isFraction: boolean;
     attachments: number[];
 }
 
@@ -80,6 +81,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const defaultDeadline = props.isCreatingNew ? getDefaultDeadline() : getSurelyDate(props.existingEntity.deadline);
     const defaultHideSubmissionsBefore = props.isCreatingNew ? null : getSurelyDate(props.existingEntity.hideSubmissionsBefore);
     const defaultObjectiveType = props.isCreatingNew ? ObjectiveType.MAIN_OBJECTIVE : props.existingEntity.objectiveType;
+    const defaultIsFraction = props.isCreatingNew ? false : props.existingEntity.isFraction;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
     const defaultIsHideSubmissionsBeforeChecked = !!defaultHideSubmissionsBefore;
@@ -99,6 +101,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const [deadline, setDeadline] = useState<Date>(defaultDeadline);
     const [hideSubmissionsBefore, setHideSubmissionsBefore] = useState<Date>(defaultHideSubmissionsBefore);
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
+    const [isFraction, setIsFraction] = useState<boolean>(defaultIsFraction);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
@@ -125,6 +128,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
             deadline: deadline,
             hideSubmissionsBefore: hideSubmissionsBeforeToSave,
             objectiveType: objectiveType,
+            isFraction: isFraction,
             attachments: usedAttachments.firmAttachmentIds,
         };
     }
@@ -149,6 +153,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         setHideSubmissionsBefore(defaultHideSubmissionsBefore);
         setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
         setObjectiveType(defaultObjectiveType);
+        setIsFraction(defaultIsFraction);
         usedAttachments.reset(defaultAttachments);
         props.onCancelEditing();
     }
@@ -193,7 +198,8 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 onChange={setObjectiveType}
                             />
                         </Grid>
-                        <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: "8px"}}>
+                        <Grid container direction="row" alignItems="center" justify="space-between"
+                              style={{marginBottom: "8px"}}>
                             <Grid item>
                                 <TextField label="Program ID" defaultValue={programId}
                                     //TODO: This should be a dropdown where people can select a program
@@ -348,7 +354,18 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                             labelPlacement="start"
                             label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
                         />
-
+                        <br/>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={isFraction}
+                                    onChange={(e) => setIsFraction(e.target.checked)}
+                                    color="primary"
+                                />
+                            }
+                            labelPlacement="start"
+                            label="Részobjektív (elrejtés a qpázók elől): "
+                        />
                         <br/>
                     </>
                 )}
@@ -549,6 +566,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
+                    isFraction: command.isFraction,
                     attachments: command.attachments,
                 },
             },
@@ -581,6 +599,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
+                    isFraction: command.isFraction,
                     attachments: command.attachments,
                 },
             },
