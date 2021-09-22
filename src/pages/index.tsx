@@ -12,7 +12,7 @@ const Index: NextPage = () => {
     return (
         <Box>
             <Head>
-                <title>Home</title>
+                <title>Kezdőlap</title>
             </Head>
             <Box mb={2}>
                 <Grid container direction="column" spacing={2}>

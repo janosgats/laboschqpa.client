@@ -24,6 +24,7 @@ import MyPaper from '~/components/mui/MyPaper';
 import Responsive from '~/components/Responsive';
 import Spinner from '~/components/Spinner';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
 import useEndpoint from '~/hooks/useEndpoint';
 import {UserInfo} from '~/model/UserInfo';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
@@ -141,19 +142,21 @@ const Index: NextPage = () => {
                                 </Grid>
                             </>
                         )}
-                        <Grid item>
-                            <Typography variant="h5">Jogosultságok: </Typography>
-                            <List>
-                                {userInfo.authorities.map((value) => (
-                                    <>
-                                        <ListItem key={value}>
-                                            <ListItemText primary={value} />
-                                        </ListItem>
-                                        <Divider variant="middle" />
-                                    </>
-                                ))}
-                            </List>
-                        </Grid>
+                        {userInfo.authorities.includes(Authority.Admin) && (
+                            <Grid item>
+                                <Typography variant="h5">Jogosultságok: </Typography>
+                                <List>
+                                    {userInfo.authorities.map((value) => (
+                                        <>
+                                            <ListItem key={value}>
+                                                <ListItemText primary={value} />
+                                            </ListItem>
+                                            <Divider variant="middle" />
+                                        </>
+                                    ))}
+                                </List>
+                            </Grid>
+                        )}
                     </Grid>
                 </MyPaper>
             )}

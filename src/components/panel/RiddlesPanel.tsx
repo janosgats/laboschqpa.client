@@ -42,9 +42,9 @@ const RiddlesPanel: FC = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Solved?</TableCell>
-                                <TableCell>Show it</TableCell>
+                                <TableCell>Cím</TableCell>
+                                <TableCell>Megoldva?</TableCell>
+                                <TableCell>Mutasd</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -52,10 +52,10 @@ const RiddlesPanel: FC = () => {
                                 return (
                                     <TableRow key={riddle.id}>
                                         <TableCell>{riddle.title}</TableCell>
-                                        <TableCell>{riddle.isAlreadySolved ? 'Yes' : 'No'}</TableCell>
+                                        <TableCell>{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</TableCell>
                                         <TableCell>
                                             <Button variant="contained" onClick={() => openRiddle(riddle.id)}>
-                                                Let me see
+                                                Mutasd
                                             </Button>
                                         </TableCell>
                                     </TableRow>

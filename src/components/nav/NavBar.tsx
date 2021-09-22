@@ -1,9 +1,9 @@
-import React, {FC, useContext, useState} from "react";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import EventBus from "~/utils/EventBus";
-import {useRouter} from "next/router";
+import React, {FC, useContext, useState} from 'react';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import EventBus from '~/utils/EventBus';
+import {useRouter} from 'next/router';
 import {
     AppBar,
     Button,
@@ -22,17 +22,16 @@ import {
     Theme,
     Toolbar,
     Typography,
-    useTheme
-} from "@material-ui/core";
+    useTheme,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import Link from "next/link";
-
+import Link from 'next/link';
 
 interface LinkParams {
-    href: string,
-    displayName: string,
-    authority: Authority,
-    icon: string,
+    href: string;
+    displayName: string;
+    authority: Authority;
+    icon: string;
 }
 
 const drawerWidth = 240;
@@ -71,18 +70,21 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             padding: theme.spacing(3),
         },
-    }),
+        darkModeSwithcer: {
+            cursor: 'pointer',
+            marginRight: '1rem',
+        },
+    })
 );
 
 interface NavBarInterFaceProps {
-    darkMode: boolean,
-    setDarkMode: (value: boolean) => void,
+    darkMode: boolean;
+    setDarkMode: (value: boolean) => void;
     window?: () => Window;
 }
 
-
 const NavBar: FC<NavBarInterFaceProps> = (props) => {
-    const { darkMode: darkMode, setDarkMode: setDarkMode, window: window } = props;
+    const {darkMode: darkMode, setDarkMode: setDarkMode, window: window} = props;
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -92,39 +94,55 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     function doLogout() {
         callJsonEndpoint({
             conf: {
-                url: "/api/up/server/logout",
-                method: "POST"
-            }
-        }).then(res => {
-            currentUser.setLoggedInState(false);
-            EventBus.notifyInfo("You just logged out", "See you soon")
-            router.push("/");
-        }).catch((reason) => {
-            //TODO: more messages based on the ApiErrorDescriptor
-            EventBus.notifyError("Please try again", "We cannot log you out :/")
-        });
+                url: '/api/up/server/logout',
+                method: 'POST',
+            },
+        })
+            .then((res) => {
+                currentUser.setLoggedInState(false);
+                EventBus.notifyInfo('You just logged out', 'See you soon');
+                router.push('/');
+            })
+            .catch((reason) => {
+                //TODO: more messages based on the ApiErrorDescriptor
+                EventBus.notifyError('Please try again', 'We cannot log you out :/');
+            });
     }
-
 
     const links: LinkParams[] = [];
-    links.push({ href: "/", displayName: "Home", authority: Authority.User, icon: 'home' });
-    links.push({ href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`, displayName: "My Profile", authority: Authority.User, icon: 'person' });
-    if(currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
-        links.push({href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`, displayName: "My Team", authority: Authority.User, icon: 'groups'});
+    links.push({href: '/', displayName: 'Home', authority: Authority.User, icon: 'home'});
+    links.push({
+        href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`,
+        displayName: 'My Profile',
+        authority: Authority.User,
+        icon: 'person',
+    });
+    if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
+        links.push({
+            href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`,
+            displayName: 'Csapatom',
+            authority: Authority.User,
+            icon: 'groups',
+        });
     }
-    links.push({ href: "/programs", displayName: "Programok", authority: Authority.User, icon: 'emoji_events' });
-    links.push({ href: "/events", displayName: "Események", authority: Authority.User, icon: 'book_online' });
-    links.push({ href: "/qrFight", displayName: "QR Fight", authority: Authority.User, icon: 'qr_code' });
-    links.push({ href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' });
-    links.push({ href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' });
-    links.push({ href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' });
-    links.push({ href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' });
-    links.push({ href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' });
-    links.push({ href: "/speedDrinking", displayName: "Speed Drinking", authority: Authority.User, icon: 'sports_bar' });
-    links.push({ href: "/riddles", displayName: "Riddles", authority: Authority.User, icon: 'quiz' });
-    links.push({ href: "/riddleEditor", displayName: "Riddle Editor", authority: Authority.RiddleEditor, icon: 'mode' });
-    links.push({ href: "/acceptedEmails", displayName: "Accepted Emails", authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read' });
-    links.push({ href: "/admin", displayName: "Admin", authority: Authority.Admin, icon: 'admin_panel_settings' });
+    links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
+    links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
+    links.push({href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
+    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
+    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.Admin, icon: 'people'});
+    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
+    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.Admin, icon: 'assignment'});
+    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
+    links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
+    links.push({href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
+    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
+    links.push({
+        href: '/acceptedEmails',
+        displayName: 'Accepted Emails',
+        authority: Authority.AcceptedEmailEditor,
+        icon: 'mark_email_read',
+    });
+    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
 
     const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
@@ -135,24 +153,20 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             <List>
                 {links.map((link: LinkParams, index: number) => {
                     return currentUser.hasAuthority(link.authority) ? (
-                        <Link
-                            key={"link" + link.displayName + index}
-                            href={link.href}
-                        >
-                            <ListItem button key={link.displayName + index} >
-                                <ListItemIcon> <Icon fontSize='small'>{link.icon}</Icon> </ListItemIcon>
+                        <Link key={'link' + link.displayName + index} href={link.href}>
+                            <ListItem button key={link.displayName + index}>
+                                <ListItemIcon>
+                                    {' '}
+                                    <Icon fontSize="small">{link.icon}</Icon>{' '}
+                                </ListItemIcon>
                                 <ListItemText primary={link.displayName} />
                             </ListItem>
                         </Link>
-                    )
-                        :
-                        null
-                }
-                )
-                }
+                    ) : null;
+                })}
             </List>
         </div>
-    )
+    );
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -161,19 +175,55 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     };
 
     const container = window !== undefined ? () => window().document.body : undefined;
-    
+
     return (
         <div className={classes.root}>
             <AppBar position="fixed" color="inherit" className={classes.appBar}>
                 <Toolbar>
-                    <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} className={classes.menuButton}>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                        className={classes.menuButton}
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h5" noWrap className={classes.title}>
                         49. Aki másnak vermet ás SCH QPA
                     </Typography>
-                    <Switch checked={darkMode} onChange={() => { setDarkMode(!darkMode) }} />
-                    <Button color="inherit" onClick={() => doLogout()}>Logout</Button>
+                    {darkMode && (
+                        <Icon
+                            className={classes.darkModeSwithcer}
+                            fontSize="small"
+                            onClick={() => {
+                                setDarkMode(!darkMode);
+                            }}
+                        >
+                            {'wb_sunny'}
+                        </Icon>
+                    )}
+                    {!darkMode && (
+                        <Icon
+                            className={classes.darkModeSwithcer}
+                            fontSize="small"
+                            onClick={() => {
+                                setDarkMode(!darkMode);
+                            }}
+                        >
+                            {'nights_stay'}
+                        </Icon>
+                    )}
+
+                    {/* <Switch
+                        checked={darkMode}
+                        onChange={() => {
+                            setDarkMode(!darkMode);
+                        }}
+                    /> */}
+                    <Button color="inherit" onClick={() => doLogout()}>
+                        Kijelentkezés
+                    </Button>
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
@@ -208,12 +258,10 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             </nav>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-                <div>
-                    {props.children}
-                </div>
+                <div>{props.children}</div>
             </main>
         </div>
-    )
+    );
 };
 
 export default NavBar;

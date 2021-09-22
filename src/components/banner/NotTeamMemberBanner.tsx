@@ -23,7 +23,7 @@ import {TeamInfo} from '~/model/Team';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import {style} from './styles/style';
-import MyPaper from "~/components/mui/MyPaper";
+import MyPaper from '~/components/mui/MyPaper';
 
 interface CreateNewTeamDialogProps {
     onClose: () => void;
@@ -84,16 +84,13 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
             <DialogContent>
                 <DialogContent>
                     <DialogContentText>
-                        To create a team you have to give a name to your team. After your team is created you will be
-                        the lead of that team.
+                        To create a team you have to give a name to your team. After your team is created you will be the lead of that team.
                     </DialogContentText>
-                    <TextField autoFocus label="Team name" value={teamName}
-                               onChange={(e) => setTeamName(e.target.value)}/>
+                    <TextField autoFocus label="Team name" value={teamName} onChange={(e) => setTeamName(e.target.value)} />
                 </DialogContent>
             </DialogContent>
             <DialogActions>
-                <Button onClick={createNewTeam} color="primary"
-                        disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
+                <Button onClick={createNewTeam} color="primary" disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
                     Create my team
                 </Button>
                 <Button onClick={props.onClose} color="secondary">
@@ -126,16 +123,15 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
         return (
             <Grid item>
                 <Alert variant="outlined" severity="info">
-                    <AlertTitle>You applied for a membership at {currentUser.getUserInfo()?.teamName}</AlertTitle>
-                    <p>- the leaders of the team should review your application soon</p>
+                    <AlertTitle>Már jelentkeztél a {currentUser.getUserInfo()?.teamName} csapatba</AlertTitle>
+                    <p>- A csapatkapitány hamarosan ellenőrzi a jelentkezésed.</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                         <Button onClick={() => router.push(`/teams/team/My?id=${currentUser.getUserInfo()?.teamId}`)}>
-                            Check out {currentUser.getUserInfo()?.teamName}
+                            Megtekint {currentUser.getUserInfo()?.teamName}
                         </Button>
                     </ButtonGroup>
                 </Alert>
-                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
-                                     isOpen={isCreateNewTeamDialogOpen}/>
+                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
             </Grid>
         );
     }
@@ -144,17 +140,14 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
         <Grid item>
             <MyPaper p={0}>
                 <Alert variant="outlined" severity="info">
-                    <AlertTitle>You are not a team member</AlertTitle>
-                    <p>- which makes a few features unavailable for your solo self :/</p>
+                    <AlertTitle>Nem vagy még tagja egy csapatnak sem</AlertTitle>
+                    <p>- Emiatt jüpár funkció nem elérhető számodra/</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
-                        {!hideJoinATeamButton && (
-                            <Button onClick={() => router.push('/teams')}>Join a team</Button>
-                        )}
-                        <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
+                        {!hideJoinATeamButton && <Button onClick={() => router.push('/teams')}>Jelentkezz egy csapatba</Button>}
+                        <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Csapat létrehozása</Button>
                     </ButtonGroup>
                 </Alert>
-                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)}
-                                     isOpen={isCreateNewTeamDialogOpen}/>
+                <CreateNewTeamDialog onClose={() => setIsCreateNewTeamDialogOpen(false)} isOpen={isCreateNewTeamDialogOpen} />
             </MyPaper>
         </Grid>
     );

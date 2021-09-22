@@ -8,7 +8,7 @@ import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 import useEndpoint from '~/hooks/useEndpoint';
 import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
-import {UniqueValueIndexer} from "~/utils/UniqueValueIndexer";
+import {UniqueValueIndexer} from '~/utils/UniqueValueIndexer';
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -41,7 +41,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
         <div>
             {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
                 <div style={{borderStyle: 'solid', borderColor: 'orange'}}>
-                    <h4>Times newly recorded by you</h4>
+                    <h4>Általad rögzített idők</h4>
 
                     {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
                         <MUIPaper>
@@ -49,13 +49,13 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>#</TableCell>
-                                        <TableCell>Category</TableCell>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Team</TableCell>
-                                        <TableCell>Time</TableCell>
-                                        <TableCell>Note</TableCell>
-                                        <TableCell>When</TableCell>
-                                        <TableCell>Edit</TableCell>
+                                        <TableCell>Kategória</TableCell>
+                                        <TableCell>Név</TableCell>
+                                        <TableCell>Csapat</TableCell>
+                                        <TableCell>Idő</TableCell>
+                                        <TableCell>Megjegyzés</TableCell>
+                                        <TableCell>Időpont</TableCell>
+                                        <TableCell>Szerkesztés</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 {newlyCreatedSpeedDrinkingIds.map((id, index) => {
@@ -101,7 +101,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 </div>
             )}
 
-            {usedEndpoint.pending && <Spinner/>}
+            {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
                 <MUIPaper>
@@ -109,32 +109,31 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Team</TableCell>
-                                <TableCell>Time</TableCell>
-                                <TableCell>Note</TableCell>
-                                <TableCell>When</TableCell>
-                                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Edit</TableCell>}
+                                <TableCell>Név</TableCell>
+                                <TableCell>Csapat</TableCell>
+                                <TableCell>Idő</TableCell>
+                                <TableCell>Megjegyzés</TableCell>
+                                <TableCell>Időpont</TableCell>
+                                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Szerkesztés</TableCell>}
                             </TableRow>
                         </TableHead>
-                        {usedEndpoint.data
-                            .map((speedDrinking, index) => {
-                                if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
-                                    return null;
-                                }
+                        {usedEndpoint.data.map((speedDrinking, index) => {
+                            if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
+                                return null;
+                            }
 
-                                return (
-                                    <SpeedDrinkingDisplayContainer
-                                        key={speedDrinking.id}
-                                        overriddenBeginningEntity={speedDrinking}
-                                        shouldCreateNew={false}
-                                        displayExtraProps={{
-                                            rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
-                                            showCategory: false,
-                                            showName: true,
-                                            showTeam: true,
-                                        }}
-                                    />
+                            return (
+                                <SpeedDrinkingDisplayContainer
+                                    key={speedDrinking.id}
+                                    overriddenBeginningEntity={speedDrinking}
+                                    shouldCreateNew={false}
+                                    displayExtraProps={{
+                                        rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
+                                        showCategory: false,
+                                        showName: true,
+                                        showTeam: true,
+                                    }}
+                                />
                             );
                         })}
                     </Table>
