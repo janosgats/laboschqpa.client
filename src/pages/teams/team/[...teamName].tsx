@@ -51,6 +51,8 @@ import ProgramScoresOfTeam from "~/components/pages/team/ProgramScoresOfTeam";
 import { getStyles } from "~/components/team/styles/TeamStyle";
 import { makeStyles } from '@material-ui/styles';
 import { TabContext, TabPanel } from '@material-ui/lab';
+import SpeedDrinkingPanel from '~/components/panel/SpeedDrinkingPanel';
+import { SpeedDrinkingCategory } from '~/enums/SpeedDrinkingCategory';
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -547,6 +549,7 @@ const Index: NextPage = () => {
                     >
                         <Tab label="Tagok" value={'1'} />
                         <Tab label="Pontok" value={'2'} />
+                        <Tab label="Sörmérések" value={'3'}/>
                     </Tabs>
 
                     <TabPanel value='2' >
@@ -618,6 +621,9 @@ const Index: NextPage = () => {
                                     })}
                             </List>
                         </>
+                    </TabPanel>
+                    <TabPanel value='3'>
+                            {usedTeamInfo.succeeded && <SpeedDrinkingPanel filteredCategory={SpeedDrinkingCategory.BEER} filteredTeamId={teamId} onlyShowPersonalBests={true} />}
                     </TabPanel>
                 </TabContext>
             </Paper>

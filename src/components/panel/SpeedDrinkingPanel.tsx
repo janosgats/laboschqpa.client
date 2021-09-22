@@ -44,7 +44,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                     <h4>Times newly recorded by you</h4>
 
                     {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
-                        <MUIPaper>
+                        <>
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -91,7 +91,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                     </TableRow>
                                 )}
                             </Table>
-                        </MUIPaper>
+                        </>
                     )}
                     {!isCreatingNewDisplayShown && (
                         <Button size="small" variant="contained" onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
@@ -104,7 +104,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             {usedEndpoint.pending && <Spinner/>}
             {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
-                <MUIPaper>
+                <>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -122,7 +122,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                 if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
                                     return null;
                                 }
-
+                                if (props.filteredTeamId != null && props.filteredTeamId != speedDrinking.drinkerTeamId) return null;
                                 return (
                                     <SpeedDrinkingDisplayContainer
                                         key={speedDrinking.id}
@@ -138,7 +138,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                             );
                         })}
                     </Table>
-                </MUIPaper>
+                </>
             )}
         </div>
     );
