@@ -23,9 +23,9 @@ const Index: NextPage = () => {
 
             <Grid container spacing={6} direction="column" justifyContent="flex-end" wrap="nowrap">
                 <Grid item>
-                    <Typography variant="h4">Programok</Typography>
-                </Grid>
-                <Grid item>
+                    <Box mb={2}>
+                        <Typography variant="h4">Programok</Typography>
+                    </Box>
                     <ProgramCalendar startDate={new Date(TimeSpan.dateOf(new Date()))} count={2} />
                 </Grid>
                 <Grid item>

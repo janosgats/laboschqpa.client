@@ -5,24 +5,14 @@ import Head from 'next/head';
 import React, {useContext, useState} from 'react';
 import {ProgramDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
 import MyPaper from '~/components/mui/MyPaper';
-import DayProgramsDisplay from '~/components/program/DayProgramsDisplay';
-import Spinner from '~/components/Spinner';
+import ProgramCalendar from '~/components/program/ProgramCalendar';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
 import {Authority} from '~/enums/Authority';
-import useEndpoint from '~/hooks/useEndpoint';
-import {Program} from '~/model/usergeneratedcontent/Program';
-import TimeSpan from '~/utils/TimeSpan';
 
 const Index: NextPage = () => {
     const currentUser = useContext(CurrentUserContext);
 
     const [wasCreateNewProgramClicked, setWasCreateNewProgramClicked] = useState<boolean>(false);
-
-    const usedEndpoint = useEndpoint<Program[]>({
-        conf: {
-            url: '/api/up/server/api/program/listAll',
-        },
-    });
 
     return (
         <Container maxWidth="lg">
@@ -57,31 +47,15 @@ const Index: NextPage = () => {
                     </Grid>
                 )}
 
-                {usedEndpoint.pending && (
-                    <MyPaper>
-                        <Spinner />{' '}
-                    </MyPaper>
-                )}
-
-                {usedEndpoint.failed && (
-                    <MyPaper>
-                        <p>Couldn't load programs :'(</p>
-                        <button
-                            onClick={() => {
-                                usedEndpoint.reloadEndpoint();
-                            }}
-                        >
-                            Retry
-                        </button>
-                    </MyPaper>
-                )}
-
-                {usedEndpoint.succeeded &&
+                {/*usedEndpoint.succeeded &&
                     TimeSpan.asDate(TimeSpan.range('2021-09-20T00:00:00', 14, TimeSpan.day)).map((date, i) => (
                         <Grid item>
                             <DayProgramsDisplay key={i} programs={usedEndpoint.data} date={date} />
                         </Grid>
-                    ))}
+                    ))*/}
+                <Grid item>
+                    <ProgramCalendar startDate={new Date('2021-09-20T00:00:00')} count={14} />
+                </Grid>
             </Grid>
         </Container>
     );

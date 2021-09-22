@@ -20,7 +20,7 @@ const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count}) => 
     });
 
     return (
-        <Grid container direction="column" spacing={4} wrap="wrap">
+        <Grid container spacing={4} direction="column" justifyContent="flex-end" wrap="nowrap">
             {usedEndpoint.pending && (
                 <Grid item>
                     <MyPaper>

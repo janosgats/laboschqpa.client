@@ -39,7 +39,7 @@ const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({programs, date})
                 </MyPaper>
             </Box>
             {
-                <Box minHeight="5rem">
+                <Box minHeight="1rem">
                     <Grid container direction="row" spacing={2} alignItems="stretch">
                         {dayPrograms.map((p) => (
                             <Grid item key={p.id} sm={12} md={6} lg={4} xl={3} alignContent="stretch">
