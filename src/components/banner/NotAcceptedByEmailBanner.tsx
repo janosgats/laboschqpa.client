@@ -32,28 +32,28 @@ const useStyles = makeStyles((theme: Theme) => createStyles(style));
 const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (props) => {
     return (
         <Dialog open={props.isOpen} onClose={props.onClose}>
-            <DialogTitle>Resolve email issues</DialogTitle>
+            <DialogTitle>Probléma megoldása</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    To make sure you are really a QPA participant, we asked the Team Leads to send us the e-mail addresses of the people in
-                    their team.
+                    Hogy megbizonyosodjunk arról, hogy tényleg Qpázó vagy, megkértük a csapatkapitányokat arra, hogy adják le tagjaik email
+                    címét.
                 </DialogContentText>
                 <DialogContentText>
-                    Go ahead, reach out to your Team Lead and ask if your e-mail address was submitted! If yes, you can easily add it to
-                    your account by clicking the below button. If not, your Team Lead can still submit it.
+                    Kérdezd meg a csk-d, leadta-e már az email címed. Ha igen, de más e-maillel regisztráltál itt könnyedén hozzáadhatod a
+                    fiókodhoz. Ha még nem, a Csk még mindig leadhatja nekünk.
                 </DialogContentText>
                 <DialogContentText style={{marginBottom: 0}}>
-                    <Typography variant="h6">Your current e-mail addresses:</Typography>
+                    <Typography variant="h6">A jelenleg fiókodhoz rendelt e-mail címeid:</Typography>
                 </DialogContentText>
                 <EmailAddressesPanel hideAddNewAddressButton={true} overrides={{ul: {marginTop: 0}}} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.onSubmitNewAddressClicked} color="primary">
-                    Add new e-mail address
+                    Új e-mail cím hozzáadása
                 </Button>
 
                 <Button onClick={props.onClose} color="secondary">
-                    Close
+                    Bezárás
                 </Button>
             </DialogActions>
         </Dialog>

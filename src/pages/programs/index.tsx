@@ -54,7 +54,7 @@ const Index: NextPage = () => {
                         </Grid>
                     ))*/}
                 <Grid item>
-                    <ProgramCalendar startDate={new Date('2021-09-20T00:00:00')} count={14} />
+                    <ProgramCalendar startDate={new Date('2021-09-25T00:00:00')} count={14} />
                 </Grid>
             </Grid>
         </Container>

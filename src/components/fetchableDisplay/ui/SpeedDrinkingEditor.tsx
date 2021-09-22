@@ -108,19 +108,19 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
 
                             {props.isCreatingNew && (
                                 <Button variant="contained" onClick={props.onSave} disabled={props.isApiCallPending}>
-                                    Create
+                                    Létrehoz
                                 </Button>
                             )}
                             {!props.isCreatingNew && (
                                 <>
                                     <Button variant="contained" onClick={props.onSave} disabled={props.isApiCallPending}>
-                                        Modify
+                                        Szerkesztés
                                     </Button>
                                     <Button variant="contained" onClick={props.onCancel} disabled={props.isApiCallPending}>
-                                        Cancel
+                                        Mégse
                                     </Button>
                                     <Button variant="contained" onClick={props.onDelete} disabled={props.isApiCallPending}>
-                                        Delete
+                                        Törlés
                                     </Button>
                                 </>
                             )}
