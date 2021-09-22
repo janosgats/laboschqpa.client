@@ -11,10 +11,13 @@ export default function MyPaper({children, p = 2, opacity = 0.7}: React.PropsWit
     return (
         <Paper
             style={{
+                height: '100%',
                 backgroundColor: alpha(theme.palette.background.paper, opacity),
             }}
         >
-            <Box p={p}>{children}</Box>
+            <Box height="100%" p={p}>
+                {children}
+            </Box>
         </Paper>
     );
 }

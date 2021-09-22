@@ -24,27 +24,31 @@ const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({programs, date})
             .sort((a, b) => +a.startTime - +b.startTime);
     }, [date, programs]);
 
-    if (!dayPrograms.length) return null;
+    //if (!dayPrograms.length) return null;
 
     return (
         <>
-            <Grid item>
-                <Box mt={6}>
-                    <MyPaper>
-                        <Grid container justifyContent="center">
-                            <Typography variant="h4">
-                                {DateTimeFormatter.toDay(date)} (
-                                {['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'][date.getDay() % 7]})
-                            </Typography>
-                        </Grid>
-                    </MyPaper>
+            <Box mb={2}>
+                <MyPaper>
+                    <Grid container justifyContent="center">
+                        <Typography variant="h4">
+                            {DateTimeFormatter.toDay(date)} (
+                            {['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'][date.getDay() % 7]})
+                        </Typography>
+                    </Grid>
+                </MyPaper>
+            </Box>
+            {
+                <Box minHeight="5rem">
+                    <Grid container direction="row" spacing={2} alignItems="stretch">
+                        {dayPrograms.map((p) => (
+                            <Grid item key={p.id} sm={12} md={6} lg={4} xl={3} alignContent="stretch">
+                                <ProgramDisplay date={date} program={p} />
+                            </Grid>
+                        ))}
+                    </Grid>
                 </Box>
-            </Grid>
-            {dayPrograms.map((p) => (
-                <Grid item key={p.id}>
-                    <ProgramDisplay date={date} program={p} />
-                </Grid>
-            ))}
+            }
         </>
     );
 };

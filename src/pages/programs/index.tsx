@@ -26,11 +26,10 @@ const Index: NextPage = () => {
 
     return (
         <Container maxWidth="lg">
-            <Grid container spacing={2} direction="column">
-                <Head>
-                    <title>Programok</title>
-                </Head>
-
+            <Head>
+                <title>Programok</title>
+            </Head>
+            <Grid container spacing={6} direction="column" justifyContent="flex-end" wrap="nowrap">
                 {!wasCreateNewProgramClicked && currentUser.hasAuthority(Authority.ProgramEditor) && (
                     <Grid item>
                         <MyPaper>
@@ -76,9 +75,12 @@ const Index: NextPage = () => {
                         </button>
                     </MyPaper>
                 )}
+
                 {usedEndpoint.succeeded &&
                     TimeSpan.asDate(TimeSpan.range('2021-09-20T00:00:00', 14, TimeSpan.day)).map((date, i) => (
-                        <DayProgramsDisplay key={i} programs={usedEndpoint.data} date={date} />
+                        <Grid item>
+                            <DayProgramsDisplay key={i} programs={usedEndpoint.data} date={date} />
+                        </Grid>
                     ))}
             </Grid>
         </Container>

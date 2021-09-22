@@ -20,7 +20,7 @@ const ProgramDisplay: React.FC<ProgramDisplayProps> = ({program, date}) => {
                             <Typography variant="h4">{program.title}</Typography>
                         </Grid>
                         <Grid item>
-                            <Typography variant="h5">{program.headline}</Typography>
+                            <Typography variant="h6">{program.headline}</Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="body1">
