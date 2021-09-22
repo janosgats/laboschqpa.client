@@ -30,10 +30,12 @@ const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({programs, date})
         <>
             <Box mb={2}>
                 <MyPaper>
-                    <Grid container justifyContent="center">
+                    <Grid container justify="center"  alignItems="center">
                         <Typography variant="h4">
-                            {DateTimeFormatter.toDay(date)} (
-                            {['Vasárnap', 'Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap'][date.getDay() % 7]})
+                            <b>
+                            {['Vasárnap - ', 'Hétfő - ', 'Kedd - ', 'Szerda - ', 'Csütörtök - ', 'Péntek - ', 'Szombat - ', 'Vasárnap - '][date.getDay() % 7]}
+                            </b>
+                             <i>{DateTimeFormatter.toDay(date)}</i> 
                         </Typography>
                     </Grid>
                 </MyPaper>
