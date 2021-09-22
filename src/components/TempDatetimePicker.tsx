@@ -1,5 +1,6 @@
 import React, {FC, useState} from "react";
 import {getSurelyDate, isDateTextInputValid} from "~/utils/DateHelpers";
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
 
 interface TempDatetimePickerProps {
     value: Date;
@@ -28,22 +29,28 @@ const TempDatetimePicker: FC<TempDatetimePickerProps> = ({value, onChange, disab
     const [isError, setIsError] = useState<boolean>(!isDateTextInputValid(internalValue));
 
     return (
-        <>
-            <input
-                value={internalValue}
-                onChange={(e) => {
-                    setInternalValue(e.target.value);
-                    if (isDateTextInputValid(e.target.value)) {
-                        setIsError(false);
-                        onChange(new Date(e.target.value));
-                    } else {
-                        setIsError(true);
-                    }
-                }}
-                disabled={disabled}
-            />
+        <div>
+            {disabled ? (
+                <>
+                    <span style={{padding: 4}}>  {DateTimeFormatter.toFullBasic(value)} </span>
+                </>
+            ) : (
+                <input
+                    value={internalValue}
+                    onChange={(e) => {
+                        setInternalValue(e.target.value);
+                        if (isDateTextInputValid(e.target.value)) {
+                            setIsError(false);
+                            onChange(new Date(e.target.value));
+                        } else {
+                            setIsError(true);
+                        }
+                    }}
+                    disabled={disabled}
+                />
+            )}
             {isError && "datetime error TODO: use MUI"}
-        </>
+        </div>
     );
 };
 

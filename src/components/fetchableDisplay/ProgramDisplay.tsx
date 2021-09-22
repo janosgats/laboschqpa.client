@@ -276,7 +276,7 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                                 />
                             }
                             labelPlacement="start"
-                            label="Program kezdete"
+                            label="Program kezdete: "
                         />
                         <FormControlLabel
                             control={
@@ -287,7 +287,7 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                                 />
                             }
                             labelPlacement="start"
-                            label="Program vége"
+                            label="Program vége: "
                         />
                     </>
 
