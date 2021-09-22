@@ -14,4 +14,8 @@ export class UniqueValueIndexer {
         this.seenValues.add(checkedValue);
         return this.currentIndex++;
     }
+
+    isAlreadyIndexed(checkedValue: any): boolean {
+        return this.seenValues.has(checkedValue);
+    }
 }
