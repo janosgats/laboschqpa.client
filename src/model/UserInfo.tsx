@@ -10,6 +10,8 @@ export interface UserNameContainer {
 export interface UserInfo extends UserNameContainer {
     userId: number;
 
+    registered: string | Date;
+
     profilePicUrl: string;
 
     teamId: number;
