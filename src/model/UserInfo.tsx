@@ -10,6 +10,8 @@ export interface UserNameContainer {
 export interface UserInfo extends UserNameContainer {
     userId: number;
 
+    registered: string | Date;
+
     profilePicUrl: string;
 
     teamId: number;
@@ -19,4 +21,14 @@ export interface UserInfo extends UserNameContainer {
     enabled: boolean;
     isAcceptedByEmail: boolean;
     authorities?: Authority[];
+}
+
+export interface UsersPageUserInfo extends UserNameContainer {
+    userId: number;
+
+    profilePicUrl: string;
+
+    teamId: number;
+    teamRole: TeamRole;
+    teamName?: string;
 }

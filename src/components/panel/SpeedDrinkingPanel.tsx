@@ -13,6 +13,7 @@ import {UniqueValueIndexer} from "~/utils/UniqueValueIndexer";
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
     filteredTeamId?: number;
+    onlyShowPersonalBests: boolean;
 }
 
 const SpeedDrinkingPanel: FC<Props> = (props) => {
@@ -116,19 +117,24 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                 {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Edit</TableCell>}
                             </TableRow>
                         </TableHead>
-                        {usedEndpoint.data.map((speedDrinking, index) => {
-                            return (
-                                <SpeedDrinkingDisplayContainer
-                                    key={speedDrinking.id}
-                                    overriddenBeginningEntity={speedDrinking}
-                                    shouldCreateNew={false}
-                                    displayExtraProps={{
-                                        rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
-                                        showCategory: false,
-                                        showName: true,
-                                        showTeam: true,
-                                    }}
-                                />
+                        {usedEndpoint.data
+                            .map((speedDrinking, index) => {
+                                if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
+                                    return null;
+                                }
+
+                                return (
+                                    <SpeedDrinkingDisplayContainer
+                                        key={speedDrinking.id}
+                                        overriddenBeginningEntity={speedDrinking}
+                                        shouldCreateNew={false}
+                                        displayExtraProps={{
+                                            rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
+                                            showCategory: false,
+                                            showName: true,
+                                            showTeam: true,
+                                        }}
+                                    />
                             );
                         })}
                     </Table>

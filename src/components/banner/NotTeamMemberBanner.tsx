@@ -104,7 +104,11 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
     );
 };
 
-const NotTeamMemberBanner: FC = () => {
+interface Props {
+    hideJoinATeamButton?: boolean;
+}
+
+const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) => {
     const classes = useStyles();
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
@@ -143,7 +147,9 @@ const NotTeamMemberBanner: FC = () => {
                     <AlertTitle>You are not a team member</AlertTitle>
                     <p>- which makes a few features unavailable for your solo self :/</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
-                        <Button onClick={() => router.push('/teams')}>Join a team</Button>
+                        {!hideJoinATeamButton && (
+                            <Button onClick={() => router.push('/teams')}>Join a team</Button>
+                        )}
                         <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Create new team</Button>
                     </ButtonGroup>
                 </Alert>

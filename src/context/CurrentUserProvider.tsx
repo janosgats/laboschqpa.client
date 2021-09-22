@@ -74,7 +74,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     const [errorWhileFetchingUserInfo, setErrorWhileFetchingUserInfo] = useState<boolean>(false);
     const [pendingFetchingUserInfo, setPendingFetchingUserInfo] = useState<boolean>(false);
 
-    function shouldApplyLoginWall(): boolean {
+    function shouldApplyLoginWallOnCurrentPath(): boolean {
         return !router.pathname.startsWith('/login/') && !router.pathname.startsWith('/emailVerification/');
     }
 
@@ -192,7 +192,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     });
 
     function getPageContent(): ReactNode {
-        if (!shouldApplyLoginWall()) {
+        if (!shouldApplyLoginWallOnCurrentPath()) {
             return children;
         }
 

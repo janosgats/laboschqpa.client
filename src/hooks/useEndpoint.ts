@@ -21,6 +21,7 @@ export interface UsedEndpoint<R> {
     pending: boolean;
     succeeded: boolean;
     failed: boolean;
+    error: any;
 
     reloadEndpoint: () => void;
 }
@@ -44,9 +45,10 @@ const useEndpoint = <T, R = T>({
     mockConfig = defaultMockConfig,
 }: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
     const [data, setData] = React.useState<R>(null);
-    const [error, setError] = React.useState(false);
-    const [pending, setPending] = useDelayedToggle(true, delayPendingState ? 250 : 0);
+    const [failed, setFailed] = React.useState(false);
+    const [pending, setPending] = useDelayedToggle(false, delayPendingState ? 250 : 0);
     const [succeeded, setSucceeded] = React.useState(false);
+    const [error, setError] = React.useState<any>(null);
 
 
     function getResponsePromiseProvider() {
@@ -64,9 +66,10 @@ const useEndpoint = <T, R = T>({
     const refreshOnChange = () => {
         setPending(true);
         setSucceeded(false);
-        setError(false);
+        setFailed(false);
         if (!keepOldDataWhileFetchingNew) {
             setData(null);
+            setError(null);
         }
 
         getResponsePromiseProvider()
@@ -81,13 +84,15 @@ const useEndpoint = <T, R = T>({
                     onSuccess(axiosResponse);
                 }
 
-                setError(false);
+                setFailed(false);
+                setError(null);
                 setSucceeded(true);
             })
             .catch((err) => {
-                setError(true);
+                setFailed(true);
                 setSucceeded(false);
                 setData(null);
+                setError(err);
                 if (onError) {
                     onError(err);
                 }
@@ -105,7 +110,8 @@ const useEndpoint = <T, R = T>({
         data: data,
         pending: pending,
         succeeded: succeeded,
-        failed: error,
+        failed: failed,
+        error: error,
         reloadEndpoint: refreshOnChange,
     };
 };

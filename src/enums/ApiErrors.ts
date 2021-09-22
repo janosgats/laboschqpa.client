@@ -9,6 +9,8 @@ export enum ApiErrorCategory {
     emailAddress = "emailAddress",
     teamLifecycle = "teamLifecycle",
     riddle = "riddle",
+    teamMembership = "teamMembership",
+    qrFight = "qrFight",
 }
 
 export default class ApiError {
@@ -53,4 +55,12 @@ export const emailAddress_VERIFICATION_REQUEST_PHASE_IS_INVALID = new ApiError(A
 
 export const teamLifecycle_THERE_IS_NO_OTHER_LEADER = new ApiError(ApiErrorCategory.teamLifecycle, 5);
 export const teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM = new ApiError(ApiErrorCategory.teamLifecycle, 7);
+
 export const riddle_A_RIDDLE_HAS_TO_HAVE_EXACTLY_ONE_ATTACHMENT = new ApiError(ApiErrorCategory.riddle, 5);
+
+export const teamMembership_YOU_ARE_NOT_IN_A_TEAM = new ApiError(ApiErrorCategory.teamMembership, 1)
+
+export const qrFight_YOUR_TEAM_ALREADY_SUBMITTED_THIS_TAG = new ApiError(ApiErrorCategory.qrFight, 1);
+export const qrFight_TAG_DOES_NOT_EXIST = new ApiError(ApiErrorCategory.qrFight, 2);
+export const qrFight_TAG_SECRET_MISMATCH = new ApiError(ApiErrorCategory.qrFight, 3);
+export const qrFight_TEAM_RATE_LIMIT_HIT_FOR_QR_FIGHT_SUBMISSIONS = new ApiError(ApiErrorCategory.qrFight, 4);

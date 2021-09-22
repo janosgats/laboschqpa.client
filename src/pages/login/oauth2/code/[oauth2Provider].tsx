@@ -12,6 +12,7 @@ import {
     auth_CANNOT_FIND_EXISTING_ACCOUNT_TO_LOG_IN
 } from "~/enums/ApiErrors";
 import {Button, ButtonGroup, Typography} from "@material-ui/core";
+import LoginRedirectionService from "~/service/LoginRedirectionService";
 
 
 const nextPage: NextPage = () => {
@@ -41,11 +42,15 @@ const nextPage: NextPage = () => {
             },
             publishExceptionEvents: false
         }).then(res => {
-            EventBus.notifySuccess("You just logged in", "Hello there");
+            console.log("User logged in");
             setLoginSucceeded(true);
-            currentUser
-                .reload()
-                .finally(() => router.push("/"));
+            setTimeout(() => {
+                currentUser
+                    .reload()
+                    .finally(() => {
+                        router.push(LoginRedirectionService.popRedirectionUrl('/'))
+                    });
+            }, 500);
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {
@@ -79,13 +84,20 @@ const nextPage: NextPage = () => {
             conf: {
                 url: '/api/up/server/api/noAuthRequired/register/createNewAccountFromSessionOAuthInfo',
                 method: "POST",
+                data: {
+                    joinUrl: LoginRedirectionService.peekRedirectionUrl(),
+                }
             }, csrfSendingCommand: CsrfSendingCommand.DO_NOT_SEND
         }).then(res => {
             EventBus.notifySuccess("You just joined", "Welcome");
             setLoginSucceeded(true);
-            currentUser
-                .reload()
-                .finally(() => router.push("/"));
+            setTimeout(() => {
+                currentUser
+                    .reload()
+                    .finally(() => {
+                        router.push(LoginRedirectionService.popRedirectionUrl('/'))
+                    });
+            }, 500);
         }).catch((reason) => {
             //TODO: more messages based on the ApiErrorDescriptor
             EventBus.notifyError("We cannot create your account", "Something went wrong :/");
@@ -111,7 +123,7 @@ const nextPage: NextPage = () => {
                     <ButtonGroup size="large" color="inherit" variant="contained"
                                  aria-label="large outlined primary button group">
                         <Button color='primary' onClick={() => createNewAccount()}>Create new account</Button>
-                        <Button onClick={() => router.push('/')}>Try another login method</Button>
+                        <Button onClick={() => router.push(LoginRedirectionService.peekRedirectionUrl('/'))}>Try another login method</Button>
                     </ButtonGroup>
                 </>
             )}

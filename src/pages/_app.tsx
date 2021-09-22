@@ -2,10 +2,12 @@ import {ThemeProvider} from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {createTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
-import React, {CSSProperties, useState} from 'react';
+import React, {CSSProperties, useEffect, useState} from 'react';
 import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
 import NavBar from '~/components/nav/NavBar';
 import CurrentUserProvider from '~/context/CurrentUserProvider';
+import {useRouter} from "next/router";
+import {applyOrganicDDoSProtection} from "~/utils/DDoSProtector";
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
@@ -27,13 +29,21 @@ function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
 }
 
 function MyApp({Component, pageProps}): JSX.Element {
-    const [darkMode, setDarkMode] = useState(false);
+    const [darkMode, setDarkMode] = useState(true);
 
     const theme = createTheme({
         palette: {
             type: darkMode ? 'dark' : 'light',
         },
     });
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (router.isReady) {
+            applyOrganicDDoSProtection(router);
+        }
+    }, [router.isReady]);
 
     return (
         <>

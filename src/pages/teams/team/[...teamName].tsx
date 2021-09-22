@@ -1,5 +1,9 @@
 import {
     Avatar,
+    Box,
+    Button,
+    ButtonGroup,
+    createStyles,
     Divider,
     Grid,
     IconButton,
@@ -9,7 +13,10 @@ import {
     ListItemSecondaryAction,
     ListItemText,
     Paper,
+    Tab,
+    Tabs,
     TextField,
+    Theme,
     Tooltip,
     Typography,
 } from '@material-ui/core';
@@ -23,24 +30,27 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
-import {NextPage} from 'next';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import {useRouter} from 'next/router';
-import React, {useContext, useEffect, useState} from 'react';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useState } from 'react';
 import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
 import Spinner from '~/components/Spinner';
-import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {teamLifecycle_THERE_IS_NO_OTHER_LEADER} from '~/enums/ApiErrors';
-import {TeamRole, teamRoleData} from '~/enums/TeamRole';
+import { CurrentUserContext } from '~/context/CurrentUserProvider';
+import { teamLifecycle_THERE_IS_NO_OTHER_LEADER } from '~/enums/ApiErrors';
+import { TeamRole, teamRoleData } from '~/enums/TeamRole';
 import ApiErrorDescriptorException from '~/exception/ApiErrorDescriptorException';
 import useEndpoint from '~/hooks/useEndpoint';
-import {TeamInfo} from '~/model/Team';
-import {UserNameContainer} from '~/model/UserInfo';
+import { TeamInfo } from '~/model/Team';
+import { UserNameContainer } from '~/model/UserInfo';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import ProgramScoresOfTeam from "~/components/pages/team/ProgramScoresOfTeam";
+import { getStyles } from "~/components/team/styles/TeamStyle";
+import { makeStyles } from '@material-ui/styles';
+import { TabContext, TabPanel } from '@material-ui/lab';
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -48,7 +58,13 @@ interface TeamMember extends UserNameContainer {
     teamRole: number;
 }
 
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
+
+
 const Index: NextPage = () => {
+
+    const classes = useStyles();
+
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -340,189 +356,274 @@ const Index: NextPage = () => {
             });
     }
 
+    const [selectedTab, setSelectedTab] = useState('1');
+
+    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setSelectedTab(newValue.toString());
+    }
+
     return (
         <>
             <Head>
                 <title>{usedTeamInfo.data ? usedTeamInfo.data.name + ' ' : 'Qpa '} Team</title>
             </Head>
-            <Paper>
-                <NotTeamMemberBanner />
+            <Paper
+                className={classes.teamPaper}
+                variant="outlined"
+            >
+                <NotTeamMemberBanner hideJoinATeamButton={true} />
                 {usedTeamInfo.pending && <Spinner />}
 
                 {usedTeamInfo.data && (
-                    <Grid container direction="row" alignItems="center">
-                        {isEditing ? (
-                            <>
-                                <TextField
-                                    variant="outlined"
-                                    label="Csapatnév"
-                                    value={editedTeamName}
-                                    onChange={(e) => setEditedTeamName(e.target.value)}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <Typography variant="h3">{usedTeamInfo.data.name}</Typography>
-                            </>
-                        )}
+                    <>
+                        <Grid
+                            container
+                            direction="row"
+                            alignItems="center"
+                            justify="space-between"
+                        >
 
-                        {usedTeamInfo.data.archived ? <h3>Archive</h3> : null}
 
-                        {isViewedByLeaderOfTeam && (
-                            <>
-                                {isEditing ? (
+                            {isEditing ? (
+                                <>
+                                    <TextField
+                                        variant="outlined"
+                                        label="Csapatnév"
+                                        value={editedTeamName}
+                                        onChange={(e) => setEditedTeamName(e.target.value)}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <Typography variant="h4">{usedTeamInfo.data.name}</Typography>
+                                </>
+                            )}
+
+                            {usedTeamInfo.data.archived ? <h3>Archive</h3> : null}
+
+                            <ButtonGroup
+                                size="large"
+                            >
+
+                                {isViewedByLeaderOfTeam && (
                                     <>
-                                        <Tooltip title="Mentés">
-                                            <IconButton onClick={() => submitEdit()}>
-                                                <SaveIcon />
-                                            </IconButton>
-                                        </Tooltip>
-                                        <Tooltip title="Mégsem">
-                                            <IconButton onClick={() => setIsEditing(false)}>
-                                                <CloseIcon />
-                                            </IconButton>
-                                        </Tooltip>
+                                        {isEditing ? (
+                                            <>
+                                                <Tooltip title="Mentés">
+                                                    <IconButton
+                                                        onClick={() => submitEdit()}>
+                                                        <SaveIcon
+                                                            color="primary"
+                                                        />
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip title="Mégsem">
+                                                    <IconButton onClick={() => setIsEditing(false)}
+                                                    >
+                                                        <CloseIcon
+                                                            color="secondary"
+                                                        />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </>
+                                        ) : (
+                                            <Tooltip title="Módosítás">
+                                                <IconButton
+                                                    onClick={() => setIsEditing(true)}
+                                                >
+                                                    <EditIcon
+                                                        color="action"
+                                                    />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
                                     </>
-                                ) : (
-                                    <Tooltip title="Módosítás">
-                                        <IconButton onClick={() => setIsEditing(true)}>
-                                            <EditIcon />
+                                )}
+
+                                {isViewedByMemberOrLeaderOfTeam && (
+                                    <Tooltip title="Csapat elhagyása">
+                                        <IconButton
+                                            onClick={() => submitLeave()}
+                                        >
+                                            <ExitToAppIcon
+                                                color="error"
+                                            />
                                         </IconButton>
                                     </Tooltip>
                                 )}
-                            </>
-                        )}
 
-                        {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
-                            <Tooltip title="Csatlakozás a csapathoz">
-                                <IconButton onClick={() => submitApply()}>
-                                    <PersonAddIcon />
-                                </IconButton>
-                            </Tooltip>
-                        )}
+                                {isViewedByLeaderOfTeam && (
+                                    <Tooltip title="Visszalépés a csapatkapitányságtól">
+                                        <IconButton onClick={() => submitResignFromLeadership()}>
+                                            <RedoIcon
+                                                color="secondary"
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                            </ButtonGroup>
 
-                        {isViewedByMemberOrLeaderOfTeam && (
-                            <Tooltip title="Csapat elhagyása">
-                                <IconButton onClick={() => submitLeave()}>
-                                    <ExitToAppIcon />
-                                </IconButton>
-                            </Tooltip>
-                        )}
-                        {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id &&
-                            currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
-                                <Tooltip title="Csatlakozási kérelem visszavonása">
-                                    <IconButton onClick={() => submitCancelApplication()}>
-                                        <CloseIcon />
-                                    </IconButton>
-                                </Tooltip>
+                            {currentUser.getUserInfo()?.teamRole === TeamRole.NOTHING && !usedTeamInfo.data.archived && (
+                                <Button
+                                    onClick={() => submitApply()}
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.requestToTeamButtons}
+                                >
+                                    Csatlakozás a csapathoz
+                                </Button>
                             )}
-                        {isViewedByLeaderOfTeam && (
-                            <Tooltip title="Visszalépés a csapatkapitányságtól">
-                                <IconButton onClick={() => submitResignFromLeadership()}>
-                                    <RedoIcon />
-                                </IconButton>
-                            </Tooltip>
-                        )}
-                    </Grid>
-                )}
 
+                            {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id && currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
+                                <Button
+                                    onClick={() => submitCancelApplication()}
+                                    variant="contained"
+                                    color="secondary"
+                                    className={classes.requestToTeamButtons}
+                                >
+                                    Csatlakozási kérelem visszavonása
+                                </Button>
+                            )}
+                        </Grid>
+                    </>
+                )}
                 {isViewedByLeaderOfTeam && (
-                    <>
-                        <Typography variant="h4">Jelentkezők</Typography>
+                    <Box>
+                        <Typography variant="subtitle1">Csapatodba jelentkezők</Typography>
                         {usedTeamApplicants.pending && <Spinner />}
 
-                        {usedTeamApplicants.failed && <p>Couldn't load applicants :'(</p>}
+                        {usedTeamApplicants.failed && <Typography variant="body1">Couldn't load applicants :'(</Typography>}
 
-                        <List component="nav">
+                        <List >
                             {usedTeamApplicants.data &&
                                 usedTeamApplicants.data.map((applicant) => {
                                     const basicDisplayName = UserNameFormatter.getBasicDisplayName(applicant);
                                     return (
-                                        <ListItem key={applicant.userId}>
-                                            <Link href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}>
+                                        <Link
+                                            key={"link" + applicant.userId}
+                                            href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}>
+                                            <ListItem
+                                                key={applicant.userId}
+                                                className={classes.listHover}
+                                            >
                                                 <Grid container direction="row" alignItems="center">
                                                     <ListItemAvatar>
                                                         <Avatar src={applicant.profilePicUrl} alt={basicDisplayName} />
                                                     </ListItemAvatar>
                                                     <ListItemText>{basicDisplayName}</ListItemText>
                                                 </Grid>
-                                            </Link>
-                                            <ListItemSecondaryAction>
-                                                <Tooltip title="Elfogad">
-                                                    <IconButton onClick={() => submitApproveApplication(applicant.userId)}>
-                                                        <PersonAddIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                <Tooltip title="Elutasít">
-                                                    <IconButton onClick={() => submitDeclineApplication(applicant.userId)}>
-                                                        <PersonAddDisabledIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
+                                                <ListItemSecondaryAction>
+                                                    <Tooltip title="Elfogad">
+                                                        <IconButton onClick={() => submitApproveApplication(applicant.userId)}>
+                                                            <PersonAddIcon color="primary" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    <Tooltip title="Elutasít">
+                                                        <IconButton onClick={() => submitDeclineApplication(applicant.userId)}>
+                                                            <PersonAddDisabledIcon color="secondary" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                        </Link>
                                     );
                                 })}
                         </List>
                         <Divider variant="middle" />
-                    </>
+                    </Box>
                 )}
 
-                {router.isReady && <ProgramScoresOfTeam teamId={teamId}/>}
+                <TabContext
+                    value={selectedTab}
+                >
 
-                {usedTeamMembers.pending && <Spinner />}
-                {usedTeamMembers.failed && <p>Couldn't load members :'(</p>}
-                <>
-                    <Typography variant="h4">Tagok</Typography>
-                    <List component="nav">
-                        {usedTeamMembers.data &&
-                            usedTeamMembers.data.map((member, index) => {
-                                const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
-                                return (
-                                    <ListItem key={member.userId}>
-                                        <Link href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
-                                            <Grid container direction="row" alignItems="center">
-                                                <ListItemAvatar>
-                                                    <Avatar src={member.profilePicUrl} alt={basicDisplayName} />
-                                                </ListItemAvatar>
-                                                <ListItemText>
-                                                    {basicDisplayName +
-                                                        (member.teamRole === TeamRole.LEADER
-                                                            ? ` (${teamRoleData[member.teamRole].displayName})`
-                                                            : ' ')}
-                                                </ListItemText>
-                                            </Grid>
-                                        </Link>
-                                        {isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
-                                            <ListItemSecondaryAction>
-                                                <Tooltip title="Kirugás">
-                                                    <IconButton onClick={() => submitKick(member.userId)}>
-                                                        <MeetingRoomIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                                {member.teamRole === TeamRole.MEMBER && (
-                                                    <Tooltip title="Kinevezés csapatkapitánnyá">
-                                                        <IconButton onClick={() => submitGiveLeaderRights(member.userId)}>
-                                                            <ArrowUpwardIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
+                    <Tabs
+                        value={selectedTab}
+                        onChange={handleTabChange}
+                        centered
+                        variant="fullWidth"
+                        indicatorColor="secondary"
+                        textColor="secondary"
+                    >
+                        <Tab label="Tagok" value={'1'} />
+                        <Tab label="Pontok" value={'2'} />
+                    </Tabs>
+
+                    <TabPanel value='2' >
+                        {router.isReady && <ProgramScoresOfTeam teamId={teamId} />}
+                    </TabPanel>
+
+                    <TabPanel value='1' >
+
+                        {usedTeamMembers.pending && <Spinner />}
+                        {usedTeamMembers.failed && <Typography variant="body1">Couldn't load members :'(</Typography>}
+                        <>
+                            <Typography variant="h4">Tagok</Typography>
+                            <List component="nav">
+                                {usedTeamMembers.data &&
+                                    usedTeamMembers.data.map((member, index) => {
+                                        const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
+                                        return (
+                                            
+                                            <Link
+                                            href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
+                                            <ListItem 
+                                                key={member.userId}
+                                                className={classes.listHover}
+                                                >
+                                                    <Grid container direction="row" alignItems="center">
+                                                        <ListItemAvatar>
+                                                            <Avatar src={member.profilePicUrl} alt={basicDisplayName} />
+                                                        </ListItemAvatar>
+                                                        <ListItemText>
+                                                            {basicDisplayName +
+                                                                (member.teamRole === TeamRole.LEADER
+                                                                    ? ` (${teamRoleData[member.teamRole].displayName})`
+                                                                    : ' ')}
+                                                        </ListItemText>
+                                                    </Grid>
+                                                {isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
+                                                    <ListItemSecondaryAction>
+                                                        <Tooltip title="Kirugás">
+                                                            <IconButton onClick={() => submitKick(member.userId)}>
+                                                                <MeetingRoomIcon 
+                                                                    color="error"
+                                                                />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                        {member.teamRole === TeamRole.MEMBER && (
+                                                            <Tooltip title="Kinevezés csapatkapitánnyá">
+                                                                <IconButton onClick={() => submitGiveLeaderRights(member.userId)}>
+                                                                    <ArrowUpwardIcon 
+                                                                        color="primary"
+                                                                    />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                        {member.teamRole === TeamRole.LEADER && (
+                                                            <Tooltip title="Inasba rakás (CSK jog elvétele)">
+                                                                <IconButton
+                                                                    onClick={() => submitTakeAwayLeaderRights(member.userId)}>
+                                                                    <ArrowDownwardIcon 
+                                                                        color="secondary"
+                                                                    />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                    </ListItemSecondaryAction>
                                                 )}
-                                                {member.teamRole === TeamRole.LEADER && (
-                                                    <Tooltip title="Inasba rakás (CSK jog elvétele)">
-                                                        <IconButton onClick={() => submitTakeAwayLeaderRights(member.userId)}>
-                                                            <ArrowDownwardIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </ListItemSecondaryAction>
-                                        )}
-                                    </ListItem>
-                                );
-                            })}
-                    </List>
-                </>
+                                            </ListItem>
+                                            </Link>
+                                        );
+                                    })}
+                            </List>
+                        </>
+                    </TabPanel>
+                </TabContext>
             </Paper>
         </>
     );
-};
+}
+    ;
 
 export default Index;

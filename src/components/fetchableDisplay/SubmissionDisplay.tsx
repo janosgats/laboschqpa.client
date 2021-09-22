@@ -148,7 +148,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
     return (
         <Paper className={classes.submissionDisplayContainer} variant="outlined" elevation={3}>
             <Grid container alignItems="center" justify="space-between" className={classes.header}>
-                {props.existingEntity?.teamName && (
+                {props.existingEntity && (
                     <Typography variant="h6">
                         Beadta{' '}
                         <b>

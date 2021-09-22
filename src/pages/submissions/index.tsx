@@ -15,19 +15,19 @@ import {
   TableRow,
   Theme
 } from '@material-ui/core';
-import { NextPage } from 'next';
+import {NextPage} from 'next';
 import Head from 'next/head';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBanner';
 import SubmissionsPanel from '~/components/panel/SubmissionsPanel';
 import Spinner from '~/components/Spinner';
-import { objectiveTypeData } from '~/enums/ObjectiveType';
+import {objectiveTypeData} from '~/enums/ObjectiveType';
 import useEndpoint from '~/hooks/useEndpoint';
-import { TeamInfo } from '~/model/Team';
-import { Objective } from '~/model/usergeneratedcontent/Objective';
-import { isValidNumber } from '~/utils/CommonValidators';
+import {TeamInfo} from '~/model/Team';
+import {Objective} from '~/model/usergeneratedcontent/Objective';
+import {isValidNumber} from '~/utils/CommonValidators';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
-import { styles } from '../../styles/submissionStyles/submissionsPage.styles';
+import {styles} from '../../styles/submissionStyles/submissionsPage.styles';
 
 const NOT_FILTERED = 'not_filtered';
 
@@ -95,7 +95,6 @@ const Index: NextPage = () => {
                     onChange={(e) => {
                       const val = e.target.value;
                       if (isValidNumber(val.toString())) {
-                        console.log('FASZ XD');
                         setFilteredObjectiveId(Number.parseInt(e.target.value.toString()));
                       }
                       if (val === NOT_FILTERED) {

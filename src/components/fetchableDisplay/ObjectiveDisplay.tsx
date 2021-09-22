@@ -58,6 +58,7 @@ export interface SaveObjectiveCommand {
     deadline: Date;
     hideSubmissionsBefore: Date;
     objectiveType: ObjectiveType;
+    isHidden: boolean;
     attachments: number[];
 }
 
@@ -80,6 +81,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const defaultDeadline = props.isCreatingNew ? getDefaultDeadline() : getSurelyDate(props.existingEntity.deadline);
     const defaultHideSubmissionsBefore = props.isCreatingNew ? null : getSurelyDate(props.existingEntity.hideSubmissionsBefore);
     const defaultObjectiveType = props.isCreatingNew ? ObjectiveType.MAIN_OBJECTIVE : props.existingEntity.objectiveType;
+    const defaultIsHidden = props.isCreatingNew ? false : props.existingEntity.isHidden;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
     const defaultIsHideSubmissionsBeforeChecked = !!defaultHideSubmissionsBefore;
@@ -99,6 +101,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     const [deadline, setDeadline] = useState<Date>(defaultDeadline);
     const [hideSubmissionsBefore, setHideSubmissionsBefore] = useState<Date>(defaultHideSubmissionsBefore);
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
+    const [isHidden, setIsHidden] = useState<boolean>(defaultIsHidden);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
@@ -125,6 +128,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
             deadline: deadline,
             hideSubmissionsBefore: hideSubmissionsBeforeToSave,
             objectiveType: objectiveType,
+            isHidden: isHidden,
             attachments: usedAttachments.firmAttachmentIds,
         };
     }
@@ -149,6 +153,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         setHideSubmissionsBefore(defaultHideSubmissionsBefore);
         setIsHideSubmissionsBeforeChecked(defaultIsHideSubmissionsBeforeChecked);
         setObjectiveType(defaultObjectiveType);
+        setIsHidden(defaultIsHidden);
         usedAttachments.reset(defaultAttachments);
         props.onCancelEditing();
     }
@@ -178,8 +183,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
     }
 
-    const observerTeamHasScore = props.existingEntity && props.existingEntity.observerTeamScore > 0;
-
     return (
         <>
             <Paper className={classes.objectiveDisplayWrapper}>
@@ -195,7 +198,8 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 onChange={setObjectiveType}
                             />
                         </Grid>
-                        <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: "8px"}}>
+                        <Grid container direction="row" alignItems="center" justify="space-between"
+                              style={{marginBottom: "8px"}}>
                             <Grid item>
                                 <TextField label="Program ID" defaultValue={programId}
                                     //TODO: This should be a dropdown where people can select a program
@@ -310,9 +314,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                 )}
 
 
-                {observerTeamHasScore && (
+                {props.existingEntity?.observerTeamHasScore && (
                     <Typography variant="subtitle1" className={classes.subtitle}>
-                        -A csapatod pontszáma: {props.existingEntity.observerTeamScore}
+                        - A csapatod már teljesítette e feladatot.
                     </Typography>
                 )}
                 <Box className={classes.richTextEditor}>
@@ -350,7 +354,18 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                             labelPlacement="start"
                             label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
                         />
-
+                        <br/>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={isHidden}
+                                    onChange={(e) => setIsHidden(e.target.checked)}
+                                    color="primary"
+                                />
+                            }
+                            labelPlacement="start"
+                            label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
+                        />
                         <br/>
                     </>
                 )}
@@ -551,6 +566,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
+                    isHidden: command.isHidden,
                     attachments: command.attachments,
                 },
             },
@@ -583,6 +599,7 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
                     deadline: command.deadline,
                     hideSubmissionsBefore: command.hideSubmissionsBefore,
                     objectiveType: command.objectiveType,
+                    isHidden: command.isHidden,
                     attachments: command.attachments,
                 },
             },

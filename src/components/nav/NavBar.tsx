@@ -113,10 +113,11 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
         links.push({href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`, displayName: "My Team", authority: Authority.User, icon: 'groups'});
     }
     links.push({ href: "/programs", displayName: "Programok", authority: Authority.User, icon: 'emoji_events' });
+    links.push({ href: "/events", displayName: "Események", authority: Authority.User, icon: 'book_online' });
+    links.push({ href: "/qrFight", displayName: "QR Fight", authority: Authority.User, icon: 'qr_code' });
     links.push({ href: "/teams", displayName: "Teams", authority: Authority.User, icon: 'group' });
     links.push({ href: "/users", displayName: "Users", authority: Authority.User, icon: 'people' });
     links.push({ href: "/news", displayName: "News", authority: Authority.User, icon: 'feed' });
-    links.push({ href: "/events", displayName: "Események", authority: Authority.User, icon: 'book_online' });
     links.push({ href: "/objectives", displayName: "Objectives", authority: Authority.User, icon: 'assignment' });
     links.push({ href: "/submissions", displayName: "Submissions", authority: Authority.User, icon: 'assignment_turned_in' });
     links.push({ href: "/speedDrinking", displayName: "Speed Drinking", authority: Authority.User, icon: 'sports_bar' });
@@ -163,27 +164,13 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     
     return (
         <div className={classes.root}>
-            <AppBar
-                position="fixed"
-                color="inherit"
-                className={classes.appBar}
-            >
+            <AppBar position="fixed" color="inherit" className={classes.appBar}>
                 <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
+                    <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} className={classes.menuButton}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        className={classes.title}
-                    >
-                        QPA 2021
+                    <Typography variant="h5" noWrap className={classes.title}>
+                        49. Aki másnak vermet ás SCH QPA
                     </Typography>
                     <Switch checked={darkMode} onChange={() => { setDarkMode(!darkMode) }} />
                     <Button color="inherit" onClick={() => doLogout()}>Logout</Button>
