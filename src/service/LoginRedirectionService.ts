@@ -2,7 +2,15 @@ import {isValidNonEmptyString} from "~/utils/CommonValidators";
 
 const STORAGE_KEY_REDIRECTION_URL = "login.redirection.url";
 
-function popRedirectionUrl(defaultUrlIfNothingIsSaved: string = '/'): string | null {
+function peekRedirectionUrl(defaultUrlIfNothingIsSaved: string = null): string | null {
+    const loadedUrl = localStorage.getItem(STORAGE_KEY_REDIRECTION_URL);
+    if (isValidNonEmptyString(loadedUrl)) {
+        return loadedUrl;
+    }
+    return defaultUrlIfNothingIsSaved;
+}
+
+function popRedirectionUrl(defaultUrlIfNothingIsSaved: string = null): string {
     const loadedUrl = localStorage.getItem(STORAGE_KEY_REDIRECTION_URL);
     if (isValidNonEmptyString(loadedUrl)) {
         localStorage.removeItem(STORAGE_KEY_REDIRECTION_URL);
@@ -19,7 +27,8 @@ function saveRedirectionUrl(url: string): void {
 
 const LoginRedirectionService = {
     popRedirectionUrl,
-    saveRedirectionUrl
+    saveRedirectionUrl,
+    peekRedirectionUrl,
 };
 
 export default LoginRedirectionService;

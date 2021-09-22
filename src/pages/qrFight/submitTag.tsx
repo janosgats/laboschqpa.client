@@ -30,7 +30,7 @@ const ErrorDetails: FC<ErrorDetailsProps> = ({err}) => {
     let color: string = 'white';
     let showBasicErrorComponent: boolean = true;
     if (teamMembership_YOU_ARE_NOT_IN_A_TEAM.is(apiErrorDescriptor)) {
-        errorMessage = 'Egy csapat tagja kell legyél, hogy vadászhasd a kódokat';
+        errorMessage = 'Egy csapat tagja kell legyél, hogy vadászhasd a kódokat.';
         color = 'yellow';
     } else if (qrFight_YOUR_TEAM_ALREADY_SUBMITTED_THIS_TAG.is(apiErrorDescriptor)) {
         errorMessage = 'A csapatod már beváltotta a kódot. Keress egy másikat :)';
