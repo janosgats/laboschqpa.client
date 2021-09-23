@@ -35,6 +35,8 @@ export const AddNewEmailAddressDialog: FC<Props> = (props) => {
             },
         }).then(() => {
             EventBus.notifySuccess("We sent you a verification e-mail", "Check your mailbox", 60000);
+            alert("Atm, these mails may or may not bounce. It's possible that you won't receive it. \n" +
+                "Please, give us a few days to wire in a proper mailing provider :)");//TODO: remove this after setting up Netcore
             props.onClose();
         }).catch(reason => {
             //TODO: more messages based on the ApiErrorDescriptor
