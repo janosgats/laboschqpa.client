@@ -1,16 +1,22 @@
-import {Button, createStyles, Grid, makeStyles, Theme} from "@material-ui/core";
-import React, {FC} from "react";
-import {ObjectiveDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import { Button, createStyles, Fab, Grid, makeStyles, Theme } from "@material-ui/core";
+import React, { FC, useContext, useState } from "react";
+import { ObjectiveDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
+import { CurrentUserContext } from "~/context/CurrentUserProvider";
+import { Authority } from "~/enums/Authority";
 import useEndpoint from "~/hooks/useEndpoint";
-import useInfiniteScroller, {InfiniteScroller} from "~/hooks/useInfiniteScroller";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
+import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
+import { Objective } from "~/model/usergeneratedcontent/Objective";
 import Spinner from "../Spinner";
 import styles from "./styles/ObjectivePanelStyle";
+import AddIcon from "@material-ui/icons/Add";
+import { ObjectiveType } from "~/enums/ObjectiveType";
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
 interface Props {
     programId: number;
+    filteredObjectiveType: ObjectiveType;
 }
 
 const ObjectivesPanel: FC<Props> = (props) => {
@@ -26,6 +32,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
             method: "get",
             params: {
                 programId: props.programId,
+                objectiveType: props.filteredObjectiveType, 
             },
         },
         deps: [props.programId],
@@ -34,9 +41,33 @@ const ObjectivesPanel: FC<Props> = (props) => {
         },
     });
 
+    const [wasCreateNewObjectiveClicked, setWasCreateNewObjectiveClicked] = useState<boolean>(false);
+    const currentUser = useContext(CurrentUserContext);
+
     return (
         <div>
-            {usedEndpoint.pending && <Spinner/>}
+            {!wasCreateNewObjectiveClicked &&
+                currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+                    <>
+                        <Fab
+                            size="large"
+                            aria-label="add"
+                            color="secondary"
+                            style={{ position: "fixed" }}
+                            className={classes.floatingActionButton}
+                            onClick={() => setWasCreateNewObjectiveClicked(true)}
+                        >
+                            <AddIcon />
+                        </Fab>
+                    </>
+                )}
+
+            {wasCreateNewObjectiveClicked && (
+                <ObjectiveDisplayContainer  shouldCreateNew={true}
+                    onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)} />
+            )}
+
+            {usedEndpoint.pending && <Spinner />}
 
             {usedEndpoint.failed && <p>Couldn't load objectives :'(</p>}
 

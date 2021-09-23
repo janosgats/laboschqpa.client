@@ -4,12 +4,14 @@ import React, {ReactElement} from 'react';
 interface MyPaperProps {
     p?: number;
     opacity?: number;
+    variant?: "outlined" | "elevation";
 }
 
-export default function MyPaper({children, p = 2, opacity = 0.7}: React.PropsWithChildren<MyPaperProps>): ReactElement {
+export default function MyPaper({children, p = 2, opacity = 0.7, variant="elevation"}: React.PropsWithChildren<MyPaperProps>): ReactElement {
     const theme = useTheme();
     return (
         <Paper
+            variant={variant}
             style={{
                 height: '100%',
                 backgroundColor: alpha(theme.palette.background.paper, opacity),
