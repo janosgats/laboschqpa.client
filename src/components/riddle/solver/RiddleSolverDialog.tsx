@@ -1,20 +1,25 @@
-import React, {FC, useEffect, useState} from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Button,
   createStyles,
   Dialog,
   DialogActions,
   DialogContent,
+  Grid,
+  IconButton,
   makeStyles,
   TextField,
   Theme,
+  Typography,
 } from "@material-ui/core";
-import useEndpoint, {UsedEndpoint} from "~/hooks/useEndpoint";
+import useEndpoint, { UsedEndpoint } from "~/hooks/useEndpoint";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
-import {AccessibleRiddle} from "~/model/usergeneratedcontent/AccessibleRiddle";
+import { AccessibleRiddle } from "~/model/usergeneratedcontent/AccessibleRiddle";
 import Image from "~/components/image/Image";
-import {dialogStyles} from "~/styles/dialog-styles";
+import CloseIcon from '@material-ui/icons/Close';
+import { dialogStyles } from "~/styles/dialog-styles";
+
 
 interface RiddleSubmitSolutionResponse {
   isGivenSolutionCorrect: boolean;
@@ -128,85 +133,110 @@ const RiddleSolverDialog: FC<Props> = (props) => {
 
         {usedEndpoint.succeeded && (
           <>
-            <h2 className={classes.dialogTitle}>{riddle.title}</h2>
-            {riddle.attachments?.[0] && (
-              <div className={classes.containerFlexCenter}>
-                <Image fileId={riddle.attachments[0]} maxSize={300} />
-              </div>
-            )}
-            {riddle.wasHintUsed ? (
-              <>
-                {isHintShown ? (
-                  <p>Hint: {riddle.hint}</p>
+            <Grid
+              container
+              justify="center"
+              direction="column"
+            >
+              <Grid
+                container
+                justify="center"
+              >
+                <Typography variant="h2">{riddle.title}</Typography>
+              </Grid>
+              <br />
+              {riddle.attachments?.[0] && (
+                
+                  <Image fileId={riddle.attachments[0]} maxSize={300} />
+                
+              )}
+              <br />
+              <Grid
+                container
+                justify="center"
+              >
+
+                {riddle.wasHintUsed ? (
+                  <>
+                    {isHintShown ? (
+                      <Typography>Hint: {riddle.hint}</Typography>
+                    ) : (
+                      <Button
+                        size="medium"
+                        variant="text"
+                        onClick={() => setIsHintShown(true)}
+                        color="default"
+                        fullWidth
+                      >
+                        Hint
+                      </Button>
+                    )}
+                  </>
                 ) : (
                   <Button
-                    size="small"
+                    size="medium"
                     variant="outlined"
-                    onClick={() => setIsHintShown(true)}
+                    onClick={() => askForHint()}
+                    fullWidth
                   >
-                    Show hint
+                    Hint kérés
                   </Button>
                 )}
-              </>
-            ) : (
-              <Button
-                size="small"
-                variant="outlined"
-                onClick={() => askForHint()}
-              >
-                Ask for hint
-              </Button>
-            )}
-            <br />
+              </Grid>
+              <br />
 
-            <div className={classes.submitContainer}>
-              <TextField
-                variant="outlined"
-                color="secondary"
-                type="text"
-                value={solutionToSubmit}
-                onChange={(e) => setSolutionToSubmit(e.target.value)}
-                label="Your solution"
-              />
-              <Button
-                color="secondary"
-                size="small"
-                variant="contained"
-                onClick={() => submitSolution()}
+              <Grid
+                container
+                direction="column"
               >
-                Submit solution
-              </Button>
-            </div>
+                <TextField
+                  className={classes.inputs}
+                  variant="outlined"
+                  color="secondary"
+                  type="text"
+                  value={solutionToSubmit}
+                  onChange={(e) => setSolutionToSubmit(e.target.value)}
+                  label="Tipped"
+                  fullWidth
 
-            {riddle.isAlreadySolved && (
-              <>
-                <br />
-                {isSolutionShown ? (
-                  <p>Correct solution: {riddle.solution}</p>
-                ) : (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => setIsSolutionShown(true)}
-                  >
-                    Show correct solution
-                  </Button>
+                />
+                <Button
+                  className={classes.inputs}
+                  color="primary"
+                  size="large"
+                  variant="contained"
+                  onClick={() => submitSolution()}
+                  fullWidth
+
+                >
+                  Beküld
+                </Button>
+
+                {riddle.isAlreadySolved && (
+                  <>
+                    {isSolutionShown ? (
+                      <p>Correct solution: {riddle.solution}</p>
+                    ) : (
+                      <Button
+                        className={classes.inputs}
+                        size="large"
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => setIsSolutionShown(true)}
+                         fullWidth
+
+                      >
+                        Megoldás
+                      </Button>
+                    )}
+                  </>
                 )}
-              </>
-            )}
+              </Grid>
+            </Grid>
           </>
+
         )}
       </DialogContent>
-      <DialogActions style={{padding: '24px'}}>
-        <Button
-        
-          variant="contained"
-          onClick={() => props.onClose(shouldReloadRiddleList)}
-          color="secondary"
-        >
-          Close
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

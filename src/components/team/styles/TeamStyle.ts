@@ -13,7 +13,7 @@ export function getStyles(theme: Theme) {
 
         listHover: {
             '&:hover': {
-                backgroundColor: alpha(theme.palette.background.paper, 0.85),
+                backgroundColor: alpha(theme.palette.background.paper, 1),
                 cursor: "pointer",
             },
         },

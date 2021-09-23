@@ -1,3 +1,4 @@
+import { makeStyles, TableContainer, Theme, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import MUIPaper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -10,8 +11,15 @@ import RiddleSolverDialog from '~/components/riddle/solver/RiddleSolverDialog';
 import useEndpoint from '~/hooks/useEndpoint';
 import {AccessibleRiddle} from '~/model/usergeneratedcontent/AccessibleRiddle';
 import Spinner from '../Spinner';
+import { getStyles } from '~/components/panel/styles/RiddlePanelStyle';
+import MyPaper from '../mui/MyPaper';
+
+const useStyles = makeStyles((theme: Theme) => getStyles(theme))
 
 const RiddlesPanel: FC = () => {
+
+    const classes = useStyles()
+
     const [isSolveRiddleDialogOpen, setIsSolveRiddleDialogOpen] = useState<boolean>(false);
     const [openedRiddleId, setOpenedRiddleId] = useState<number>();
 
@@ -38,32 +46,34 @@ const RiddlesPanel: FC = () => {
             {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
             {usedEndpoint.succeeded && (
-                <MUIPaper>
-                    <Table>
+                <TableContainer
+                    component={MyPaper}
+                >
+                    <Table 
+                        size="medium"
+                    >
                         <TableHead>
                             <TableRow>
-                                <TableCell>Cím</TableCell>
-                                <TableCell>Megoldva?</TableCell>
-                                <TableCell>Mutasd</TableCell>
+                                <TableCell align="center" ><Typography variant="h5"> <b>Cím</b></Typography></TableCell>
+                                <TableCell align="center" ><Typography variant="h5"> <b>Megoldva?</b></Typography></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {usedEndpoint.data.map((riddle, index) => {
                                 return (
-                                    <TableRow key={riddle.id}>
-                                        <TableCell>{riddle.title}</TableCell>
-                                        <TableCell>{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</TableCell>
-                                        <TableCell>
-                                            <Button variant="contained" onClick={() => openRiddle(riddle.id)}>
-                                                Mutasd
-                                            </Button>
-                                        </TableCell>
+                                    <TableRow
+                                        key={riddle.id}
+                                        onClick={() => openRiddle(riddle.id)}
+                                        className={classes.tableRow}
+                                        >
+                                        <TableCell align="center"><Typography variant="body1">{riddle.title}</Typography></TableCell>
+                                        <TableCell align="center"><Typography variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography></TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
-                </MUIPaper>
+                </TableContainer>
             )}
 
             <RiddleSolverDialog

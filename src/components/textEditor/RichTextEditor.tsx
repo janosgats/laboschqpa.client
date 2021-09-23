@@ -1,4 +1,3 @@
-import { Paper } from '@material-ui/core';
 import BackupIcon from '@material-ui/icons/Backup';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';

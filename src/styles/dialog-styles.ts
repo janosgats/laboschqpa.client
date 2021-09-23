@@ -19,4 +19,8 @@ export const dialogStyles = {
     alignItems: "flex-end",
     justifyContent: "space-between",
   },
+
+  inputs:{
+    marginTop: "8px",
+  }
 };
