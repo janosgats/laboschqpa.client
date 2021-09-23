@@ -3,7 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {createTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import React, {CSSProperties, useEffect, useMemo} from 'react';
+import React, {CSSProperties, useEffect} from 'react';
 import ClientRender from '~/components/ClientRender';
 import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
 import NavBar from '~/components/nav/NavBar';
@@ -47,8 +47,6 @@ function MyApp({Component, pageProps}): JSX.Element {
             applyOrganicDDoSProtection(router);
         }
     }, [router.isReady]);
-
-    const backgrundStyle = useMemo(() => getBackgroundImageDivStyle(darkMode), [darkMode]);
 
     return (
         <>
