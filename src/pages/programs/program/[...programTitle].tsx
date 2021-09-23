@@ -75,7 +75,7 @@ const Index: NextPage = () => {
                         )}
                     </Grid>
                     <Grid item>
-                        <MyPaper>
+                        <MyPaper p={0} style={{paddingTop: '1rem'}}>
                             <Grid container justify="center">
                                 <Typography variant="subtitle1">Programhoz kapcsolódó feladatok</Typography>
                             </Grid>
