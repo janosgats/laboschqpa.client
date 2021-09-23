@@ -1,16 +1,15 @@
-import { Button, createStyles, Fab, Grid, makeStyles, Theme } from "@material-ui/core";
-import React, { FC, useContext, useState } from "react";
-import { ObjectiveDisplayContainer } from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
-import useEndpoint from "~/hooks/useEndpoint";
-import useInfiniteScroller, { InfiniteScroller } from "~/hooks/useInfiniteScroller";
-import { Objective } from "~/model/usergeneratedcontent/Objective";
-import Spinner from "../Spinner";
-import styles from "./styles/ObjectivePanelStyle";
-import AddIcon from "@material-ui/icons/Add";
-import { ObjectiveType } from "~/enums/ObjectiveType";
-
+import {Button, createStyles, Dialog, DialogContent, DialogTitle, Fab, Grid, makeStyles, Theme} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import React, {FC, useContext, useState} from 'react';
+import {ObjectiveDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
+import {ObjectiveType} from '~/enums/ObjectiveType';
+import useEndpoint from '~/hooks/useEndpoint';
+import useInfiniteScroller, {InfiniteScroller} from '~/hooks/useInfiniteScroller';
+import {Objective} from '~/model/usergeneratedcontent/Objective';
+import Spinner from '../Spinner';
+import styles from './styles/ObjectivePanelStyle';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
@@ -28,11 +27,11 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
     const usedEndpoint = useEndpoint<Objective[]>({
         conf: {
-            url: "/api/up/server/api/objective/listObjectivesBelongingToProgram",
-            method: "get",
+            url: '/api/up/server/api/objective/listObjectivesBelongingToProgram',
+            method: 'get',
             params: {
                 programId: props.programId,
-                objectiveType: props.filteredObjectiveType, 
+                objectiveType: props.filteredObjectiveType,
             },
         },
         deps: [props.programId],
@@ -46,25 +45,35 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
     return (
         <div>
-            {!wasCreateNewObjectiveClicked &&
-                currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                    <>
-                        <Fab
-                            size="large"
-                            aria-label="add"
-                            color="secondary"
-                            style={{ position: "fixed" }}
-                            className={classes.floatingActionButton}
-                            onClick={() => setWasCreateNewObjectiveClicked(true)}
-                        >
-                            <AddIcon />
-                        </Fab>
-                    </>
-                )}
+            {!wasCreateNewObjectiveClicked && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+                <>
+                    <Fab
+                        size="large"
+                        aria-label="add"
+                        color="secondary"
+                        style={{position: 'fixed'}}
+                        className={classes.floatingActionButton}
+                        onClick={() => setWasCreateNewObjectiveClicked(true)}
+                    >
+                        <AddIcon />
+                    </Fab>
+                </>
+            )}
 
             {wasCreateNewObjectiveClicked && (
-                <ObjectiveDisplayContainer  shouldCreateNew={true}
-                    onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)} />
+                <Dialog open={true} onClose={() => setWasCreateNewObjectiveClicked(false)}>
+                    <DialogTitle>Feladat létrehozás</DialogTitle>
+                    <DialogContent>
+                        <ObjectiveDisplayContainer
+                            shouldCreateNew={true}
+                            onCreatedNew={() => {
+                                setWasCreateNewObjectiveClicked(false);
+                                usedEndpoint.reloadEndpoint();
+                            }}
+                            onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)}
+                        />
+                    </DialogContent>
+                </Dialog>
             )}
 
             {usedEndpoint.pending && <Spinner />}
@@ -73,17 +82,11 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
             {usedEndpoint.succeeded && (
                 <>
-                    {usedEndpoint.data
-                        .slice(0, infiniteScroller.shownCount)
-                        .map((objective, index) => {
-                            return (
-                                <ObjectiveDisplayContainer
-                                    key={objective.id}
-                                    overriddenBeginningEntity={objective}
-                                    shouldCreateNew={false}
-                                />
-                            );
-                        })}
+                    {usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((objective, index) => {
+                        return (
+                            <ObjectiveDisplayContainer key={objective.id} overriddenBeginningEntity={objective} shouldCreateNew={false} />
+                        );
+                    })}
                     {infiniteScroller.canShownCountBeIncreased && (
                         <Grid container justify="center">
                             <Button
