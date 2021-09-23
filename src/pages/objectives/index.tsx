@@ -45,7 +45,6 @@ const Index: NextPage = () => {
                         indicatorColor="secondary"
                         textColor="secondary"
                     >
-                        <Tab label="Elő feladatok" value={ObjectiveType.PRE_WEEK_TASK} />
                         <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
                         <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
                     </Tabs>
