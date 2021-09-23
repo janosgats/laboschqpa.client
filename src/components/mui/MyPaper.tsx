@@ -7,11 +7,13 @@ interface MyPaperProps {
     opacity?: number;
     variant?: 'outlined' | 'elevation';
     borderRadius?: BorderRadiusProperty<string | 0>;
+    elevation?: number;
     style?: React.CSSProperties;
 }
 
 export default function MyPaper({
     children,
+    elevation = 1,
     p = 2,
     opacity = 0.8,
     variant = 'elevation',
@@ -21,6 +23,7 @@ export default function MyPaper({
     const theme = useTheme();
     return (
         <Paper
+            elevation={elevation}
             variant={variant}
             style={{
                 height: '100%',
