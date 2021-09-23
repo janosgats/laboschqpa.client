@@ -3,7 +3,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {createTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
 import {useRouter} from 'next/router';
-import React, {CSSProperties, useEffect} from 'react';
+import React, {CSSProperties, useEffect, useMemo} from 'react';
+import ClientRender from '~/components/ClientRender';
 import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
 import NavBar from '~/components/nav/NavBar';
 import CurrentUserProvider from '~/context/CurrentUserProvider';
@@ -12,6 +13,7 @@ import {applyOrganicDDoSProtection} from '~/utils/DDoSProtector';
 import '../components/eventDisplay/style/reactNotifications.css';
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
+    console.log('isdark', isDarkMode);
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
     let backgroundSize = '1600px';
     if (isDarkMode) {
@@ -47,6 +49,8 @@ function MyApp({Component, pageProps}): JSX.Element {
         }
     }, [router.isReady]);
 
+    const backgrundStyle = useMemo(() => getBackgroundImageDivStyle(darkMode), [darkMode]);
+
     return (
         <>
             <Head>
@@ -57,7 +61,7 @@ function MyApp({Component, pageProps}): JSX.Element {
 
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <div style={getBackgroundImageDivStyle(darkMode)} />
+                <ClientRender>{() => <div style={getBackgroundImageDivStyle(darkMode)} />}</ClientRender>
                 <EventDisplayContainer />
                 <CurrentUserProvider>
                     <NavBar darkMode={darkMode} setDarkMode={setDarkMode}>
