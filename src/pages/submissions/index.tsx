@@ -104,13 +104,15 @@ const Index: NextPage = () => {
                                     }}
                                 >
                                     <option value={NOT_FILTERED}>Nincs</option>
-                                    {fetchedObjectives.map((objective) => {
-                                        return (
-                                            <option key={objective.id} value={objective.id}>
-                                                {`${objectiveTypeData[objective.objectiveType].shortDisplayName} > ${objective.title}`}
-                                            </option>
-                                        );
-                                    })}
+                                    {fetchedObjectives
+                                        .filter((item) => item.submittable)
+                                        .map((objective) => {
+                                            return (
+                                                <option key={objective.id} value={objective.id}>
+                                                    {`${objectiveTypeData[objective.objectiveType].shortDisplayName} > ${objective.title}`}
+                                                </option>
+                                            );
+                                        })}
                                 </Select>
                             </FormControl>
                         </Grid>
