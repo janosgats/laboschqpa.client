@@ -142,7 +142,7 @@ const Index: NextPage = () => {
                                 </Grid>
                             </>
                         )}
-                        {currentUser.getUserInfo().authorities.includes(Authority.Admin) && (
+                        {currentUser.getUserInfo() && currentUser.getUserInfo().authorities.includes(Authority.Admin) && (
                             <Grid item>
                                 <Typography variant="h5">Jogosultságok: </Typography>
                                 <List>
