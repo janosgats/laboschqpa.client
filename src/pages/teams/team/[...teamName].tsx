@@ -320,10 +320,8 @@ const Index: NextPage = () => {
             },
         })
             .then(() => {
-                usedTeamInfo.reloadEndpoint();
-                usedTeamMembers.reloadEndpoint();
-                usedTeamApplicants.reloadEndpoint();
                 currentUser.reload();
+                router.push('/');
             })
             .catch((err) => {
                 EventBus.notifyError('Error while archiving and leaving team');
