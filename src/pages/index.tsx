@@ -1,5 +1,5 @@
-import { Box, Grid, Typography } from '@material-ui/core';
-import { NextPage } from 'next';
+import {Box, Grid, Typography} from '@material-ui/core';
+import {NextPage} from 'next';
 import Head from 'next/head';
 import React from 'react';
 import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBanner';
@@ -13,7 +13,7 @@ const Index: NextPage = () => {
     return (
         <Box>
             <Head>
-                <title>Kezdőlap</title>
+                <title>HQ</title>
             </Head>
             <Box mb={2}>
                 <Grid container direction="column" spacing={2}>

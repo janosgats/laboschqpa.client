@@ -127,7 +127,7 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
                     <p>- A csapatkapitány hamarosan ellenőrzi a jelentkezésed.</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                         <Button onClick={() => router.push(`/teams/team/My?id=${currentUser.getUserInfo()?.teamId}`)}>
-                            Megtekint {currentUser.getUserInfo()?.teamName}
+                            {currentUser.getUserInfo()?.teamName} megtekintése
                         </Button>
                     </ButtonGroup>
                 </Alert>
@@ -141,7 +141,7 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
             <MyPaper p={0}>
                 <Alert variant="outlined" severity="info">
                     <AlertTitle>Nem vagy még tagja egy csapatnak sem</AlertTitle>
-                    <p>- Emiatt jüpár funkció nem elérhető számodra/</p>
+                    <p>- Emiatt jópár funkció nem érhető el számodra :/</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
                         {!hideJoinATeamButton && <Button onClick={() => router.push('/teams')}>Jelentkezz egy csapatba</Button>}
                         <Button onClick={() => setIsCreateNewTeamDialogOpen(true)}>Csapat létrehozása</Button>
