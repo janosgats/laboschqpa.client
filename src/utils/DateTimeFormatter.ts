@@ -18,6 +18,18 @@ const dayFormatter = new Intl.DateTimeFormat(
     dayFormatterOptions
 );
 
+
+const dayMinutesFormatterOptions: Intl.DateTimeFormatOptions = {
+    month: "short",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "numeric",
+};
+const dayMinutesFormatter = new Intl.DateTimeFormat(
+    "hu-HU",
+    dayMinutesFormatterOptions
+);
+
 const fullShortFormatterOptions: Intl.DateTimeFormatOptions = {
     year: "2-digit",
     month: "short",
@@ -63,9 +75,21 @@ function toDay(date: Date | string): string {
     return dayFormatter.format(date);
 }
 
+function toDayMinutes(date: Date | string): string {
+    if (!date) {
+        return "-";
+    }
+    date = getSurelyDate(date);
+    if (!date) {
+        return "-";
+    }
+    return dayMinutesFormatter.format(date);
+}
+
 const DateTimeFormatter = {
     toFullBasic,
     toFullShort,
     toDay,
+    toDayMinutes,
 };
 export default DateTimeFormatter;
