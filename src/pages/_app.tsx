@@ -13,7 +13,6 @@ import {applyOrganicDDoSProtection} from '~/utils/DDoSProtector';
 import '../components/eventDisplay/style/reactNotifications.css';
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
-    console.log('isdark', isDarkMode);
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
     let backgroundSize = '1600px';
     if (isDarkMode) {
