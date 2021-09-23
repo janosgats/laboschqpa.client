@@ -12,7 +12,7 @@ import {SpeedDrinkingCategory, speedDrinkingCategoryData,} from "~/enums/SpeedDr
 import {SpeedDrinking} from "~/model/usergeneratedcontent/SpeedDrinking";
 import {isValidNumber} from "~/utils/CommonValidators";
 import SpeedDrinkingEditor from "~/components/fetchableDisplay/ui/SpeedDrinkingEditor";
-import {Button, TableCell, TableHead} from "@material-ui/core";
+import {Button, TableCell, TableHead, TableRow} from "@material-ui/core";
 
 export interface SaveSpeedDrinkingCommand {
     drinkerUserId: number;
@@ -113,14 +113,14 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
 
     return (
         <>
-            <TableHead>
+            <TableRow>
                 {!props.isCreatingNew && (
                     <>
-                <TableCell>
+                <TableCell align="center">
                     {isValidNumber(props.rowNumber) && props.rowNumber}
                 </TableCell>
                 {props.showCategory && (
-                    <TableCell>
+                    <TableCell align="left">
                         {
                             speedDrinkingCategoryData[props.existingEntity.category]
                                 .displayName
@@ -128,7 +128,7 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                     </TableCell>
                 )}
                 {props.showName && (
-                    <TableCell>
+                    <TableCell align="left">
                         {UserNameFormatter.getBasicDisplayName({
                             firstName: props.existingEntity.drinkerFirstName,
                             lastName: props.existingEntity.drinkerLastName,
@@ -137,11 +137,11 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                     </TableCell>
                 )}
                 {props.showTeam && (
-                    <TableCell>{props.existingEntity.drinkerTeamName}</TableCell>
+                    <TableCell align="center">{props.existingEntity.drinkerTeamName}</TableCell>
                 )}
-                <TableCell>{props.existingEntity.time}</TableCell>
-                <TableCell>{props.existingEntity.note}</TableCell>
-                <TableCell>
+                <TableCell align="center">{props.existingEntity.time}</TableCell>
+                <TableCell align="left">{props.existingEntity.note}</TableCell>
+                <TableCell align="right">
                     {isMetaInfoShown ? (
                         <>
                             <ul>
@@ -208,7 +208,7 @@ const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
                 )}
                     </>
                 )}
-            </TableHead>
+            </TableRow>
 
             <SpeedDrinkingEditor
                 isOpen={isEdited}

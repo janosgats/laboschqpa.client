@@ -1,4 +1,4 @@
-import {Button, Table, TableCell, TableHead, TableRow} from '@material-ui/core';
+import {Button, Table, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 import MUIPaper from '@material-ui/core/Paper';
 import React, {FC, useContext, useState} from 'react';
 import {SpeedDrinkingDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
@@ -9,6 +9,7 @@ import useEndpoint from '~/hooks/useEndpoint';
 import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
 import {UniqueValueIndexer} from '~/utils/UniqueValueIndexer';
+import MyPaper from '../mui/MyPaper';
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -44,7 +45,9 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                     <h4>Általad rögzített idők</h4>
 
                     {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
-                        <>
+                        <TableContainer
+                            component={MyPaper}
+                        >
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -91,7 +94,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                     </TableRow>
                                 )}
                             </Table>
-                        </>
+                        </TableContainer>
                     )}
                     {!isCreatingNewDisplayShown && (
                         <Button size="small" variant="contained" onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
@@ -104,16 +107,18 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
-                <>
+                <TableContainer
+                    component={MyPaper}
+                >
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>#</TableCell>
-                                <TableCell>Név</TableCell>
-                                <TableCell>Csapat</TableCell>
-                                <TableCell>Idő</TableCell>
-                                <TableCell>Megjegyzés</TableCell>
-                                <TableCell>Időpont</TableCell>
+                                <TableCell align="center">Helyezés</TableCell>
+                                <TableCell align="left">Név</TableCell>
+                                <TableCell align="center">Csapat név</TableCell>
+                                <TableCell align="center">Idő</TableCell>
+                                <TableCell align="left">Megjegyzés</TableCell>
+                                <TableCell align="right">Időpont</TableCell>
                                 {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Szerkesztés</TableCell>}
                             </TableRow>
                         </TableHead>
@@ -138,7 +143,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                             );
                         })}
                     </Table>
-                </>
+                </TableContainer>
             )}
         </div>
     );
