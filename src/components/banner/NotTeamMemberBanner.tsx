@@ -139,7 +139,7 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
     return (
         <Grid item>
             <MyPaper p={0} borderRadius={'1rem'}>
-                <Alert variant="outlined" severity="info">
+                <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="info">
                     <AlertTitle>Nem vagy még tagja egy csapatnak sem</AlertTitle>
                     <p>- Emiatt jópár funkció nem érhető el számodra :/</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">

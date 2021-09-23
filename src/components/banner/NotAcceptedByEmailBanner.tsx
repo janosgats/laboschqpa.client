@@ -35,12 +35,12 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
             <DialogTitle>Probléma megoldása</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Hogy megbizonyosodjunk arról, hogy a tényleg Qpázó vagy, megkértük a csapatkapitányodatkat arra, hogy adják le csapatuk tagjainak email
-                    címeit.
+                    Hogy megbizonyosodjunk arról, hogy a tényleg Qpázó vagy, megkértük a csapatkapitányodatkat arra, hogy adják le csapatuk
+                    tagjainak email címeit.
                 </DialogContentText>
                 <DialogContentText>
-                    Kérdezd meg a csk-d, leadta-e már az email címed. Ha igen, de más e-maillel regisztráltál, a lenti gombbal könnyedén hozzáadhatod a
-                    fiókodhoz. Ha még nem, a CSK még mindig leadhatja nekünk.
+                    Kérdezd meg a csk-d, leadta-e már az email címed. Ha igen, de más e-maillel regisztráltál, a lenti gombbal könnyedén
+                    hozzáadhatod a fiókodhoz. Ha még nem, a CSK még mindig leadhatja nekünk.
                 </DialogContentText>
                 <DialogContentText style={{marginBottom: 0}}>
                     <Typography variant="h6">A jelenleg fiókodhoz rendelt e-mail címeid:</Typography>
@@ -77,7 +77,7 @@ const NotAcceptedByEmailBanner: FC = () => {
     return (
         <Grid item>
             <MyPaper p={0} borderRadius={'1rem'}>
-                <Alert variant="outlined" severity="warning">
+                <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="warning">
                     <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
                     <p>- which makes you unable to see submissions of other users :/</p>
                     <ButtonGroup color="inherit" aria-label="outlined primary button group">
