@@ -52,13 +52,6 @@ const Index: NextPage = () => {
                         </Button>
                     </Grid>
                 )}
-
-                {/*usedEndpoint.succeeded &&
-                    TimeSpan.asDate(TimeSpan.range('2021-09-20T00:00:00', 14, TimeSpan.day)).map((date, i) => (
-                        <Grid item>
-                            <DayProgramsDisplay key={i} programs={usedEndpoint.data} date={date} />
-                        </Grid>
-                    ))*/}
                 <Grid item>
                     <ProgramCalendar reloaderRef={reloaderRef} startDate={new Date('2021-09-25T00:00:00')} count={15} />
                 </Grid>

@@ -272,6 +272,7 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                     direction="row"
                     justify="space-between"
                     alignItems="center"
+                    style={{paddingLeft: theme.spacing(3), paddingRight: theme.spacing(6)}}
                 >
                     <FormControlLabel
                         control={
