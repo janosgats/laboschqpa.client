@@ -84,7 +84,7 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
             <DialogContent>
                 <DialogContent>
                     <DialogContentText>
-                        Hogy létrehozz egy csapatot, először el kell nevezned. Miután létrejött a csapat te leszel a kapitánya.
+                        Hogy létrehozz egy csapatot, először el kell nevezned. Miután létrejött a csapat, te leszel a kapitánya.
                     </DialogContentText>
                     <TextField autoFocus label="Team name" value={teamName} onChange={(e) => setTeamName(e.target.value)} />
                 </DialogContent>
