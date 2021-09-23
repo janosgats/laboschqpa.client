@@ -1,4 +1,4 @@
-import {Button, ButtonGroup, Collapse, createStyles, Grid, IconButton, makeStyles, Paper, Theme, Typography} from '@material-ui/core';
+import {Button, ButtonGroup, Collapse, createStyles, Grid, IconButton, makeStyles, Theme, Typography} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -25,6 +25,7 @@ import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import EventBus from '~/utils/EventBus';
 import MuiRteUtils from '~/utils/MuiRteUtils';
 import UserNameFormatter from '~/utils/UserNameFormatter';
+import MyPaper from '../mui/MyPaper';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
@@ -146,7 +147,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
     const classes = useStyles();
 
     return (
-        <Paper className={classes.submissionDisplayContainer} variant="outlined" elevation={3}>
+        <MyPaper elevation={8}>
             <Grid container alignItems="center" justify="space-between" className={classes.header}>
                 {props.existingEntity && (
                     <Typography variant="h6">
@@ -265,7 +266,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                     )}
                 </>
             )}
-        </Paper>
+        </MyPaper>
     );
 };
 

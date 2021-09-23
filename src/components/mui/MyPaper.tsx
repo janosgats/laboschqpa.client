@@ -1,36 +1,40 @@
-import {alpha, Box, Paper, useTheme} from '@material-ui/core';
+import {alpha, Paper, useTheme} from '@material-ui/core';
+import {BorderRadiusProperty} from 'csstype';
 import React, {ReactElement} from 'react';
-import {BorderRadiusProperty} from "csstype";
 
 interface MyPaperProps {
     p?: number;
     opacity?: number;
-    variant?: "outlined" | "elevation";
+    variant?: 'outlined' | 'elevation';
     borderRadius?: BorderRadiusProperty<string | 0>;
+    elevation?: number;
+    style?: React.CSSProperties;
 }
 
 export default function MyPaper({
-                                    children,
-                                    p = 2,
-                                    opacity = 0.8,
-                                    variant = "elevation",
-                                    borderRadius = '.25rem'
-                                }: React.PropsWithChildren<MyPaperProps>): ReactElement {
+    children,
+    elevation = 1,
+    p = 2,
+    opacity = 0.8,
+    variant = 'elevation',
+    borderRadius = '.25rem',
+    style = {},
+}: React.PropsWithChildren<MyPaperProps>): ReactElement {
     const theme = useTheme();
     return (
         <Paper
+            elevation={elevation}
             variant={variant}
             style={{
                 height: '100%',
                 backgroundColor: alpha(theme.palette.background.paper, opacity),
                 borderRadius: borderRadius,
-                padding: "16px",
+                padding: theme.spacing(p),
+                overflow: 'hidden',
+                ...style,
             }}
-
         >
-            <Box height="100%" p={p}>
-                {children}
-            </Box>
+            {children}
         </Paper>
     );
 }

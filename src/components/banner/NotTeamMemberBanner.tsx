@@ -15,6 +15,7 @@ import {
 import {Alert, AlertTitle} from '@material-ui/lab';
 import {useRouter} from 'next/router';
 import React, {FC, useContext, useEffect, useState} from 'react';
+import MyPaper from '~/components/mui/MyPaper';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
 import {teamLifecycle_YOU_ARE_ALREADY_MEMBER_OR_APPLICANT_OF_A_TEAM} from '~/enums/ApiErrors';
 import {TeamRole} from '~/enums/TeamRole';
@@ -23,7 +24,6 @@ import {TeamInfo} from '~/model/Team';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import {style} from './styles/style';
-import MyPaper from '~/components/mui/MyPaper';
 
 interface CreateNewTeamDialogProps {
     onClose: () => void;
@@ -138,8 +138,8 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
 
     return (
         <Grid item>
-            <MyPaper p={0}>
-                <Alert variant="outlined" severity="info">
+            <MyPaper p={0} borderRadius={'1rem'}>
+                <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="info">
                     <AlertTitle>Nem vagy még tagja egy csapatnak sem</AlertTitle>
                     <p>- Emiatt jópár funkció nem érhető el számodra :/</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">

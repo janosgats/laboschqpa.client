@@ -1,7 +1,6 @@
-import {Card, CardContent, createStyles, Grid, makeStyles, Theme, Typography} from "@material-ui/core";
-import React, {FC} from "react";
-import LoginForm from "~/components/join/LoginForm";
-
+import {alpha, Card, CardContent, createStyles, Grid, makeStyles, Theme, Typography} from '@material-ui/core';
+import React, {FC} from 'react';
+import LoginForm from '~/components/join/LoginForm';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,9 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: 'auto',
         },
         paper: {
-            padding: "50px",
-        }
-    }),
+            padding: '50px',
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
+        },
+    })
 );
 
 const LoginWall: FC = () => {
@@ -25,18 +25,16 @@ const LoginWall: FC = () => {
 
     return (
         <Grid className={classes.grid} container direction="column" justify="center" alignContent="center">
-            <Card className={classes.paper} variant="outlined">
+            <Card className={classes.paper} variant="elevation">
                 <Grid item xs={12} container justify="center" alignContent="center">
                     <CardContent>
-                        <Typography variant="h3">
-                            Log In
-                        </Typography>
+                        <Typography variant="h3">Log In</Typography>
                     </CardContent>
                 </Grid>
-                <LoginForm/>
+                <LoginForm />
             </Card>
         </Grid>
-    )
+    );
 };
 
 export default LoginWall;

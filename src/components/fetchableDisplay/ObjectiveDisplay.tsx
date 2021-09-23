@@ -1,29 +1,8 @@
-import React, {useContext, useEffect, useState} from "react";
-import {CurrentUserContext} from "~/context/CurrentUserProvider";
-import {Authority} from "~/enums/Authority";
-import RichTextEditor from "~/components/textEditor/RichTextEditor";
-import MuiRteUtils from "~/utils/MuiRteUtils";
-import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
-import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, {Author} from "~/service/UserInfoService";
-import UserNameFormatter from "~/utils/UserNameFormatter";
-import EventBus from "~/utils/EventBus";
-import {Objective} from "~/model/usergeneratedcontent/Objective";
-import {ObjectiveType, objectiveTypeData} from "~/enums/ObjectiveType";
-import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import ObjectiveTypeSelector from "~/components/selector/ObjectiveTypeSelector";
-import {getSurelyDate} from "~/utils/DateHelpers";
-import Scorer from "~/components/Scorer";
-import {SubmissionDisplayContainer} from "~/components/fetchableDisplay/FetchableDisplayContainer";
-import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
-import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
     Box,
     Button,
     ButtonGroup,
     Checkbox,
-    Collapse,
     createStyles,
     Dialog,
     DialogContent,
@@ -32,24 +11,40 @@ import {
     Grid,
     IconButton,
     makeStyles,
-    Paper,
     TextField,
     Theme,
     Typography,
     useTheme,
-} from "@material-ui/core";
-import EditIcon from '@material-ui/icons/Edit';
+} from '@material-ui/core';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import SaveIcon from '@material-ui/icons/Save';
-import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
-import {getStyles} from "./styles/ObjectiveDisplayStyle";
-import TempDatetimePicker from "~/components/TempDatetimePicker";
-import MyPaper from "../mui/MyPaper";
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import SaveIcon from '@material-ui/icons/Save';
+import React, {useContext, useEffect, useState} from 'react';
+import {SubmissionDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
+import AttachmentPanel from '~/components/file/AttachmentPanel';
+import Scorer from '~/components/Scorer';
+import ObjectiveTypeSelector from '~/components/selector/ObjectiveTypeSelector';
+import TempDatetimePicker from '~/components/TempDatetimePicker';
+import RichTextEditor from '~/components/textEditor/RichTextEditor';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
+import {ObjectiveType, objectiveTypeData} from '~/enums/ObjectiveType';
+import useAttachments, {UsedAttachments} from '~/hooks/useAttachments';
+import CreatedEntityResponse from '~/model/CreatedEntityResponse';
+import {FetchableDisplay, FetchingTools} from '~/model/FetchableDisplay';
+import {Objective} from '~/model/usergeneratedcontent/Objective';
+import {ProgramPageContext} from '~/pages/programs/program/[...programTitle]';
+import UserInfoService, {Author} from '~/service/UserInfoService';
+import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
+import {getSurelyDate} from '~/utils/DateHelpers';
+import EventBus from '~/utils/EventBus';
+import MuiRteUtils from '~/utils/MuiRteUtils';
+import MyPaper from '../mui/MyPaper';
+import {getStyles} from './styles/ObjectiveDisplayStyle';
 
-
-const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
 export interface SaveObjectiveCommand {
     programId: number;
@@ -69,14 +64,13 @@ function getDefaultDeadline(): Date {
     return date;
 }
 
-const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
-    props
-) => {
+const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (props) => {
     const classes = useStyles();
     const theme = useTheme();
+    const programPage = useContext(ProgramPageContext);
 
-    const defaultProgramId = props.isCreatingNew ? null : props.existingEntity.programId;
-    const defaultTitle = props.isCreatingNew ? "" : props.existingEntity.title;
+    const defaultProgramId = props.isCreatingNew ? programPage?.programId : props.existingEntity.programId;
+    const defaultTitle = props.isCreatingNew ? '' : props.existingEntity.title;
     const defaultDescription = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.description;
     const defaultSubmittable = props.isCreatingNew ? true : props.existingEntity.submittable;
     const defaultDeadline = props.isCreatingNew ? getDefaultDeadline() : getSurelyDate(props.existingEntity.deadline);
@@ -136,7 +130,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
 
     function doSave() {
         if (usedAttachments.attachmentsUnderUpload.length > 0) {
-            EventBus.notifyWarning("Please wait until all the attachments are uploaded!", "You cannot save yet");
+            EventBus.notifyWarning('Please wait until all the attachments are uploaded!', 'You cannot save yet');
             return;
         }
 
@@ -160,7 +154,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     }
 
     function doDelete() {
-        const surelyDelete: boolean = confirm("Do you want to delete this Objective?");
+        const surelyDelete: boolean = confirm('Do you want to delete this Objective?');
         if (surelyDelete) {
             props.onDelete();
         }
@@ -176,7 +170,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
         setIsAuthorFetchingPending(true);
         UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId, false)
             .then((value) => setAuthor(value))
-            .catch(() => EventBus.notifyError("Error while loading Author"))
+            .catch(() => EventBus.notifyError('Error while loading Author'))
             .finally(() => setIsAuthorFetchingPending(false));
     }
 
@@ -185,309 +179,219 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
     }
 
     return (
-        <>
-            <Paper className={classes.objectiveDisplayWrapper}>
-
-                {isEdited ? (
-                    <Grid>
-                        <Grid container direction="row" alignItems="center" justify="center">
-                            <Typography variant="subtitle1" className={classes.typeSelectorLabel}>
-                                Feladat típusa:
-                            </Typography>
-                            <ObjectiveTypeSelector
-                                value={objectiveType}
-                                onChange={setObjectiveType}
-                            />
-                        </Grid>
-                        <Grid container direction="row" alignItems="center" justify="space-between"
-                              style={{marginBottom: "8px"}}>
-                            <Grid item>
-                                <TextField label="Program ID" defaultValue={programId}
-                                    //TODO: This should be a dropdown where people can select a program
-                                           onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
-                                           type="number"
-                                           variant="outlined"
-                                           style={{padding: theme.spacing(1)}}/>
-                            </Grid>
-                            <Grid item>
-                                {props.isCreatingNew && (
-                                    <>
-                                        <ButtonGroup
-                                            size="medium"
-                                        >
-                                            <Button
-                                                onClick={doSave}
-                                                disabled={props.isApiCallPending}
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                Létrehoz
-                                            </Button>
-                                            <Button
-                                                onClick={doCancelEdit}
-                                                disabled={props.isApiCallPending}
-                                                variant="outlined"
-                                                color="secondary"
-                                            >
-                                                Mégsem
-                                            </Button>
-                                        </ButtonGroup>
-
-                                    </>
-                                )}
-                                {!props.isCreatingNew && (
-                                    <>
-                                        <ButtonGroup
-                                            variant="text"
-                                            fullWidth
-                                            size="large"
-                                        >
-                                            <IconButton
-                                                onClick={doSave}
-                                                disabled={props.isApiCallPending}
-                                            >
-                                                <SaveIcon
-                                                    color="primary"
-                                                />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={doDelete}
-                                                disabled={props.isApiCallPending}
-
-                                            >
-                                                <DeleteIcon
-                                                    color="secondary"
-                                                />
-                                            </IconButton>
-                                            <IconButton
-                                                onClick={doCancelEdit}
-                                                disabled={props.isApiCallPending}
-                                            >
-                                                <CloseIcon
-                                                    color="action"
-                                                />
-                                            </IconButton>
-                                        </ButtonGroup>
-                                    </>
-                                )}
-                            </Grid>
-                        </Grid>
-                        <Grid>
-                            <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)}
-                                       variant="outlined" style={{padding: theme.spacing(1)}} fullWidth={true}/>
-                        </Grid>
+        <MyPaper>
+            {isEdited ? (
+                <Grid>
+                    <Grid container direction="row" alignItems="center" justify="center">
+                        <Typography variant="subtitle1" className={classes.typeSelectorLabel}>
+                            Feladat típusa:
+                        </Typography>
+                        <ObjectiveTypeSelector value={objectiveType} onChange={setObjectiveType} />
                     </Grid>
-
-
-                ) : (
-                    <Grid
-                        container
-                        direction="row"
-                        alignItems="center"
-                        justify="space-between"
-                    >
+                    <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: '8px'}}>
                         <Grid item>
-                            <Grid
-                                container
-                                direction="row"
-                                alignItems="center"
-                            >
-                                {objectiveTypeData[props.existingEntity.objectiveType] && (<>
-                                        {React.createElement(
-                                            objectiveTypeData[props.existingEntity.objectiveType].icon,
-                                            {style: {width: 50, height: 50}}
-                                        )}
-                                    </>
-                                )}
-                                <Typography variant="h4" className={classes.title}>{title}</Typography>
-                            </Grid>
-                        </Grid>
-
-                        {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                            <Grid item>
-                                <IconButton onClick={() => setIsEdited(true)}>
-                                    <EditIcon color="action"/>
-                                </IconButton>
-                            </Grid>
-                        )}
-
-                    </Grid>
-                )}
-
-
-                {props.existingEntity?.observerTeamHasScore && (
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                        - A csapatod már teljesítette e feladatot.
-                    </Typography>
-                )}
-                <Box className={classes.richTextEditor}>
-                    <RichTextEditor
-                        isEdited={isEdited}
-                        readOnlyControls={props.isApiCallPending}
-                        defaultValue={defaultDescription}
-                        resetTrigger={resetTrigger}
-                        onChange={(data) => setDescription(data)}
-                        usedAttachments={usedAttachments}
-                    />
-                </Box>
-                {isEdited && (
-                    <>
-                        <FormControlLabel
-                            control={
-                                <TempDatetimePicker
-                                    value={deadline}
-                                    onChange={setDeadline}
-                                    disabled={!isEdited}
-                                />
-                            }
-                            labelPlacement="start"
-                            label="Határidő: "
-                        />
-                        <br/>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={submittable}
-                                    onChange={(e) => setSubmittable(e.target.checked)}
-                                    color="primary"
-                                />
-                            }
-                            labelPlacement="start"
-                            label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
-                        />
-                        <br/>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={isHidden}
-                                    onChange={(e) => setIsHidden(e.target.checked)}
-                                    color="primary"
-                                />
-                            }
-                            labelPlacement="start"
-                            label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
-                        />
-                        <br/>
-                    </>
-                )}
-
-                {isEdited && (
-                    <>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={isHideSubmissionsBeforeChecked}
-                                    onChange={(e) =>
-                                        setIsHideSubmissionsBeforeChecked(e.target.checked)
-                                    }
-                                    color="secondary"
-                                />
-                            }
-                            labelPlacement="start"
-                            label="A beadások ne legyenek nyilvánosak egy adott idő előtt"
-                        />
-
-                        {isHideSubmissionsBeforeChecked && (
-                            <>
-                                <FormControlLabel
-                                    control={
-                                        <TempDatetimePicker
-                                            value={hideSubmissionsBefore}
-                                            onChange={setHideSubmissionsBefore}
-                                            disabled={!isEdited}
-                                        />
-                                    }
-                                    labelPlacement="start"
-                                    label="A beadások el lesznek rejtve eddig: "
-                                />
-                            </>
-                        )}
-                    </>
-                )}
-
-                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
-
-                {!isEdited && (
-                    <>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="center"
-                        >
-                            {submittable &&
-                            isBeforeSubmissionDeadline() &&
-                            currentUser.isMemberOrLeaderOfAnyTeam() && (
-                                <Button
-                                    size="large"
-                                    variant="contained"
-                                    onClick={() => setIsSubmissionDisplayOpen(true)}
-                                    color="primary"
-                                >
-                                    Beadás
-                                </Button>
-                            )}
-                            {currentUser.hasAuthority(Authority.TeamScorer) && (
-                                <Button
-                                    size="large"
-                                    variant="contained"
-                                    onClick={() => setIsScorerOpen(true)}
-                                    color="secondary"
-                                >
-                                    Pontozás
-                                </Button>
-                            )}
-                        </Grid>
-
-                        {isSubmissionDisplayOpen && (
-                            <div>
-                                <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
-                                    <DialogTitle>
-                                        <Grid
-                                            container
-                                            alignItems="center"
-                                            justify="space-between"
-                                            direction="row"
-                                        >
-                                            <Typography variant="h3">
-                                                {props.existingEntity.title}
-                                            </Typography>
-                                            <IconButton
-                                                onClick={() => setIsSubmissionDisplayOpen(false)}
-                                            >
-                                                <ClearOutlinedIcon/>
-                                            </IconButton>
-                                        </Grid>
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        <SubmissionDisplayContainer
-                                            shouldCreateNew={true}
-                                            displayExtraProps={{
-                                                creationObjectiveId: props.existingEntity.id,
-                                                creationObjectiveTitle: props.existingEntity.title,
-                                                creationTeamName:
-                                                    currentUser.getUserInfo() &&
-                                                    currentUser.getUserInfo().teamName,
-                                                showObjectiveTitle: true,
-                                                showTeamName: !!currentUser.getUserInfo(),
-                                            }}
-                                        />
-                                    </DialogContent>
-
-                                </Dialog>
-                            </div>
-                        )}
-
-                        {isScorerOpen && (
-                            <Scorer
-                                defaultObjectiveId={props.existingEntity.id}
-                                onClose={() => setIsScorerOpen(false)}
+                            <TextField
+                                label="Program ID"
+                                defaultValue={programId}
+                                //TODO: This should be a dropdown where people can select a program
+                                onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
+                                type="number"
+                                variant="outlined"
+                                style={{padding: theme.spacing(1)}}
+                                disabled={programPage != null}
                             />
+                        </Grid>
+                        <Grid item>
+                            {props.isCreatingNew && (
+                                <>
+                                    <ButtonGroup size="medium">
+                                        <Button onClick={doSave} disabled={props.isApiCallPending} variant="contained" color="primary">
+                                            Létrehoz
+                                        </Button>
+                                        <Button
+                                            onClick={doCancelEdit}
+                                            disabled={props.isApiCallPending}
+                                            variant="outlined"
+                                            color="secondary"
+                                        >
+                                            Mégsem
+                                        </Button>
+                                    </ButtonGroup>
+                                </>
+                            )}
+                            {!props.isCreatingNew && (
+                                <>
+                                    <ButtonGroup variant="text" fullWidth size="large">
+                                        <IconButton onClick={doSave} disabled={props.isApiCallPending}>
+                                            <SaveIcon color="primary" />
+                                        </IconButton>
+                                        <IconButton onClick={doDelete} disabled={props.isApiCallPending}>
+                                            <DeleteIcon color="secondary" />
+                                        </IconButton>
+                                        <IconButton onClick={doCancelEdit} disabled={props.isApiCallPending}>
+                                            <CloseIcon color="action" />
+                                        </IconButton>
+                                    </ButtonGroup>
+                                </>
+                            )}
+                        </Grid>
+                    </Grid>
+                    <Grid>
+                        <TextField
+                            label="Cím"
+                            defaultValue={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            variant="outlined"
+                            style={{padding: theme.spacing(1)}}
+                            fullWidth={true}
+                        />
+                    </Grid>
+                </Grid>
+            ) : (
+                <Grid container direction="row" alignItems="center" justify="space-between">
+                    <Grid item>
+                        <Grid container direction="row" alignItems="center">
+                            {objectiveTypeData[props.existingEntity.objectiveType] && (
+                                <>
+                                    {React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon, {
+                                        style: {width: 50, height: 50},
+                                    })}
+                                </>
+                            )}
+                            <Typography variant="h4" className={classes.title}>
+                                {title}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+
+                    {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+                        <Grid item>
+                            <IconButton onClick={() => setIsEdited(true)}>
+                                <EditIcon color="action" />
+                            </IconButton>
+                        </Grid>
+                    )}
+                </Grid>
+            )}
+
+            {props.existingEntity?.observerTeamHasScore && (
+                <Typography variant="subtitle1" className={classes.subtitle}>
+                    - A csapatod már teljesítette e feladatot.
+                </Typography>
+            )}
+            <Box className={classes.richTextEditor}>
+                <RichTextEditor
+                    isEdited={isEdited}
+                    readOnlyControls={props.isApiCallPending}
+                    defaultValue={defaultDescription}
+                    resetTrigger={resetTrigger}
+                    onChange={(data) => setDescription(data)}
+                    usedAttachments={usedAttachments}
+                />
+            </Box>
+            {isEdited && (
+                <>
+                    <FormControlLabel
+                        control={<TempDatetimePicker value={deadline} onChange={setDeadline} disabled={!isEdited} />}
+                        labelPlacement="start"
+                        label="Határidő: "
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox checked={submittable} onChange={(e) => setSubmittable(e.target.checked)} color="primary" />}
+                        labelPlacement="start"
+                        label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox checked={isHidden} onChange={(e) => setIsHidden(e.target.checked)} color="primary" />}
+                        labelPlacement="start"
+                        label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
+                    />
+                    <br />
+                </>
+            )}
+
+            {isEdited && (
+                <>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isHideSubmissionsBeforeChecked}
+                                onChange={(e) => setIsHideSubmissionsBeforeChecked(e.target.checked)}
+                                color="secondary"
+                            />
+                        }
+                        labelPlacement="start"
+                        label="A beadások ne legyenek nyilvánosak egy adott idő előtt"
+                    />
+
+                    {isHideSubmissionsBeforeChecked && (
+                        <>
+                            <FormControlLabel
+                                control={
+                                    <TempDatetimePicker
+                                        value={hideSubmissionsBefore}
+                                        onChange={setHideSubmissionsBefore}
+                                        disabled={!isEdited}
+                                    />
+                                }
+                                labelPlacement="start"
+                                label="A beadások el lesznek rejtve eddig: "
+                            />
+                        </>
+                    )}
+                </>
+            )}
+
+            <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
+
+            {!isEdited && (
+                <>
+                    <Grid container direction="row" justify="space-between" alignItems="center">
+                        {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
+                            <Button size="large" variant="contained" onClick={() => setIsSubmissionDisplayOpen(true)} color="primary">
+                                Beadás
+                            </Button>
                         )}
-                    </>
-                )}
-            </Paper>
-        </>
+                        {currentUser.hasAuthority(Authority.TeamScorer) && (
+                            <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="secondary">
+                                Pontozás
+                            </Button>
+                        )}
+                    </Grid>
+
+                    {isSubmissionDisplayOpen && (
+                        <div>
+                            <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
+                                <DialogTitle>
+                                    <Grid container alignItems="center" justify="space-between" direction="row">
+                                        <Typography variant="h3">{props.existingEntity.title}</Typography>
+                                        <IconButton onClick={() => setIsSubmissionDisplayOpen(false)}>
+                                            <ClearOutlinedIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </DialogTitle>
+                                <DialogContent>
+                                    <SubmissionDisplayContainer
+                                        shouldCreateNew={true}
+                                        displayExtraProps={{
+                                            creationObjectiveId: props.existingEntity.id,
+                                            creationObjectiveTitle: props.existingEntity.title,
+                                            creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                            showObjectiveTitle: true,
+                                            showTeamName: !!currentUser.getUserInfo(),
+                                        }}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                    )}
+
+                    {isScorerOpen && <Scorer defaultObjectiveId={props.existingEntity.id} onClose={() => setIsScorerOpen(false)} />}
+                </>
+            )}
+        </MyPaper>
     );
 };
 
@@ -495,8 +399,8 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
     createNewEntity(command: SaveObjectiveCommand): Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
             conf: {
-                url: "/api/up/server/api/objective/createNew",
-                method: "post",
+                url: '/api/up/server/api/objective/createNew',
+                method: 'post',
                 data: {
                     programId: command.programId,
                     title: command.title,
@@ -515,8 +419,8 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
     deleteEntity(id: number): Promise<any> {
         return callJsonEndpoint({
             conf: {
-                url: "/api/up/server/api/objective/delete",
-                method: "delete",
+                url: '/api/up/server/api/objective/delete',
+                method: 'delete',
                 params: {
                     id: id,
                 },
@@ -527,8 +431,8 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
     editEntity(id: number, command: SaveObjectiveCommand): Promise<any> {
         return callJsonEndpoint({
             conf: {
-                url: "/api/up/server/api/objective/edit",
-                method: "post",
+                url: '/api/up/server/api/objective/edit',
+                method: 'post',
                 data: {
                     id: id,
                     programId: command.programId,
@@ -548,8 +452,8 @@ class FetchingToolsImpl implements FetchingTools<Objective, SaveObjectiveCommand
     fetchEntity(id: number): Promise<Objective> {
         return callJsonEndpoint<Objective>({
             conf: {
-                url: "/api/up/server/api/objective/objective",
-                method: "get",
+                url: '/api/up/server/api/objective/objective',
+                method: 'get',
                 params: {
                     id: id,
                 },

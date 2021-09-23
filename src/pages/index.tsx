@@ -1,4 +1,4 @@
-import {Box, Grid, Typography} from '@material-ui/core';
+import {Box, Container, Grid, Typography} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -11,7 +11,7 @@ import TimeSpan from '~/utils/TimeSpan';
 
 const Index: NextPage = () => {
     return (
-        <Box>
+        <Container maxWidth="xl">
             <Head>
                 <title>HQ</title>
             </Head>
@@ -23,7 +23,6 @@ const Index: NextPage = () => {
             </Box>
 
             <Grid container spacing={6} direction="column" justify="flex-end" wrap="nowrap">
-
                 <Grid item>
                     <Box mb={2}>
                         <MyPaper>
@@ -37,7 +36,7 @@ const Index: NextPage = () => {
                     <NewsFeedPanel />
                 </Grid>
             </Grid>
-        </Box>
+        </Container>
     );
 };
 

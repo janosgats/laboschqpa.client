@@ -2,12 +2,13 @@ import {ThemeProvider} from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {createTheme} from '@material-ui/core/styles';
 import Head from 'next/head';
-import React, {CSSProperties, useEffect, useState} from 'react';
+import {useRouter} from 'next/router';
+import React, {CSSProperties, useEffect} from 'react';
 import EventDisplayContainer from '~/components/eventDisplay/EventDisplayContainer';
 import NavBar from '~/components/nav/NavBar';
 import CurrentUserProvider from '~/context/CurrentUserProvider';
-import {useRouter} from "next/router";
-import {applyOrganicDDoSProtection} from "~/utils/DDoSProtector";
+import useLocalStorage from '~/hooks/useLocalStorage';
+import {applyOrganicDDoSProtection} from '~/utils/DDoSProtector';
 import '../components/eventDisplay/style/reactNotifications.css';
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
@@ -30,7 +31,7 @@ function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
 }
 
 function MyApp({Component, pageProps}): JSX.Element {
-    const [darkMode, setDarkMode] = useState(true);
+    const [darkMode, setDarkMode] = useLocalStorage('darkMode', true);
 
     const theme = createTheme({
         palette: {
