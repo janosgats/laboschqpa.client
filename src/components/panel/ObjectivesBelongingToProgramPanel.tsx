@@ -1,4 +1,14 @@
-import {Button, createStyles, Dialog, DialogContent, DialogTitle, Fab, Grid, makeStyles, Theme} from '@material-ui/core';
+import {
+    Button,
+    createStyles,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Fab,
+    Grid,
+    makeStyles,
+    Theme
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import React, {FC, useContext, useState} from 'react';
 import {ObjectiveDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
@@ -18,7 +28,7 @@ interface Props {
     filteredObjectiveType: ObjectiveType;
 }
 
-const ObjectivesPanel: FC<Props> = (props) => {
+const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
     const classes = useStyles();
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
@@ -34,7 +44,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
                 objectiveType: props.filteredObjectiveType,
             },
         },
-        deps: [props.programId],
+        deps: [props.programId, props.filteredObjectiveType],
         onSuccess: (res) => {
             infiniteScroller.setMaxLength(res.data.length);
         },
@@ -84,9 +94,8 @@ const ObjectivesPanel: FC<Props> = (props) => {
                 <Grid container direction="column" spacing={2}>
                     {usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((objective, index) => {
                         return (
-                            <Grid item>
+                            <Grid item key={objective.id}>
                                 <ObjectiveDisplayContainer
-                                    key={objective.id}
                                     overriddenBeginningEntity={objective}
                                     shouldCreateNew={false}
                                 />
@@ -113,4 +122,4 @@ const ObjectivesPanel: FC<Props> = (props) => {
     );
 };
 
-export default ObjectivesPanel;
+export default ObjectivesBelongingToProgramPanel;
