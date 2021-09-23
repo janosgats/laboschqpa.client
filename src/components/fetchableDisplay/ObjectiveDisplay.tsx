@@ -46,6 +46,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import {getStyles} from "./styles/ObjectiveDisplayStyle";
 import TempDatetimePicker from "~/components/TempDatetimePicker";
+import MyPaper from "../mui/MyPaper";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
@@ -482,68 +483,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (
                                 defaultObjectiveId={props.existingEntity.id}
                                 onClose={() => setIsScorerOpen(false)}
                             />
-                        )}
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                            justify="space-between"
-                        >
-                            {props.existingEntity.creationTime === props.existingEntity.editTime ? (
-                                    <Typography
-                                        variant="caption">Létrehozva: {DateTimeFormatter.toFullBasic(props.existingEntity.creationTime)}</Typography>
-                                ) :
-                                <Typography
-                                    variant="caption">Módosítva: {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}</Typography>
-                            }
-                            <IconButton
-                                onClick={fetchAuthor}
-                                disabled={isAuthorFetchingPending}
-                            >
-                                <InfoOutlinedIcon
-                                    color="secondary"
-                                />
-                            </IconButton>
-                        </Grid>
-                        {author && (
-                            <Collapse in={showAuthor}>
-                                <Grid
-                                    container
-                                    direction="column"
-                                >
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        alignItems="center"
-                                        justify="space-between"
-                                    >
-                                        <Typography variant="caption">Létrehozta:{" "}
-                                            {UserNameFormatter.getBasicDisplayName(author.creator)}
-                                        </Typography>
-                                        <Typography variant="caption">
-                                            Létrehozva:{" "}
-                                            {DateTimeFormatter.toFullBasic(
-                                                props.existingEntity.creationTime
-                                            )}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        alignItems="center"
-                                        justify="space-between"
-                                    >
-                                        <Typography variant="caption">Módosította:{" "}
-                                            {UserNameFormatter.getBasicDisplayName(author.editor)}
-                                        </Typography>
-                                        <Typography variant="caption">
-                                            Módosítva:{" "}
-                                            {DateTimeFormatter.toFullBasic(props.existingEntity.editTime)}
-                                        </Typography>
-
-                                    </Grid>
-                                </Grid>
-                            </Collapse>
                         )}
                     </>
                 )}

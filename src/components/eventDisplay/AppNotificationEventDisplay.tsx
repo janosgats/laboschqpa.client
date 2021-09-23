@@ -2,10 +2,9 @@ import React, {FC} from "react";
 import EventBus, {EventType} from "~/utils/EventBus";
 import {NotificationContainer, NotificationManager} from "react-notifications"
 import {AppNotification, AppNotificationLevel} from "~/model/AppNotification";
-import 'react-notifications/lib/notifications.css';
 
-export const NOTIFICATION_TIMEOUT_NORMAL = 20000;
-export const NOTIFICATION_TIMEOUT_LONG = 40000;
+export const NOTIFICATION_TIMEOUT_NORMAL = 10000;
+export const NOTIFICATION_TIMEOUT_LONG = 30000;
 
 EventBus.subscribe(EventType.APP_NOTIFICATION, "AppNotificationEventDisplay", (event => {
     const noti = event as AppNotification;

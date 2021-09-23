@@ -7,13 +7,13 @@ export function getStyles(theme: Theme) {
         teamPaper: {
             padding: "16px",
             borderRadius: "16px",
-            backgroundColor: alpha(theme.palette.background.paper, 0.5),
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
             minHeight: "70rem",
         },
 
-        listHover:{  
-            '&:hover':{
-                backgroundColor: alpha(theme.palette.background.paper, 0.75),
+        listHover: {
+            '&:hover': {
+                backgroundColor: alpha(theme.palette.background.paper, 1),
                 cursor: "pointer",
             },
         },

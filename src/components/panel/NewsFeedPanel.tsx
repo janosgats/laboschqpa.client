@@ -39,7 +39,7 @@ const NewsFeedPanel: FC = ({children}) => {
                         {!wasCreateNewPostClicked && currentUser.hasAuthority(Authority.NewsPostEditor) && (
                             <Grid item>
                                 <Button
-                                    variant="outlined"
+                                    variant="contained"
                                     color="primary"
                                     size="large"
                                     endIcon={<AddCircleOutlineOutlinedIcon />}
@@ -66,8 +66,8 @@ const NewsFeedPanel: FC = ({children}) => {
 
             {usedEndpoint.succeeded &&
                 usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((newsPost, index) => (
-                    <Grid item>
-                        <NewsPostDisplayContainer key={newsPost.id} overriddenBeginningEntity={newsPost} shouldCreateNew={false} />
+                    <Grid item key={newsPost.id}>
+                        <NewsPostDisplayContainer  overriddenBeginningEntity={newsPost} shouldCreateNew={false} />
                     </Grid>
                 ))}
 

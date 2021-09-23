@@ -19,6 +19,8 @@ const useStyles = makeStyles((theme: Theme) => getStyles(theme))
 const baseUrl = "https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/qpatrophy/";
 const svgEndPoints = ["gold.svg", "silver.svg", "bronze.svg"];
 
+export const separatedPoints = (score: number) => score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
 const Index: NextPage = () => {
 
   const classes = useStyles()
@@ -29,7 +31,6 @@ const Index: NextPage = () => {
     },
   });
 
-  const separatedPoints = (score: number) => score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
   const loadQpaIcon = (index: number) => <img
     src={baseUrl + svgEndPoints[index]}

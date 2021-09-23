@@ -1,9 +1,22 @@
-import React, { FC } from "react";
+import React, {FC} from "react";
 import useEndpoint from "~/hooks/useEndpoint";
-import { Program } from "~/model/usergeneratedcontent/Program";
+import {Program} from "~/model/usergeneratedcontent/Program";
 import Spinner from "~/components/Spinner";
-import { Grid, makeStyles, Paper, Table, TableCell, TableContainer, TableHead, TableRow, Theme, Typography } from "@material-ui/core";
-import { getStyles } from '~/components/team/styles/TeamStyle';
+import {
+    Grid,
+    makeStyles,
+    Paper,
+    Table,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Theme,
+    Typography,
+    useTheme
+} from "@material-ui/core";
+import {getStyles} from '~/components/team/styles/TeamStyle';
+
 interface Props {
     teamId: number;
 }
@@ -12,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => getStyles(theme))
 
 
 const ProgramScoresOfTeam: FC<Props> = (props) => {
+    const theme = useTheme();
     const usedEndpoint = useEndpoint<Program[]>({
         conf: {
             url: "/api/up/server/api/program/listAllWithTeamScore",
@@ -39,6 +53,11 @@ const ProgramScoresOfTeam: FC<Props> = (props) => {
                     <Grid
                         container
                         justify="space-between"
+                        style={{
+                            paddingLeft: theme.spacing(4),
+                            paddingBottom: theme.spacing(2),
+                            paddingRight: theme.spacing(4)
+                        }}
                     >
                         <Typography variant="h4">Elért pontszám: </Typography>
                         <Typography variant="h4">

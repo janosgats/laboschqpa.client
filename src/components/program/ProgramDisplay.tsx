@@ -22,11 +22,6 @@ const ProgramDisplay: React.FC<ProgramDisplayProps> = ({program, date}) => {
                         <Grid item>
                             <Typography variant="h6">{program.headline}</Typography>
                         </Grid>
-                        <Grid item>
-                            <Typography variant="body1">
-                                {DateTimeFormatter.toFullShort(program.startTime)} - {DateTimeFormatter.toFullShort(program.endTime)}
-                            </Typography>
-                        </Grid>
                     </Grid>
                 </MuiLink>
             </Link>

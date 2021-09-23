@@ -1,4 +1,4 @@
-import {Button, Table, TableCell, TableHead, TableRow} from '@material-ui/core';
+import {Button, Table, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
 import MUIPaper from '@material-ui/core/Paper';
 import React, {FC, useContext, useState} from 'react';
 import {SpeedDrinkingDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
@@ -8,7 +8,8 @@ import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 import useEndpoint from '~/hooks/useEndpoint';
 import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
-import {UniqueValueIndexer} from "~/utils/UniqueValueIndexer";
+import {UniqueValueIndexer} from '~/utils/UniqueValueIndexer';
+import MyPaper from '../mui/MyPaper';
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -41,21 +42,23 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
         <div>
             {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
                 <div style={{borderStyle: 'solid', borderColor: 'orange'}}>
-                    <h4>Times newly recorded by you</h4>
+                    <h4>Általad rögzített idők</h4>
 
                     {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
-                        <MUIPaper>
+                        <TableContainer
+                            component={MyPaper}
+                        >
                             <Table>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>#</TableCell>
-                                        <TableCell>Category</TableCell>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Team</TableCell>
-                                        <TableCell>Time</TableCell>
-                                        <TableCell>Note</TableCell>
-                                        <TableCell>When</TableCell>
-                                        <TableCell>Edit</TableCell>
+                                        <TableCell>Kategória</TableCell>
+                                        <TableCell>Név</TableCell>
+                                        <TableCell>Csapat</TableCell>
+                                        <TableCell>Idő</TableCell>
+                                        <TableCell>Megjegyzés</TableCell>
+                                        <TableCell>Időpont</TableCell>
+                                        <TableCell>Szerkesztés</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 {newlyCreatedSpeedDrinkingIds.map((id, index) => {
@@ -91,7 +94,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                     </TableRow>
                                 )}
                             </Table>
-                        </MUIPaper>
+                        </TableContainer>
                     )}
                     {!isCreatingNewDisplayShown && (
                         <Button size="small" variant="contained" onClick={() => setIsCreatingNewDisplayShown(true)} color="primary">
@@ -101,20 +104,22 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                 </div>
             )}
 
-            {usedEndpoint.pending && <Spinner/>}
+            {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
-                <MUIPaper>
+                <TableContainer
+                    component={MyPaper}
+                >
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>#</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>Team</TableCell>
-                                <TableCell>Time</TableCell>
-                                <TableCell>Note</TableCell>
-                                <TableCell>When</TableCell>
-                                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Edit</TableCell>}
+                                <TableCell align="center">Helyezés</TableCell>
+                                <TableCell align="left">Név</TableCell>
+                                <TableCell align="center">Csapat név</TableCell>
+                                <TableCell align="center">Idő</TableCell>
+                                <TableCell align="left">Megjegyzés</TableCell>
+                                <TableCell align="right">Időpont</TableCell>
+                                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Szerkesztés</TableCell>}
                             </TableRow>
                         </TableHead>
                         {usedEndpoint.data
@@ -122,7 +127,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                 if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
                                     return null;
                                 }
-
+                                if (props.filteredTeamId != null && props.filteredTeamId != speedDrinking.drinkerTeamId) return null;
                                 return (
                                     <SpeedDrinkingDisplayContainer
                                         key={speedDrinking.id}
@@ -138,7 +143,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                             );
                         })}
                     </Table>
-                </MUIPaper>
+                </TableContainer>
             )}
         </div>
     );

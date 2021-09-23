@@ -69,7 +69,7 @@ const RichTextEditor: FC<Props> = (props) => {
                 isOpen={isUploadImageModalOpen}
                 onClose={() => setIsUploadImageModalOpen(false)}
             />
-            <MyPaper opacity={0}>
+            <MyPaper  variant="outlined" opacity={0.85}>
                 <MUIRichTextEditor
                     key={props.resetTrigger}
                     readOnly={editorContext.isMuiRteReadonly}
