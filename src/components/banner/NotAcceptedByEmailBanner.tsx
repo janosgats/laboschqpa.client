@@ -76,7 +76,7 @@ const NotAcceptedByEmailBanner: FC = () => {
 
     return (
         <Grid item>
-            <MyPaper p={0}>
+            <MyPaper p={0} borderRadius={'1rem'}>
                 <Alert variant="outlined" severity="warning">
                     <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
                     <p>- which makes you unable to see submissions of other users :/</p>

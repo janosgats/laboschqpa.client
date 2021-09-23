@@ -18,7 +18,6 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
-    Switch,
     Theme,
     Toolbar,
     Typography,
@@ -32,6 +31,7 @@ interface LinkParams {
     displayName: string;
     authority: Authority;
     icon: string;
+    hidden?: boolean;
 }
 
 const drawerWidth = 240;
@@ -109,49 +109,38 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             });
     }
 
+
     const links: LinkParams[] = [];
     links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
-    links.push({
-        href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`,
-        displayName: 'Profilom',
-        authority: Authority.User,
-        icon: 'person',
-    });
+    const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
+    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person',});
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
-        links.push({
-            href: `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`,
-            displayName: 'Csapatom',
-            authority: Authority.User,
-            icon: 'groups',
-        });
+        const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
+        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups',});
     }
     links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
     links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
-    links.push({href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
-    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
-    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.Admin, icon: 'people'});
-    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
-    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.Admin, icon: 'assignment'});
-    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
+    links.push({hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
+    links.push({hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
     links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
-    links.push({href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
-    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
-    links.push({
-        href: '/acceptedEmails',
-        displayName: 'Accepted Emails',
-        authority: Authority.AcceptedEmailEditor,
-        icon: 'mark_email_read',
-    });
-    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
+    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
+    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
+    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment'});
+    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
+    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people'});
 
-    const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
+    links.push({href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read',});
+    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
 
     const drawer = (
         <div>
             <div className={classes.toolbar} />
             <Divider />
             <List>
-                {links.map((link: LinkParams, index: number) => {
+                {links
+                    .filter(link => !link.hidden)
+                    .map((link: LinkParams, index: number) => {
                     return currentUser.hasAuthority(link.authority) ? (
                         <Link key={'link' + link.displayName + index} href={link.href}>
                             <ListItem button key={link.displayName + index}>

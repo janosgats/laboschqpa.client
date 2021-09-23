@@ -1,6 +1,5 @@
 import React, {FC} from "react";
 import EventBus, {EventType} from "~/utils/EventBus";
-import 'react-notifications/lib/notifications.css';
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallException";
 import {ApiErrorDescriptor} from "~/utils/api/ApiErrorDescriptorUtils";

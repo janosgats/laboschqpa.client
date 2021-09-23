@@ -8,6 +8,7 @@ import NavBar from '~/components/nav/NavBar';
 import CurrentUserProvider from '~/context/CurrentUserProvider';
 import {useRouter} from "next/router";
 import {applyOrganicDDoSProtection} from "~/utils/DDoSProtector";
+import '../components/eventDisplay/style/reactNotifications.css';
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
