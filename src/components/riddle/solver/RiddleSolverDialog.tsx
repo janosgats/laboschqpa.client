@@ -212,7 +212,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     fullWidth
 
                                 >
-                                    Beküld
+                                    Beküldls
                                 </Button>
 
                                 {riddle.isAlreadySolved && (
@@ -229,7 +229,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                                 fullWidth
 
                                             >
-                                                Megoldás
+                                                Mutasd a megoldást
                                             </Button>
                                         )}
                                     </>
