@@ -79,9 +79,9 @@ const NotAcceptedByEmailBanner: FC = () => {
             <MyPaper p={0} borderRadius={'1rem'}>
                 <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="warning">
                     <AlertTitle>Nincs még egyetlen elfogadott e-mail címed sem</AlertTitle>
-                    <p>- ezért nem láthatod a többi cspat feladatmegoldásaid :/</p>
+                    <p>- ezért nem láthatod a többi csapat beadásait :/</p>
                     <ButtonGroup color="inherit" aria-label="outlined primary button group">
-                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Kattints ide, hogy megold a problémát</Button>
+                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Kattints ide, hogy megoldd a problémát</Button>
                     </ButtonGroup>
 
                     <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
