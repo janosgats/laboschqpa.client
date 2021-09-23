@@ -44,7 +44,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     const currentUser = useContext(CurrentUserContext);
 
     return (
-        <div>
+        <>
             {!wasCreateNewObjectiveClicked && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
                 <>
                     <Fab
@@ -81,14 +81,20 @@ const ObjectivesPanel: FC<Props> = (props) => {
             {usedEndpoint.failed && <p>Couldn't load objectives :'(</p>}
 
             {usedEndpoint.succeeded && (
-                <>
+                <Grid container direction="column" spacing={2}>
                     {usedEndpoint.data.slice(0, infiniteScroller.shownCount).map((objective, index) => {
                         return (
-                            <ObjectiveDisplayContainer key={objective.id} overriddenBeginningEntity={objective} shouldCreateNew={false} />
+                            <Grid item>
+                                <ObjectiveDisplayContainer
+                                    key={objective.id}
+                                    overriddenBeginningEntity={objective}
+                                    shouldCreateNew={false}
+                                />
+                            </Grid>
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Grid container justify="center">
+                        <Grid item container justify="center">
                             <Button
                                 size="large"
                                 variant="text"
@@ -101,9 +107,9 @@ const ObjectivesPanel: FC<Props> = (props) => {
                             </Button>
                         </Grid>
                     )}
-                </>
+                </Grid>
             )}
-        </div>
+        </>
     );
 };
 

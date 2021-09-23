@@ -11,7 +11,6 @@ import {
     Grid,
     IconButton,
     makeStyles,
-    Paper,
     TextField,
     Theme,
     Typography,
@@ -42,6 +41,7 @@ import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import {getSurelyDate} from '~/utils/DateHelpers';
 import EventBus from '~/utils/EventBus';
 import MuiRteUtils from '~/utils/MuiRteUtils';
+import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/ObjectiveDisplayStyle';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
@@ -179,221 +179,219 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     }
 
     return (
-        <>
-            <Paper className={classes.objectiveDisplayWrapper}>
-                {isEdited ? (
-                    <Grid>
-                        <Grid container direction="row" alignItems="center" justify="center">
-                            <Typography variant="subtitle1" className={classes.typeSelectorLabel}>
-                                Feladat típusa:
-                            </Typography>
-                            <ObjectiveTypeSelector value={objectiveType} onChange={setObjectiveType} />
-                        </Grid>
-                        <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: '8px'}}>
-                            <Grid item>
-                                <TextField
-                                    label="Program ID"
-                                    defaultValue={programId}
-                                    //TODO: This should be a dropdown where people can select a program
-                                    onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
-                                    type="number"
-                                    variant="outlined"
-                                    style={{padding: theme.spacing(1)}}
-                                    disabled={programPage != null}
-                                />
-                            </Grid>
-                            <Grid item>
-                                {props.isCreatingNew && (
-                                    <>
-                                        <ButtonGroup size="medium">
-                                            <Button onClick={doSave} disabled={props.isApiCallPending} variant="contained" color="primary">
-                                                Létrehoz
-                                            </Button>
-                                            <Button
-                                                onClick={doCancelEdit}
-                                                disabled={props.isApiCallPending}
-                                                variant="outlined"
-                                                color="secondary"
-                                            >
-                                                Mégsem
-                                            </Button>
-                                        </ButtonGroup>
-                                    </>
-                                )}
-                                {!props.isCreatingNew && (
-                                    <>
-                                        <ButtonGroup variant="text" fullWidth size="large">
-                                            <IconButton onClick={doSave} disabled={props.isApiCallPending}>
-                                                <SaveIcon color="primary" />
-                                            </IconButton>
-                                            <IconButton onClick={doDelete} disabled={props.isApiCallPending}>
-                                                <DeleteIcon color="secondary" />
-                                            </IconButton>
-                                            <IconButton onClick={doCancelEdit} disabled={props.isApiCallPending}>
-                                                <CloseIcon color="action" />
-                                            </IconButton>
-                                        </ButtonGroup>
-                                    </>
-                                )}
-                            </Grid>
-                        </Grid>
-                        <Grid>
+        <MyPaper>
+            {isEdited ? (
+                <Grid>
+                    <Grid container direction="row" alignItems="center" justify="center">
+                        <Typography variant="subtitle1" className={classes.typeSelectorLabel}>
+                            Feladat típusa:
+                        </Typography>
+                        <ObjectiveTypeSelector value={objectiveType} onChange={setObjectiveType} />
+                    </Grid>
+                    <Grid container direction="row" alignItems="center" justify="space-between" style={{marginBottom: '8px'}}>
+                        <Grid item>
                             <TextField
-                                label="Cím"
-                                defaultValue={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                label="Program ID"
+                                defaultValue={programId}
+                                //TODO: This should be a dropdown where people can select a program
+                                onChange={(e) => setProgramId(Number.parseInt(e.target.value))}
+                                type="number"
                                 variant="outlined"
                                 style={{padding: theme.spacing(1)}}
-                                fullWidth={true}
+                                disabled={programPage != null}
                             />
                         </Grid>
-                    </Grid>
-                ) : (
-                    <Grid container direction="row" alignItems="center" justify="space-between">
                         <Grid item>
-                            <Grid container direction="row" alignItems="center">
-                                {objectiveTypeData[props.existingEntity.objectiveType] && (
-                                    <>
-                                        {React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon, {
-                                            style: {width: 50, height: 50},
-                                        })}
-                                    </>
-                                )}
-                                <Typography variant="h4" className={classes.title}>
-                                    {title}
-                                </Typography>
-                            </Grid>
+                            {props.isCreatingNew && (
+                                <>
+                                    <ButtonGroup size="medium">
+                                        <Button onClick={doSave} disabled={props.isApiCallPending} variant="contained" color="primary">
+                                            Létrehoz
+                                        </Button>
+                                        <Button
+                                            onClick={doCancelEdit}
+                                            disabled={props.isApiCallPending}
+                                            variant="outlined"
+                                            color="secondary"
+                                        >
+                                            Mégsem
+                                        </Button>
+                                    </ButtonGroup>
+                                </>
+                            )}
+                            {!props.isCreatingNew && (
+                                <>
+                                    <ButtonGroup variant="text" fullWidth size="large">
+                                        <IconButton onClick={doSave} disabled={props.isApiCallPending}>
+                                            <SaveIcon color="primary" />
+                                        </IconButton>
+                                        <IconButton onClick={doDelete} disabled={props.isApiCallPending}>
+                                            <DeleteIcon color="secondary" />
+                                        </IconButton>
+                                        <IconButton onClick={doCancelEdit} disabled={props.isApiCallPending}>
+                                            <CloseIcon color="action" />
+                                        </IconButton>
+                                    </ButtonGroup>
+                                </>
+                            )}
                         </Grid>
+                    </Grid>
+                    <Grid>
+                        <TextField
+                            label="Cím"
+                            defaultValue={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            variant="outlined"
+                            style={{padding: theme.spacing(1)}}
+                            fullWidth={true}
+                        />
+                    </Grid>
+                </Grid>
+            ) : (
+                <Grid container direction="row" alignItems="center" justify="space-between">
+                    <Grid item>
+                        <Grid container direction="row" alignItems="center">
+                            {objectiveTypeData[props.existingEntity.objectiveType] && (
+                                <>
+                                    {React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon, {
+                                        style: {width: 50, height: 50},
+                                    })}
+                                </>
+                            )}
+                            <Typography variant="h4" className={classes.title}>
+                                {title}
+                            </Typography>
+                        </Grid>
+                    </Grid>
 
-                        {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
-                            <Grid item>
-                                <IconButton onClick={() => setIsEdited(true)}>
-                                    <EditIcon color="action" />
-                                </IconButton>
-                            </Grid>
+                    {!isEdited && currentUser.hasAuthority(Authority.ObjectiveEditor) && (
+                        <Grid item>
+                            <IconButton onClick={() => setIsEdited(true)}>
+                                <EditIcon color="action" />
+                            </IconButton>
+                        </Grid>
+                    )}
+                </Grid>
+            )}
+
+            {props.existingEntity?.observerTeamHasScore && (
+                <Typography variant="subtitle1" className={classes.subtitle}>
+                    - A csapatod már teljesítette e feladatot.
+                </Typography>
+            )}
+            <Box className={classes.richTextEditor}>
+                <RichTextEditor
+                    isEdited={isEdited}
+                    readOnlyControls={props.isApiCallPending}
+                    defaultValue={defaultDescription}
+                    resetTrigger={resetTrigger}
+                    onChange={(data) => setDescription(data)}
+                    usedAttachments={usedAttachments}
+                />
+            </Box>
+            {isEdited && (
+                <>
+                    <FormControlLabel
+                        control={<TempDatetimePicker value={deadline} onChange={setDeadline} disabled={!isEdited} />}
+                        labelPlacement="start"
+                        label="Határidő: "
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox checked={submittable} onChange={(e) => setSubmittable(e.target.checked)} color="primary" />}
+                        labelPlacement="start"
+                        label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
+                    />
+                    <br />
+                    <FormControlLabel
+                        control={<Checkbox checked={isHidden} onChange={(e) => setIsHidden(e.target.checked)} color="primary" />}
+                        labelPlacement="start"
+                        label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
+                    />
+                    <br />
+                </>
+            )}
+
+            {isEdited && (
+                <>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isHideSubmissionsBeforeChecked}
+                                onChange={(e) => setIsHideSubmissionsBeforeChecked(e.target.checked)}
+                                color="secondary"
+                            />
+                        }
+                        labelPlacement="start"
+                        label="A beadások ne legyenek nyilvánosak egy adott idő előtt"
+                    />
+
+                    {isHideSubmissionsBeforeChecked && (
+                        <>
+                            <FormControlLabel
+                                control={
+                                    <TempDatetimePicker
+                                        value={hideSubmissionsBefore}
+                                        onChange={setHideSubmissionsBefore}
+                                        disabled={!isEdited}
+                                    />
+                                }
+                                labelPlacement="start"
+                                label="A beadások el lesznek rejtve eddig: "
+                            />
+                        </>
+                    )}
+                </>
+            )}
+
+            <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
+
+            {!isEdited && (
+                <>
+                    <Grid container direction="row" justify="space-between" alignItems="center">
+                        {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
+                            <Button size="large" variant="contained" onClick={() => setIsSubmissionDisplayOpen(true)} color="primary">
+                                Beadás
+                            </Button>
+                        )}
+                        {currentUser.hasAuthority(Authority.TeamScorer) && (
+                            <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="secondary">
+                                Pontozás
+                            </Button>
                         )}
                     </Grid>
-                )}
 
-                {props.existingEntity?.observerTeamHasScore && (
-                    <Typography variant="subtitle1" className={classes.subtitle}>
-                        - A csapatod már teljesítette e feladatot.
-                    </Typography>
-                )}
-                <Box className={classes.richTextEditor}>
-                    <RichTextEditor
-                        isEdited={isEdited}
-                        readOnlyControls={props.isApiCallPending}
-                        defaultValue={defaultDescription}
-                        resetTrigger={resetTrigger}
-                        onChange={(data) => setDescription(data)}
-                        usedAttachments={usedAttachments}
-                    />
-                </Box>
-                {isEdited && (
-                    <>
-                        <FormControlLabel
-                            control={<TempDatetimePicker value={deadline} onChange={setDeadline} disabled={!isEdited} />}
-                            labelPlacement="start"
-                            label="Határidő: "
-                        />
-                        <br />
-                        <FormControlLabel
-                            control={<Checkbox checked={submittable} onChange={(e) => setSubmittable(e.target.checked)} color="primary" />}
-                            labelPlacement="start"
-                            label="A csapatok közvetlenül tudjanak beadni erre a feladatra."
-                        />
-                        <br />
-                        <FormControlLabel
-                            control={<Checkbox checked={isHidden} onChange={(e) => setIsHidden(e.target.checked)} color="primary" />}
-                            labelPlacement="start"
-                            label="Rejtett objektív (csak a pontozók és szerkesztők látják): "
-                        />
-                        <br />
-                    </>
-                )}
+                    {isSubmissionDisplayOpen && (
+                        <div>
+                            <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
+                                <DialogTitle>
+                                    <Grid container alignItems="center" justify="space-between" direction="row">
+                                        <Typography variant="h3">{props.existingEntity.title}</Typography>
+                                        <IconButton onClick={() => setIsSubmissionDisplayOpen(false)}>
+                                            <ClearOutlinedIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </DialogTitle>
+                                <DialogContent>
+                                    <SubmissionDisplayContainer
+                                        shouldCreateNew={true}
+                                        displayExtraProps={{
+                                            creationObjectiveId: props.existingEntity.id,
+                                            creationObjectiveTitle: props.existingEntity.title,
+                                            creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                            showObjectiveTitle: true,
+                                            showTeamName: !!currentUser.getUserInfo(),
+                                        }}
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                    )}
 
-                {isEdited && (
-                    <>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={isHideSubmissionsBeforeChecked}
-                                    onChange={(e) => setIsHideSubmissionsBeforeChecked(e.target.checked)}
-                                    color="secondary"
-                                />
-                            }
-                            labelPlacement="start"
-                            label="A beadások ne legyenek nyilvánosak egy adott idő előtt"
-                        />
-
-                        {isHideSubmissionsBeforeChecked && (
-                            <>
-                                <FormControlLabel
-                                    control={
-                                        <TempDatetimePicker
-                                            value={hideSubmissionsBefore}
-                                            onChange={setHideSubmissionsBefore}
-                                            disabled={!isEdited}
-                                        />
-                                    }
-                                    labelPlacement="start"
-                                    label="A beadások el lesznek rejtve eddig: "
-                                />
-                            </>
-                        )}
-                    </>
-                )}
-
-                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
-
-                {!isEdited && (
-                    <>
-                        <Grid container direction="row" justify="space-between" alignItems="center">
-                            {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
-                                <Button size="large" variant="contained" onClick={() => setIsSubmissionDisplayOpen(true)} color="primary">
-                                    Beadás
-                                </Button>
-                            )}
-                            {currentUser.hasAuthority(Authority.TeamScorer) && (
-                                <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="secondary">
-                                    Pontozás
-                                </Button>
-                            )}
-                        </Grid>
-
-                        {isSubmissionDisplayOpen && (
-                            <div>
-                                <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
-                                    <DialogTitle>
-                                        <Grid container alignItems="center" justify="space-between" direction="row">
-                                            <Typography variant="h3">{props.existingEntity.title}</Typography>
-                                            <IconButton onClick={() => setIsSubmissionDisplayOpen(false)}>
-                                                <ClearOutlinedIcon />
-                                            </IconButton>
-                                        </Grid>
-                                    </DialogTitle>
-                                    <DialogContent>
-                                        <SubmissionDisplayContainer
-                                            shouldCreateNew={true}
-                                            displayExtraProps={{
-                                                creationObjectiveId: props.existingEntity.id,
-                                                creationObjectiveTitle: props.existingEntity.title,
-                                                creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
-                                                showObjectiveTitle: true,
-                                                showTeamName: !!currentUser.getUserInfo(),
-                                            }}
-                                        />
-                                    </DialogContent>
-                                </Dialog>
-                            </div>
-                        )}
-
-                        {isScorerOpen && <Scorer defaultObjectiveId={props.existingEntity.id} onClose={() => setIsScorerOpen(false)} />}
-                    </>
-                )}
-            </Paper>
-        </>
+                    {isScorerOpen && <Scorer defaultObjectiveId={props.existingEntity.id} onClose={() => setIsScorerOpen(false)} />}
+                </>
+            )}
+        </MyPaper>
     );
 };
 
