@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     ButtonGroup,
+    Container,
     createStyles,
     Divider,
     Grid,
@@ -12,7 +13,6 @@ import {
     ListItemAvatar,
     ListItemSecondaryAction,
     ListItemText,
-    Paper,
     Tab,
     Tabs,
     TextField,
@@ -30,29 +30,30 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
-import { NextPage } from 'next';
+import {TabContext, TabPanel} from '@material-ui/lab';
+import {makeStyles} from '@material-ui/styles';
+import {NextPage} from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import {useRouter} from 'next/router';
+import React, {useContext, useEffect, useState} from 'react';
 import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
+import MyPaper from '~/components/mui/MyPaper';
+import ProgramScoresOfTeam from '~/components/pages/team/ProgramScoresOfTeam';
+import SpeedDrinkingPanel from '~/components/panel/SpeedDrinkingPanel';
 import Spinner from '~/components/Spinner';
-import { CurrentUserContext } from '~/context/CurrentUserProvider';
-import { teamLifecycle_THERE_IS_NO_OTHER_LEADER } from '~/enums/ApiErrors';
-import { TeamRole, teamRoleData } from '~/enums/TeamRole';
+import {getStyles} from '~/components/team/styles/TeamStyle';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {teamLifecycle_THERE_IS_NO_OTHER_LEADER} from '~/enums/ApiErrors';
+import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
+import {TeamRole, teamRoleData} from '~/enums/TeamRole';
 import ApiErrorDescriptorException from '~/exception/ApiErrorDescriptorException';
 import useEndpoint from '~/hooks/useEndpoint';
-import { TeamInfo } from '~/model/Team';
-import { UserNameContainer } from '~/model/UserInfo';
+import {TeamInfo} from '~/model/Team';
+import {UserNameContainer} from '~/model/UserInfo';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
 import UserNameFormatter from '~/utils/UserNameFormatter';
-import ProgramScoresOfTeam from "~/components/pages/team/ProgramScoresOfTeam";
-import { getStyles } from "~/components/team/styles/TeamStyle";
-import { makeStyles } from '@material-ui/styles';
-import { TabContext, TabPanel } from '@material-ui/lab';
-import SpeedDrinkingPanel from '~/components/panel/SpeedDrinkingPanel';
-import { SpeedDrinkingCategory } from '~/enums/SpeedDrinkingCategory';
 
 interface TeamMember extends UserNameContainer {
     userId: number;
@@ -60,11 +61,9 @@ interface TeamMember extends UserNameContainer {
     teamRole: number;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))
-
+const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
 const Index: NextPage = () => {
-
     const classes = useStyles();
 
     const router = useRouter();
@@ -362,30 +361,20 @@ const Index: NextPage = () => {
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setSelectedTab(newValue.toString());
-    }
+    };
 
     return (
-        <>
+        <Container maxWidth="xl">
             <Head>
                 <title>{usedTeamInfo.data ? usedTeamInfo.data.name + ' ' : 'Qpa '} Team</title>
             </Head>
-            <Paper
-                className={classes.teamPaper}
-                variant="outlined"
-            >
+            <MyPaper>
                 <NotTeamMemberBanner hideJoinATeamButton={true} />
                 {usedTeamInfo.pending && <Spinner />}
 
                 {usedTeamInfo.data && (
                     <>
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                            justify="space-between"
-                        >
-
-
+                        <Grid container direction="row" alignItems="center" justify="space-between">
                             {isEditing ? (
                                 <>
                                     <TextField
@@ -403,39 +392,26 @@ const Index: NextPage = () => {
 
                             {usedTeamInfo.data.archived ? <h3>Archive</h3> : null}
 
-                            <ButtonGroup
-                                size="large"
-                            >
-
+                            <ButtonGroup size="large">
                                 {isViewedByLeaderOfTeam && (
                                     <>
                                         {isEditing ? (
                                             <>
                                                 <Tooltip title="Mentés">
-                                                    <IconButton
-                                                        onClick={() => submitEdit()}>
-                                                        <SaveIcon
-                                                            color="primary"
-                                                        />
+                                                    <IconButton onClick={() => submitEdit()}>
+                                                        <SaveIcon color="primary" />
                                                     </IconButton>
                                                 </Tooltip>
                                                 <Tooltip title="Mégsem">
-                                                    <IconButton onClick={() => setIsEditing(false)}
-                                                    >
-                                                        <CloseIcon
-                                                            color="secondary"
-                                                        />
+                                                    <IconButton onClick={() => setIsEditing(false)}>
+                                                        <CloseIcon color="secondary" />
                                                     </IconButton>
                                                 </Tooltip>
                                             </>
                                         ) : (
                                             <Tooltip title="Módosítás">
-                                                <IconButton
-                                                    onClick={() => setIsEditing(true)}
-                                                >
-                                                    <EditIcon
-                                                        color="action"
-                                                    />
+                                                <IconButton onClick={() => setIsEditing(true)}>
+                                                    <EditIcon color="action" />
                                                 </IconButton>
                                             </Tooltip>
                                         )}
@@ -444,12 +420,8 @@ const Index: NextPage = () => {
 
                                 {isViewedByMemberOrLeaderOfTeam && (
                                     <Tooltip title="Csapat elhagyása">
-                                        <IconButton
-                                            onClick={() => submitLeave()}
-                                        >
-                                            <ExitToAppIcon
-                                                color="error"
-                                            />
+                                        <IconButton onClick={() => submitLeave()}>
+                                            <ExitToAppIcon color="error" />
                                         </IconButton>
                                     </Tooltip>
                                 )}
@@ -457,9 +429,7 @@ const Index: NextPage = () => {
                                 {isViewedByLeaderOfTeam && (
                                     <Tooltip title="Visszalépés a csapatkapitányságtól">
                                         <IconButton onClick={() => submitResignFromLeadership()}>
-                                            <RedoIcon
-                                                color="secondary"
-                                            />
+                                            <RedoIcon color="secondary" />
                                         </IconButton>
                                     </Tooltip>
                                 )}
@@ -476,16 +446,17 @@ const Index: NextPage = () => {
                                 </Button>
                             )}
 
-                            {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id && currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
-                                <Button
-                                    onClick={() => submitCancelApplication()}
-                                    variant="contained"
-                                    color="secondary"
-                                    className={classes.requestToTeamButtons}
-                                >
-                                    Csatlakozási kérelem visszavonása
-                                </Button>
-                            )}
+                            {currentUser.getUserInfo()?.teamId == usedTeamInfo.data.id &&
+                                currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT && (
+                                    <Button
+                                        onClick={() => submitCancelApplication()}
+                                        variant="contained"
+                                        color="secondary"
+                                        className={classes.requestToTeamButtons}
+                                    >
+                                        Csatlakozási kérelem visszavonása
+                                    </Button>
+                                )}
                         </Grid>
                     </>
                 )}
@@ -496,18 +467,16 @@ const Index: NextPage = () => {
 
                         {usedTeamApplicants.failed && <Typography variant="body1">Couldn't load applicants :'(</Typography>}
 
-                        <List >
+                        <List>
                             {usedTeamApplicants.data &&
                                 usedTeamApplicants.data.map((applicant) => {
                                     const basicDisplayName = UserNameFormatter.getBasicDisplayName(applicant);
                                     return (
                                         <Link
-                                            key={"link" + applicant.userId}
-                                            href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}>
-                                            <ListItem
-                                                key={applicant.userId}
-                                                className={classes.listHover}
-                                            >
+                                            key={'link' + applicant.userId}
+                                            href={`/users/user/${UserNameFormatter.getUrlName(applicant)}?id=${applicant.userId}`}
+                                        >
+                                            <ListItem key={applicant.userId} className={classes.listHover}>
                                                 <Grid container direction="row" alignItems="center">
                                                     <ListItemAvatar>
                                                         <Avatar src={applicant.profilePicUrl} alt={basicDisplayName} />
@@ -535,10 +504,7 @@ const Index: NextPage = () => {
                     </Box>
                 )}
 
-                <TabContext
-                    value={selectedTab}
-                >
-
+                <TabContext value={selectedTab}>
                     <Tabs
                         value={selectedTab}
                         onChange={handleTabChange}
@@ -549,15 +515,12 @@ const Index: NextPage = () => {
                     >
                         <Tab label="Tagok" value={'1'} />
                         <Tab label="Pontok" value={'2'} />
-                        <Tab label="Sörmérések" value={'3'}/>
+                        <Tab label="Sörmérések" value={'3'} />
                     </Tabs>
 
-                    <TabPanel value='2' >
-                        {router.isReady && <ProgramScoresOfTeam teamId={teamId} />}
-                    </TabPanel>
+                    <TabPanel value="2">{router.isReady && <ProgramScoresOfTeam teamId={teamId} />}</TabPanel>
 
-                    <TabPanel value='1' >
-
+                    <TabPanel value="1">
                         {usedTeamMembers.pending && <Spinner />}
                         {usedTeamMembers.failed && <Typography variant="body1">Couldn't load members :'(</Typography>}
                         <>
@@ -567,13 +530,8 @@ const Index: NextPage = () => {
                                     usedTeamMembers.data.map((member, index) => {
                                         const basicDisplayName = UserNameFormatter.getBasicDisplayName(member);
                                         return (
-                                            
-                                            <Link
-                                            href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
-                                            <ListItem 
-                                                key={member.userId}
-                                                className={classes.listHover}
-                                                >
+                                            <Link href={`/users/user/${UserNameFormatter.getUrlName(member)}?id=${member.userId}`}>
+                                                <ListItem key={member.userId} className={classes.listHover}>
                                                     <Grid container direction="row" alignItems="center">
                                                         <ListItemAvatar>
                                                             <Avatar src={member.profilePicUrl} alt={basicDisplayName} />
@@ -585,51 +543,48 @@ const Index: NextPage = () => {
                                                                     : ' ')}
                                                         </ListItemText>
                                                     </Grid>
-                                                {isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
-                                                    <ListItemSecondaryAction>
-                                                        <Tooltip title="Kirugás">
-                                                            <IconButton onClick={() => submitKick(member.userId)}>
-                                                                <MeetingRoomIcon 
-                                                                    color="error"
-                                                                />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                        {member.teamRole === TeamRole.MEMBER && (
-                                                            <Tooltip title="Kinevezés csapatkapitánnyá">
-                                                                <IconButton onClick={() => submitGiveLeaderRights(member.userId)}>
-                                                                    <ArrowUpwardIcon 
-                                                                        color="primary"
-                                                                    />
+                                                    {isViewedByLeaderOfTeam && member.userId !== currentUser.getUserInfo()?.userId && (
+                                                        <ListItemSecondaryAction>
+                                                            <Tooltip title="Kirugás">
+                                                                <IconButton onClick={() => submitKick(member.userId)}>
+                                                                    <MeetingRoomIcon color="error" />
                                                                 </IconButton>
                                                             </Tooltip>
-                                                        )}
-                                                        {member.teamRole === TeamRole.LEADER && (
-                                                            <Tooltip title="Inasba rakás (CSK jog elvétele)">
-                                                                <IconButton
-                                                                    onClick={() => submitTakeAwayLeaderRights(member.userId)}>
-                                                                    <ArrowDownwardIcon 
-                                                                        color="secondary"
-                                                                    />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </ListItemSecondaryAction>
-                                                )}
-                                            </ListItem>
+                                                            {member.teamRole === TeamRole.MEMBER && (
+                                                                <Tooltip title="Kinevezés csapatkapitánnyá">
+                                                                    <IconButton onClick={() => submitGiveLeaderRights(member.userId)}>
+                                                                        <ArrowUpwardIcon color="primary" />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            )}
+                                                            {member.teamRole === TeamRole.LEADER && (
+                                                                <Tooltip title="Inasba rakás (CSK jog elvétele)">
+                                                                    <IconButton onClick={() => submitTakeAwayLeaderRights(member.userId)}>
+                                                                        <ArrowDownwardIcon color="secondary" />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            )}
+                                                        </ListItemSecondaryAction>
+                                                    )}
+                                                </ListItem>
                                             </Link>
                                         );
                                     })}
                             </List>
                         </>
                     </TabPanel>
-                    <TabPanel value='3'>
-                            {usedTeamInfo.succeeded && <SpeedDrinkingPanel filteredCategory={SpeedDrinkingCategory.BEER} filteredTeamId={teamId} onlyShowPersonalBests={true} />}
+                    <TabPanel value="3">
+                        {usedTeamInfo.succeeded && (
+                            <SpeedDrinkingPanel
+                                filteredCategory={SpeedDrinkingCategory.BEER}
+                                filteredTeamId={teamId}
+                                onlyShowPersonalBests={true}
+                            />
+                        )}
                     </TabPanel>
                 </TabContext>
-            </Paper>
-        </>
+            </MyPaper>
+        </Container>
     );
-}
-    ;
-
+};
 export default Index;

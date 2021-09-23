@@ -1,10 +1,10 @@
-import Head from 'next/head';
+import {Checkbox, Container, createStyles, FormControlLabel, makeStyles, Theme} from '@material-ui/core';
 import {NextPage} from 'next';
+import Head from 'next/head';
 import React, {useState} from 'react';
-import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 import SpeedDrinkingPanel from '~/components/panel/SpeedDrinkingPanel';
 import SpeedDrinkingCategorySelector from '~/components/selector/SpeedDrinkingCategorySelector';
-import {Checkbox, createStyles, FormControlLabel, makeStyles, Theme} from '@material-ui/core';
+import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -21,7 +21,7 @@ const Index: NextPage = () => {
     const [onlyShowPersonalBests, setOnlyShowPersonalBests] = useState<boolean>(true);
 
     return (
-        <div>
+        <Container maxWidth="xl">
             <Head>
                 <title>Sörmérés</title>
             </Head>
@@ -42,7 +42,7 @@ const Index: NextPage = () => {
             </div>
 
             <SpeedDrinkingPanel filteredCategory={filteredCategory} onlyShowPersonalBests={onlyShowPersonalBests} />
-        </div>
+        </Container>
     );
 };
 

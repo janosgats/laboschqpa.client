@@ -1,4 +1,4 @@
-import {Grid, Tab, Tabs, Typography} from '@material-ui/core';
+import {Container, Grid, Tab, Tabs, Typography} from '@material-ui/core';
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import React, {useContext, useState} from 'react';
@@ -52,54 +52,57 @@ const Index: NextPage = () => {
     };
 
     return (
-        <ProgramPageContext.Provider value={{programId: programId}}>
-            {router.isReady && (
-                <Grid container direction="column" spacing={2}>
-                    <Grid item>
-                        <ProgramDisplayContainer entityId={programId} shouldCreateNew={false} />
-                    </Grid>
-                    <Grid item>
-                        {currentUser.isMemberOrLeaderOrApplicantOfAnyTeam() && (
-                            <MyPaper>
-                                {usedEndpoint.pending && <Spinner />}
-                                {usedEndpoint.failed && <p>Couldn't load team score on this Program :/ </p>}
-                                {usedEndpoint.succeeded && (
-                                    <Grid container justify="space-between" alignItems="center">
-                                        <Typography variant="h6">
-                                            {prefixWordWithArticle(currentUser.getUserInfo()?.teamName, true)} pontszáma ezen a programon:
-                                        </Typography>
-                                        <Typography variant="h6">{separatedPoints(usedEndpoint.data.teamScore)}</Typography>
-                                    </Grid>
-                                )}
+        <Container maxWidth="lg">
+            <ProgramPageContext.Provider value={{programId: programId}}>
+                {router.isReady && (
+                    <Grid container direction="column" spacing={2}>
+                        <Grid item>
+                            <ProgramDisplayContainer entityId={programId} shouldCreateNew={false} />
+                        </Grid>
+                        <Grid item>
+                            {currentUser.isMemberOrLeaderOrApplicantOfAnyTeam() && (
+                                <MyPaper>
+                                    {usedEndpoint.pending && <Spinner />}
+                                    {usedEndpoint.failed && <p>Couldn't load team score on this Program :/ </p>}
+                                    {usedEndpoint.succeeded && (
+                                        <Grid container justify="space-between" alignItems="center">
+                                            <Typography variant="h6">
+                                                {prefixWordWithArticle(currentUser.getUserInfo()?.teamName, true)} pontszáma ezen a
+                                                programon:
+                                            </Typography>
+                                            <Typography variant="h6">{separatedPoints(usedEndpoint.data.teamScore)}</Typography>
+                                        </Grid>
+                                    )}
+                                </MyPaper>
+                            )}
+                        </Grid>
+                        <Grid style={{paddingTop: '2rem'}} item>
+                            <MyPaper p={0} style={{paddingTop: '1rem'}}>
+                                <Grid container style={{paddingTop: '1rem'}} justify="center">
+                                    <Typography variant="subtitle1">Programhoz kapcsolódó feladatok</Typography>
+                                </Grid>
+                                <Tabs
+                                    value={selectedTab}
+                                    onChange={handleChange}
+                                    centered
+                                    variant="fullWidth"
+                                    indicatorColor="secondary"
+                                    textColor="secondary"
+                                >
+                                    <Tab label="Elő feladatok" value={ObjectiveType.PRE_WEEK_TASK} />
+                                    <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
+                                    <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
+                                </Tabs>
                             </MyPaper>
-                        )}
-                    </Grid>
-                    <Grid item>
-                        <MyPaper p={0} style={{paddingTop: '1rem'}}>
-                            <Grid container justify="center">
-                                <Typography variant="subtitle1">Programhoz kapcsolódó feladatok</Typography>
-                            </Grid>
-                            <Tabs
-                                value={selectedTab}
-                                onChange={handleChange}
-                                centered
-                                variant="fullWidth"
-                                indicatorColor="secondary"
-                                textColor="secondary"
-                            >
-                                <Tab label="Elő feladatok" value={ObjectiveType.PRE_WEEK_TASK} />
-                                <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
-                                <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
-                            </Tabs>
-                        </MyPaper>
-                    </Grid>
+                        </Grid>
 
-                    <Grid item>
-                        <ObjectivesBelongingToProgramPanel programId={programId} filteredObjectiveType={selectedTab} />
+                        <Grid item>
+                            <ObjectivesBelongingToProgramPanel programId={programId} filteredObjectiveType={selectedTab} />
+                        </Grid>
                     </Grid>
-                </Grid>
-            )}
-        </ProgramPageContext.Provider>
+                )}
+            </ProgramPageContext.Provider>
+        </Container>
     );
 };
 

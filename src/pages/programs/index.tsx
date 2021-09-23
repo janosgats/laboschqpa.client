@@ -16,7 +16,7 @@ const Index: NextPage = () => {
     const reloaderRef = useRef<() => void>();
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="xl">
             <Head>
                 <title>Programok</title>
             </Head>

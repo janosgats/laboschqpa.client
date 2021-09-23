@@ -1,13 +1,12 @@
-import Head from 'next/head'
-import { NextPage } from "next";
-import React, { useState } from "react";
-import ObjectivesPanel from "~/components/panel/ObjectivesPanel";
-import { ObjectiveType } from "~/enums/ObjectiveType";
-import { Box, Grid, Tab, Tabs, Typography } from '@material-ui/core';
+import {Box, Container, Grid, Tab, Tabs} from '@material-ui/core';
+import {NextPage} from 'next';
+import Head from 'next/head';
+import React, {useState} from 'react';
+import ObjectivesPanel from '~/components/panel/ObjectivesPanel';
+import {ObjectiveType} from '~/enums/ObjectiveType';
 
 const Index: NextPage = () => {
-    const [filteredObjectiveTypes, setFilteredObjectiveTypes]
-        = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE]));
+    const [filteredObjectiveTypes, setFilteredObjectiveTypes] = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE]));
 
     const [selectedTab, setSelectedTab] = useState<ObjectiveType>(ObjectiveType.MAIN_OBJECTIVE);
 
@@ -28,15 +27,14 @@ const Index: NextPage = () => {
     };
 
     return (
-        <>
+        <Container maxWidth="lg">
             <Head>
                 <title>Feladatok</title>
             </Head>
             <Grid>
                 <Box
                     style={{
-                        padding: "24px",
-                        
+                        padding: '24px',
                     }}
                 >
                     <Tabs
@@ -52,14 +50,11 @@ const Index: NextPage = () => {
                         <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
                     </Tabs>
 
-
                     <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)} />
-
                 </Box>
             </Grid>
-
-        </>
-    )
+        </Container>
+    );
 };
 
 export default Index;

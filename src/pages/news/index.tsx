@@ -1,18 +1,19 @@
-import Head from 'next/head'
-import {NextPage} from "next";
-import React from "react";
-import NewsFeedPanel from "~/components/panel/NewsFeedPanel";
+import {Container} from '@material-ui/core';
+import {NextPage} from 'next';
+import Head from 'next/head';
+import React from 'react';
+import NewsFeedPanel from '~/components/panel/NewsFeedPanel';
 
 const Index: NextPage = () => {
     return (
-        <div>
+        <Container maxWidth="lg">
             <Head>
                 <title>News</title>
             </Head>
 
-            <NewsFeedPanel/>
-        </div>
-    )
+            <NewsFeedPanel />
+        </Container>
+    );
 };
 
 export default Index;
