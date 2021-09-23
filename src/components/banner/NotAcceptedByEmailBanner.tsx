@@ -78,10 +78,10 @@ const NotAcceptedByEmailBanner: FC = () => {
         <Grid item>
             <MyPaper p={0} borderRadius={'1rem'}>
                 <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="warning">
-                    <AlertTitle>You don't own any accepted e-mail addresses</AlertTitle>
-                    <p>- which makes you unable to see submissions of other users :/</p>
+                    <AlertTitle>Nincs még egyetlen elfogadott e-mail címed sem</AlertTitle>
+                    <p>- ezért nem láthatod a többi cspat feladatmegoldásaid :/</p>
                     <ButtonGroup color="inherit" aria-label="outlined primary button group">
-                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Click here to fix this</Button>
+                        <Button onClick={() => setAskYourTeamLeadDialogOpen(true)}>Kattints ide, hogy megold a problémát</Button>
                     </ButtonGroup>
 
                     <AddNewEmailAddressDialog onClose={() => setAddNewEmailDialogOpen(false)} isOpen={isAddNewEmailDialogOpen} />
