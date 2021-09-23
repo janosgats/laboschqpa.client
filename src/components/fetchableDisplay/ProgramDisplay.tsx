@@ -138,14 +138,15 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
 
     return (
         <>
-            <MyPaper >
+            <MyPaper>
 
                 {isEdited ? (
                     <Grid>
-                        <Grid container direction="row" alignItems="center" justify="space-between" style={{ marginBottom: "8px" }}>
+                        <Grid container direction="row" alignItems="center" justify="space-between"
+                              style={{marginBottom: "8px"}}>
                             <Grid item>
                                 <TextField label="Cím" defaultValue={title} onChange={(e) => setTitle(e.target.value)}
-                                    variant="outlined" fullWidth style={{ padding: theme.spacing(1) }} />
+                                           variant="outlined" fullWidth style={{padding: theme.spacing(1)}}/>
                             </Grid>
 
                             <Grid item>
@@ -213,8 +214,8 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                         </Grid>
                         <Grid>
                             <TextField label="Rövid leírás" defaultValue={headline}
-                                onChange={(e) => setHeadline(e.target.value)}
-                                variant="outlined" fullWidth style={{ padding: theme.spacing(1) }} />
+                                       onChange={(e) => setHeadline(e.target.value)}
+                                       variant="outlined" fullWidth style={{padding: theme.spacing(1)}}/>
                         </Grid>
 
                     </Grid>
@@ -232,7 +233,7 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                             {!isEdited && currentUser.hasAuthority(Authority.ProgramEditor) && (
                                 <Grid item>
                                     <IconButton onClick={() => setIsEdited(true)}>
-                                        <EditIcon color="action" />
+                                        <EditIcon color="action"/>
                                     </IconButton>
                                 </Grid>
                             )}
@@ -264,7 +265,7 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
                 </Box>
 
 
-                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
+                <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}/>
 
                 <Grid
                     container
@@ -290,15 +291,10 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
             </MyPaper>
         </>
     );
-}
-    ;
+};
 
-class FetchingToolsImpl implements FetchingTools
-    <Program, SaveProgramCommand> {
-    createNewEntity(command
-        :
-        SaveProgramCommand
-    ):
+class FetchingToolsImpl implements FetchingTools<Program, SaveProgramCommand> {
+    createNewEntity(command: SaveProgramCommand):
         Promise<number> {
         return callJsonEndpoint<CreatedEntityResponse>({
             conf: {
@@ -316,10 +312,7 @@ class FetchingToolsImpl implements FetchingTools
         }).then((resp) => resp.data.createdId);
     }
 
-    deleteEntity(id
-        :
-        number
-    ):
+    deleteEntity(id: number):
         Promise<any> {
         return callJsonEndpoint({
             conf: {
@@ -332,12 +325,7 @@ class FetchingToolsImpl implements FetchingTools
         });
     }
 
-    editEntity(id
-        :
-        number, command
-            :
-            SaveProgramCommand
-    ):
+    editEntity(id: number, command: SaveProgramCommand):
         Promise<any> {
         return callJsonEndpoint({
             conf: {
@@ -356,10 +344,7 @@ class FetchingToolsImpl implements FetchingTools
         });
     }
 
-    fetchEntity(id
-        :
-        number
-    ):
+    fetchEntity(id: number):
         Promise<Program> {
         return callJsonEndpoint<Program>({
             conf: {
