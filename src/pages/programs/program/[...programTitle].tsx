@@ -7,18 +7,11 @@ import MyPaper from '~/components/mui/MyPaper';
 import ObjectivesBelongingToProgramPanel from '~/components/panel/ObjectivesBelongingToProgramPanel';
 import Spinner from '~/components/Spinner';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {ObjectiveType} from '~/enums/ObjectiveType';
+import {ObjectiveType, objectiveTypeData} from '~/enums/ObjectiveType';
 import useEndpoint from '~/hooks/useEndpoint';
 import TeamScoreResponse from '~/model/TeamScoreResponse';
-import {UserNameContainer} from '~/model/UserInfo';
 import {separatedPoints} from '~/pages/teams';
 import {prefixWordWithArticle} from '~/utils/wordPrefixingUtils';
-
-interface TeamMember extends UserNameContainer {
-    userId: number;
-    profilePicUrl: string;
-    teamRole: number;
-}
 
 interface ProgramPageContextProps {
     programId: number;
@@ -45,10 +38,14 @@ const Index: NextPage = () => {
         enableRequest: router.isReady && currentUser.isMemberOrLeaderOrApplicantOfAnyTeam(),
     });
 
-    const [selectedTab, setSelectedTab] = useState(ObjectiveType.MAIN_OBJECTIVE);
+    const [selectedTab, setSelectedTab] = useState<ObjectiveType>(ObjectiveType.MAIN_OBJECTIVE);
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setSelectedTab(newValue);
+        if (objectiveTypeData[newValue]) {
+            setSelectedTab(newValue);
+        } else {
+            setSelectedTab(ObjectiveType.MAIN_OBJECTIVE);
+        }
     };
 
     return (
