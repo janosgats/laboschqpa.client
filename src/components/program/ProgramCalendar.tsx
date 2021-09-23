@@ -10,14 +10,17 @@ import TimeSpan from '~/utils/TimeSpan';
 interface ProgramCalendarProps {
     startDate: Date;
     count: number;
+    reloaderRef?: React.MutableRefObject<() => void>;
 }
 
-const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count}) => {
+const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, reloaderRef}) => {
     const usedEndpoint = useEndpoint<Program[]>({
         conf: {
             url: '/api/up/server/api/program/listAll',
         },
     });
+
+    if (reloaderRef) reloaderRef.current = () => usedEndpoint.reloadEndpoint();
 
     return (
         <Grid container spacing={4} direction="column" justify="flex-end" wrap="nowrap">
