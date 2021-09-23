@@ -1,41 +1,36 @@
-import React, { useContext, useEffect, useState } from "react";
-import { CurrentUserContext } from "~/context/CurrentUserProvider";
-import { Authority } from "~/enums/Authority";
+import React, {useContext, useEffect, useState} from "react";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import {Authority} from "~/enums/Authority";
 import RichTextEditor from "~/components/textEditor/RichTextEditor";
 import MuiRteUtils from "~/utils/MuiRteUtils";
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
-import { FetchableDisplay, FetchingTools } from "~/model/FetchableDisplay";
+import {FetchableDisplay, FetchingTools} from "~/model/FetchableDisplay";
 import CreatedEntityResponse from "~/model/CreatedEntityResponse";
-import UserInfoService, { Author } from "~/service/UserInfoService";
-import UserNameFormatter from "~/utils/UserNameFormatter";
+import UserInfoService, {Author} from "~/service/UserInfoService";
 import EventBus from "~/utils/EventBus";
-import DateTimeFormatter from "~/utils/DateTimeFormatter";
-import { getSurelyDate } from "~/utils/DateHelpers";
-import useAttachments, { UsedAttachments } from "~/hooks/useAttachments";
+import {getSurelyDate} from "~/utils/DateHelpers";
+import useAttachments, {UsedAttachments} from "~/hooks/useAttachments";
 import AttachmentPanel from "~/components/file/AttachmentPanel";
 import {
     Box,
     Button,
     ButtonGroup,
-    Collapse,
     createStyles,
     FormControlLabel,
     Grid,
     IconButton,
     makeStyles,
-    Paper,
     TextField,
     Theme,
     Typography,
     useTheme,
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
-import { getStyles } from "./styles/ProgramDisplayStyle";
-import { Program } from "~/model/usergeneratedcontent/Program";
+import {getStyles} from "./styles/ProgramDisplayStyle";
+import {Program} from "~/model/usergeneratedcontent/Program";
 import TempDatetimePicker from "~/components/TempDatetimePicker";
 import MyPaper from "../mui/MyPaper";
 
@@ -271,38 +266,26 @@ const ProgramDisplay: FetchableDisplay<Program, SaveProgramCommand> = (
 
                 <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
 
-                {isEdited &&
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-between"
-                        alignItems="center"
-                    >
-                        <FormControlLabel
-                            control={
-                                <TempDatetimePicker
-                                    value={startTime}
-                                    onChange={setStartTime}
-                                    disabled={!isEdited}
-                                />
-                            }
-                            labelPlacement="start"
-                            label="Program kezdete: "
-                        />
-                        <FormControlLabel
-                            control={
-                                <TempDatetimePicker
-                                    value={endTime}
-                                    onChange={setEndTime}
-                                    disabled={!isEdited}
-                                />
-                            }
-                            labelPlacement="start"
-                            label="Program vége: "
-                        />
-                    </Grid>
-                }
-
+                <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="center"
+                >
+                    <FormControlLabel
+                        control={
+                            <TempDatetimePicker value={startTime} onChange={setStartTime} disabled={!isEdited}/>
+                        }
+                        labelPlacement="start"
+                        label="Program kezdete: "
+                    />
+                    <FormControlLabel
+                        control={<TempDatetimePicker value={endTime} onChange={setEndTime} disabled={!isEdited}/>
+                        }
+                        labelPlacement="start"
+                        label="Program vége: "
+                    />
+                </Grid>
 
             </MyPaper>
         </>
