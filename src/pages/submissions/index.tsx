@@ -56,6 +56,7 @@ const Index: NextPage = () => {
             </Head>
 
             <NotAcceptedByEmailBanner />
+            <br />
 
             {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && <Spinner />}
 
@@ -75,10 +76,10 @@ const Index: NextPage = () => {
 
             {fetchedObjectives && fetchedTeams && (
                 <Grid container direction="row" justify="space-between" spacing={3}>
-                    <Grid item lg={6} md={12}>
+                    <Grid item lg={6} xs={12}>
                         <MyPaper>
                             <Typography variant="h4">Szűrés feladatra</Typography>
-                            <TableContainer>
+                            <TableContainer style={{height: '10rem', overflow: 'auto'}}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
@@ -118,10 +119,10 @@ const Index: NextPage = () => {
                         </MyPaper>
                     </Grid>
 
-                    <Grid item lg={6} md={12}>
+                    <Grid item lg={6} xs={12}>
                         <MyPaper>
                             <Typography variant="h4">Szűrés csapatra</Typography>
-                            <TableContainer>
+                            <TableContainer style={{height: '10rem', overflow: 'auto'}}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
