@@ -1,8 +1,11 @@
 import {
     Container,
     createStyles,
+    FormControl,
     Grid,
+    InputLabel,
     makeStyles,
+    Select,
     Table,
     TableBody,
     TableCell,
@@ -19,9 +22,11 @@ import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBann
 import MyPaper from '~/components/mui/MyPaper';
 import SubmissionsPanel from '~/components/panel/SubmissionsPanel';
 import Spinner from '~/components/Spinner';
+import {objectiveTypeData} from '~/enums/ObjectiveType';
 import useEndpoint from '~/hooks/useEndpoint';
 import {TeamInfo} from '~/model/Team';
 import {Objective} from '~/model/usergeneratedcontent/Objective';
+import {isValidNumber} from '~/utils/CommonValidators';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import {styles} from '../../styles/submissionStyles/submissionsPage.styles';
 
@@ -76,87 +81,119 @@ const Index: NextPage = () => {
 
             {fetchedObjectives && fetchedTeams && (
                 <Grid container direction="row" justify="space-between" spacing={3}>
-                    <Grid item lg={6} xs={12}>
-                        <MyPaper>
-                            <Typography variant="h4">Szűrés feladatra</Typography>
-                            <TableContainer style={{height: '10rem', overflow: 'auto'}}>
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell variant="head">
-                                                <b>Feladat</b>
-                                            </TableCell>
-                                            <TableCell variant="head">
-                                                <b>Status</b>
-                                            </TableCell>
-                                            <TableCell variant="head">
-                                                <b>Határidő</b>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {fetchedObjectives &&
-                                            fetchedObjectives.map((objective: Objective, index: number) => {
-                                                return (
-                                                    <TableRow
-                                                        key={index}
-                                                        onClick={() =>
-                                                            setFilteredObjectiveId((f) => (f == objective.id ? null : objective.id))
-                                                        }
-                                                        hover
-                                                        className={classes.tableRow}
-                                                        selected={objective.id === filteredObjectiveId}
-                                                    >
-                                                        <TableCell>{objective.title}</TableCell>
-                                                        <TableCell>{objective.submittable ? 'Beadható' : 'Lejárt'}</TableCell>
-                                                        <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </MyPaper>
+                    <Grid item lg={4} xs={12} container direction="column" spacing={2}>
+                        <Grid item>
+                            <FormControl fullWidth component={MyPaper}>
+                                <InputLabel id="objective-filter" className={classes.formControlBox}>
+                                    Szűrés feladatra
+                                </InputLabel>
+                                <Select
+                                    fullWidth
+                                    defaultValue={NOT_FILTERED}
+                                    native
+                                    labelId="objective-filter"
+                                    value={filteredObjectiveId !== null ? filteredObjectiveId : ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (isValidNumber(val.toString())) {
+                                            setFilteredObjectiveId(Number.parseInt(e.target.value.toString()));
+                                        }
+                                        if (val === NOT_FILTERED) {
+                                            setFilteredObjectiveId(null);
+                                        }
+                                    }}
+                                >
+                                    <option value={NOT_FILTERED}>Nincs</option>
+                                    {fetchedObjectives.map((objective) => {
+                                        return (
+                                            <option key={objective.id} value={objective.id}>
+                                                {`${objectiveTypeData[objective.objectiveType].shortDisplayName} > ${objective.title}`}
+                                            </option>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <MyPaper>
+                                <Typography variant="h4">Szűrés feladatra</Typography>
+                                <TableContainer>
+                                    <Table size="small">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell variant="head">
+                                                    <b>Feladat</b>
+                                                </TableCell>
+                                                <TableCell variant="head">
+                                                    <b>Status</b>
+                                                </TableCell>
+                                                <TableCell variant="head">
+                                                    <b>Határidő</b>
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {fetchedObjectives &&
+                                                fetchedObjectives.map((objective: Objective, index: number) => {
+                                                    return (
+                                                        <TableRow
+                                                            key={index}
+                                                            onClick={() =>
+                                                                setFilteredObjectiveId((f) => (f == objective.id ? null : objective.id))
+                                                            }
+                                                            hover
+                                                            className={classes.tableRow}
+                                                            selected={objective.id === filteredObjectiveId}
+                                                        >
+                                                            <TableCell>{objective.title}</TableCell>
+                                                            <TableCell>{objective.submittable ? 'Beadható' : 'Lejárt'}</TableCell>
+                                                            <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </MyPaper>
+                        </Grid>
                     </Grid>
 
-                    <Grid item lg={6} xs={12}>
-                        <MyPaper>
-                            <Typography variant="h4">Szűrés csapatra</Typography>
-                            <TableContainer style={{height: '10rem', overflow: 'auto'}}>
-                                <Table size="small">
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell variant="head">
-                                                <b>Csapat</b>
-                                            </TableCell>
-                                            <TableCell variant="head">
-                                                <b>Archived</b>
-                                            </TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {fetchedTeams &&
-                                            fetchedTeams.map((team: TeamInfo, index: number) => {
-                                                return (
-                                                    <TableRow
-                                                        key={index}
-                                                        onClick={() => setFilteredTeamId((f) => (f == team.id ? null : team.id))}
-                                                        hover
-                                                        className={classes.tableRow}
-                                                        selected={team.id === filteredTeamId}
-                                                    >
-                                                        <TableCell>{team.name}</TableCell>
-                                                        <TableCell>{team.archived ? 'igen' : ''}</TableCell>
-                                                    </TableRow>
-                                                );
-                                            })}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </MyPaper>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <SubmissionsPanel filteredObjectiveId={filteredObjectiveId} filteredTeamId={filteredTeamId} />
+                    <Grid item lg={8} xs={12} container direction="column" spacing={2}>
+                        <Grid item>
+                            <FormControl fullWidth component={MyPaper}>
+                                <InputLabel id="team-filter" className={classes.formControlBox}>
+                                    Szűrés csapatra
+                                </InputLabel>
+                                <Select
+                                    fullWidth
+                                    defaultValue={NOT_FILTERED}
+                                    native
+                                    labelId="team-filter"
+                                    value={filteredTeamId !== null ? filteredTeamId : ''}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (isValidNumber(val.toString())) {
+                                            setFilteredTeamId(Number.parseInt(e.target.value.toString()));
+                                        }
+                                        if (val === NOT_FILTERED) {
+                                            setFilteredTeamId(null);
+                                        }
+                                    }}
+                                >
+                                    <option value={NOT_FILTERED}>Nincs</option>
+                                    {fetchedTeams.map((team) => {
+                                        return (
+                                            <option key={team.id} value={team.id}>
+                                                {team.name + (team.archived ? ' (archive)' : '')}
+                                            </option>
+                                        );
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <SubmissionsPanel filteredObjectiveId={filteredObjectiveId} filteredTeamId={filteredTeamId} />
+                        </Grid>
                     </Grid>
                 </Grid>
             )}
