@@ -136,23 +136,25 @@ const Index: NextPage = () => {
                                         </TableHead>
                                         <TableBody>
                                             {fetchedObjectives &&
-                                                fetchedObjectives.map((objective: Objective, index: number) => {
-                                                    return (
-                                                        <TableRow
-                                                            key={index}
-                                                            onClick={() =>
-                                                                setFilteredObjectiveId((f) => (f == objective.id ? null : objective.id))
-                                                            }
-                                                            hover
-                                                            className={classes.tableRow}
-                                                            selected={objective.id === filteredObjectiveId}
-                                                        >
-                                                            <TableCell>{objective.title}</TableCell>
-                                                            <TableCell>{objective.submittable ? 'Beadható' : 'Lejárt'}</TableCell>
-                                                            <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
-                                                        </TableRow>
-                                                    );
-                                                })}
+                                                fetchedObjectives
+                                                    .filter((item) => item.submittable)
+                                                    .map((objective: Objective, index: number) => {
+                                                        return (
+                                                            <TableRow
+                                                                key={index}
+                                                                onClick={() =>
+                                                                    setFilteredObjectiveId((f) => (f == objective.id ? null : objective.id))
+                                                                }
+                                                                hover
+                                                                className={classes.tableRow}
+                                                                selected={objective.id === filteredObjectiveId}
+                                                            >
+                                                                <TableCell>{objective.title}</TableCell>
+                                                                <TableCell>{objective.submittable ? 'Beadható' : 'Lejárt'}</TableCell>
+                                                                <TableCell>{DateTimeFormatter.toFullBasic(objective.deadline)}</TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>

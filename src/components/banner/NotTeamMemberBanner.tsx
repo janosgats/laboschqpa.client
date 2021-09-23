@@ -84,17 +84,17 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
             <DialogContent>
                 <DialogContent>
                     <DialogContentText>
-                        To create a team you have to give a name to your team. After your team is created you will be the lead of that team.
+                        Hogy létrehozz egy csapatot, először el kell nevezned. Miután létrejött a csapat, te leszel a kapitánya.
                     </DialogContentText>
                     <TextField autoFocus label="Team name" value={teamName} onChange={(e) => setTeamName(e.target.value)} />
                 </DialogContent>
             </DialogContent>
             <DialogActions>
                 <Button onClick={createNewTeam} color="primary" disabled={isCreatingNewTeamPending || !teamName || teamName.length < 3}>
-                    Create my team
+                    Csapat létrehozása
                 </Button>
                 <Button onClick={props.onClose} color="secondary">
-                    Close
+                    Mégse
                 </Button>
             </DialogActions>
         </Dialog>

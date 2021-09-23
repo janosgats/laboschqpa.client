@@ -51,6 +51,7 @@ function MyApp({Component, pageProps}): JSX.Element {
     return (
         <>
             <Head>
+                <style>{'::-webkit-scrollbar { width: 0px }'}</style>
                 <title>Qpa</title>
                 <link rel="icon" href="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/favicon/yellow.svg" />
                 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />

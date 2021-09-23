@@ -35,8 +35,8 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
             <DialogTitle>Probléma megoldása</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Hogy megbizonyosodjunk arról, hogy a tényleg Qpázó vagy, megkértük a csapatkapitányodatkat arra, hogy adják le csapatuk
-                    tagjainak email címeit.
+                    Hogy megbizonyosodjunk arról, tényleg Qpázó vagy-e, megkértük a csapatkapitányokat, hogy adják le csapatuk tagjainak
+                    email címeit.
                 </DialogContentText>
                 <DialogContentText>
                     Kérdezd meg a csk-d, leadta-e már az email címed. Ha igen, de más e-maillel regisztráltál, a lenti gombbal könnyedén
