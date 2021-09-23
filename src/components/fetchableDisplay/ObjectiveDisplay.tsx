@@ -46,6 +46,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import {getStyles} from "./styles/ObjectiveDisplayStyle";
 import TempDatetimePicker from "~/components/TempDatetimePicker";
+import MyPaper from "../mui/MyPaper";
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)))

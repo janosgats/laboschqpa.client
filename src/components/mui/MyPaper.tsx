@@ -1,5 +1,5 @@
-import {alpha, Box, Paper, useTheme} from '@material-ui/core';
-import React, {ReactElement} from 'react';
+import { alpha, Box, Paper, useTheme } from '@material-ui/core';
+import React, { ReactElement } from 'react';
 
 interface MyPaperProps {
     p?: number;
@@ -7,7 +7,7 @@ interface MyPaperProps {
     variant?: "outlined" | "elevation";
 }
 
-export default function MyPaper({children, p = 2, opacity = 0.7, variant="elevation"}: React.PropsWithChildren<MyPaperProps>): ReactElement {
+export default function MyPaper({ children, p = 2, opacity = 0.8, variant = "elevation"}: React.PropsWithChildren<MyPaperProps>): ReactElement {
     const theme = useTheme();
     return (
         <Paper
@@ -15,7 +15,10 @@ export default function MyPaper({children, p = 2, opacity = 0.7, variant="elevat
             style={{
                 height: '100%',
                 backgroundColor: alpha(theme.palette.background.paper, opacity),
+                borderRadius: "16px",
+                padding: "16px",
             }}
+
         >
             <Box height="100%" p={p}>
                 {children}

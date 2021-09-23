@@ -110,10 +110,10 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     }
 
     const links: LinkParams[] = [];
-    links.push({href: '/', displayName: 'Home', authority: Authority.User, icon: 'home'});
+    links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
     links.push({
         href: `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`,
-        displayName: 'My Profile',
+        displayName: 'Profilom',
         authority: Authority.User,
         icon: 'person',
     });

@@ -7,7 +7,7 @@ export function getStyles(theme: Theme) {
             padding: "16px",
             borderRadius: "16px",
             marginTop: "24px",
-            backgroundColor: alpha(theme.palette.background.paper, 0.5),
+            backgroundColor: alpha(theme.palette.background.paper, 0.8),
         },
 
         typeSelectorLabel:{

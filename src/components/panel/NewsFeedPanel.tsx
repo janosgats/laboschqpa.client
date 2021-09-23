@@ -39,7 +39,7 @@ const NewsFeedPanel: FC = ({children}) => {
                         {!wasCreateNewPostClicked && currentUser.hasAuthority(Authority.NewsPostEditor) && (
                             <Grid item>
                                 <Button
-                                    variant="outlined"
+                                    variant="contained"
                                     color="primary"
                                     size="large"
                                     endIcon={<AddCircleOutlineOutlinedIcon />}
