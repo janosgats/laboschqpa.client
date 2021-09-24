@@ -1,15 +1,16 @@
-import {Button, Table, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
+import { Box, Button, Grid, Table, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import MUIPaper from '@material-ui/core/Paper';
-import React, {FC, useContext, useState} from 'react';
-import {SpeedDrinkingDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
-import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {Authority} from '~/enums/Authority';
-import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
+import React, { FC, useContext, useState } from 'react';
+import { SpeedDrinkingDisplayContainer } from '~/components/fetchableDisplay/FetchableDisplayContainer';
+import { CurrentUserContext } from '~/context/CurrentUserProvider';
+import { Authority } from '~/enums/Authority';
+import { SpeedDrinkingCategory } from '~/enums/SpeedDrinkingCategory';
 import useEndpoint from '~/hooks/useEndpoint';
-import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
+import { SpeedDrinking } from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
-import {UniqueValueIndexer} from '~/utils/UniqueValueIndexer';
+import { UniqueValueIndexer } from '~/utils/UniqueValueIndexer';
 import MyPaper from '../mui/MyPaper';
+import Responsive from '../Responsive';
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -39,26 +40,28 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
     const uniqueValueIndexer = new UniqueValueIndexer(1);
 
     return (
-        <div>
+        <>
             {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && (
-                <div style={{borderStyle: 'solid', borderColor: 'orange'}}>
+                <div style={{ borderStyle: 'solid', borderColor: 'orange' }}>
                     <h4>Általad rögzített idők</h4>
 
                     {(isCreatingNewDisplayShown || newlyCreatedSpeedDrinkingIds.length > 0) && (
                         <TableContainer
                             component={MyPaper}
+                            style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
                         >
-                            <Table>
+                            <Table
+                            >
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>#</TableCell>
-                                        <TableCell>Kategória</TableCell>
-                                        <TableCell>Név</TableCell>
-                                        <TableCell>Csapat</TableCell>
-                                        <TableCell>Idő</TableCell>
-                                        <TableCell>Megjegyzés</TableCell>
-                                        <TableCell>Időpont</TableCell>
-                                        <TableCell>Szerkesztés</TableCell>
+                                        <TableCell  >#</TableCell>
+                                        <TableCell  >Kategória</TableCell>
+                                        <TableCell  >Név</TableCell>
+                                        <TableCell  >Csapat</TableCell>
+                                        <TableCell  >Idő</TableCell>
+                                        <TableCell  >Megjegyzés</TableCell>
+                                        <TableCell  >Időpont</TableCell>
+                                        <TableCell  >Szerkesztés</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 {newlyCreatedSpeedDrinkingIds.map((id, index) => {
@@ -107,45 +110,48 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
             {usedEndpoint.pending && <Spinner />}
             {usedEndpoint.failed && <p>Couldn't load speed drinking results :'(</p>}
             {usedEndpoint.data && (
-                <TableContainer
-                    component={MyPaper}
-                >
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">Helyezés</TableCell>
-                                <TableCell align="left">Név</TableCell>
-                                <TableCell align="center">Csapat név</TableCell>
-                                <TableCell align="center">Idő</TableCell>
-                                <TableCell align="left">Megjegyzés</TableCell>
-                                <TableCell align="right">Időpont</TableCell>
-                                {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Szerkesztés</TableCell>}
-                            </TableRow>
-                        </TableHead>
-                        {usedEndpoint.data
-                            .map((speedDrinking, index) => {
-                                if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
-                                    return null;
-                                }
-                                if (props.filteredTeamId != null && props.filteredTeamId != speedDrinking.drinkerTeamId) return null;
-                                return (
-                                    <SpeedDrinkingDisplayContainer
-                                        key={speedDrinking.id}
-                                        overriddenBeginningEntity={speedDrinking}
-                                        shouldCreateNew={false}
-                                        displayExtraProps={{
-                                            rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
-                                            showCategory: false,
-                                            showName: true,
-                                            showTeam: true,
-                                        }}
-                                    />
-                            );
-                        })}
-                    </Table>
-                </TableContainer>
-            )}
-        </div>
+                        <TableContainer
+                            component={MyPaper}
+                            style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
+                        >
+                            <Table
+                            >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="center">Helyezés</TableCell>
+                                        <TableCell align="left">Név</TableCell>
+                                        <TableCell align="center">Csapat név</TableCell>
+                                        <TableCell align="center">Idő</TableCell>
+                                        <TableCell align="left">Megjegyzés</TableCell>
+                                        <TableCell align="right">Időpont</TableCell>
+                                        {currentUser.hasAuthority(Authority.SpeedDrinkingEditor) && <TableCell>Szerkesztés</TableCell>}
+                                    </TableRow>
+                                </TableHead>
+                                {usedEndpoint.data
+                                    .map((speedDrinking, index) => {
+                                        if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
+                                            return null;
+                                        }
+                                        if (props.filteredTeamId != null && props.filteredTeamId != speedDrinking.drinkerTeamId) return null;
+                                        return (
+                                            <SpeedDrinkingDisplayContainer
+                                                key={speedDrinking.id}
+                                                overriddenBeginningEntity={speedDrinking}
+                                                shouldCreateNew={false}
+                                                displayExtraProps={{
+                                                    rowNumber: uniqueValueIndexer.getIndex(speedDrinking.drinkerUserId),
+                                                    showCategory: false,
+                                                    showName: true,
+                                                    showTeam: true,
+                                                }}
+                                            />
+                                        );
+                                    })}
+                            </Table>
+                        </TableContainer>
+            )
+            }
+        </ >
     );
 };
 
