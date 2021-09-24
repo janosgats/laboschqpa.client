@@ -4,6 +4,8 @@ import {AddNewEmailAddressDialog} from '~/components/email/AddNewEmailAddressDia
 import useEndpoint, {UsedEndpoint} from '~/hooks/useEndpoint';
 import {UserEmailAddress} from '~/model/UserEmailAddress';
 import Spinner from '../Spinner';
+import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import EventBus from "~/utils/EventBus";
 
 interface Overrides {
     ul: CSSProperties;
@@ -23,9 +25,28 @@ const EmailAddressesPanel: FC<Props> = (props) => {
         },
     });
 
+    function deleteEmailAddress(address: UserEmailAddress) {
+        if (!confirm(`Are you sure you want to delete ${address.email} and disconnect it from your account?`)) {
+            return;
+        }
+
+        callJsonEndpoint({
+            conf: {
+                url: '/api/up/server/api/emailAddress/deleteOwnEmailAddress',
+                method: 'delete',
+                params: {
+                    id: address.id
+                }
+            }
+        }).then(() => {
+            EventBus.notifySuccess(address.email, "Address deleted");
+            usedCurrentEmailAddresses.reloadEndpoint();
+        });
+    }
+
     return (
         <Grid>
-            {usedCurrentEmailAddresses.pending && <Spinner />}
+            {usedCurrentEmailAddresses.pending && <Spinner/>}
 
             {usedCurrentEmailAddresses.failed && (
                 <>
@@ -40,9 +61,11 @@ const EmailAddressesPanel: FC<Props> = (props) => {
                             {usedCurrentEmailAddresses.data.map((address) => (
                                 <>
                                     <ListItem key={address.id}>
-                                        <ListItemText primary={address.email} />
+                                        <ListItemText primary={address.email}/>
+                                        <Button color="secondary"
+                                                onClick={() => deleteEmailAddress(address)}>Delete</Button>
                                     </ListItem>
-                                    <Divider variant="middle" />
+                                    <Divider variant="middle"/>
                                 </>
                             ))}
                             {!props.hideAddNewAddressButton && (
@@ -57,7 +80,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
                                             E-mail cím hozzáadása
                                         </Button>
                                     </ListItem>
-                                    <Divider variant="middle" />
+                                    <Divider variant="middle"/>
                                 </>
                             )}
                         </List>
@@ -66,7 +89,8 @@ const EmailAddressesPanel: FC<Props> = (props) => {
                 </>
             )}
             {isAddNewAddressDialogOpen && (
-                <AddNewEmailAddressDialog isOpen={isAddNewAddressDialogOpen} onClose={() => setAddNewAddressDialogOpen(false)} />
+                <AddNewEmailAddressDialog isOpen={isAddNewAddressDialogOpen}
+                                          onClose={() => setAddNewAddressDialogOpen(false)}/>
             )}
         </Grid>
     );

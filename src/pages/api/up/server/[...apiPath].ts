@@ -21,6 +21,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/noAuthRequired/emailVerification/verify": ["POST"],
 
     "/api/emailAddress/listOwnAddresses": ["GET"],
+    "/api/emailAddress/deleteOwnEmailAddress": ["DELETE"],
     "/api/emailAddress/submitNewAddress": ["POST"],
     "/api/emailAddress/listAddressesOfUser": ["GET"],
 
