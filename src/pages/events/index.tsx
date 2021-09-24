@@ -1,4 +1,4 @@
-import {Button, Container, Table, TableCell, TableHead, TableRow, Typography} from '@material-ui/core';
+import {Button, Container, Table, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import React, {useContext} from 'react';
@@ -100,7 +100,7 @@ const Index: NextPage = () => {
     }
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" >
             <Head>
                 <title>Események</title>
             </Head>
@@ -112,7 +112,10 @@ const Index: NextPage = () => {
             {usedPersonalEvents.pending && <Spinner/>}
             {usedPersonalEvents.failed && <p>Couldn't load personal events :'(</p>}
             {usedPersonalEvents.data && (
-                <MyPaper>
+                <TableContainer
+                    component={MyPaper}
+                    style={{ maxWidth:"calc(100vw - 25vw)", overflow:"auto"}}
+                >
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -144,7 +147,7 @@ const Index: NextPage = () => {
                             );
                         })}
                     </Table>
-                </MyPaper>
+                </TableContainer>
             )}
 
             <br/>
@@ -159,7 +162,10 @@ const Index: NextPage = () => {
                     {usedTeamEvents.pending && <Spinner/>}
                     {usedTeamEvents.failed && <p>Couldn't load team events :'(</p>}
                     {usedTeamEvents.data && (
-                        <MyPaper>
+                        <TableContainer
+                        component={MyPaper}
+                        style={{maxWidth:"calc(100vw - 25vw)", overflow:"auto"}}
+                        >
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -196,7 +202,7 @@ const Index: NextPage = () => {
                                     );
                                 })}
                             </Table>
-                        </MyPaper>
+                        </TableContainer>
                     )}
                 </>
             )}
