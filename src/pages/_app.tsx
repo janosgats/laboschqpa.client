@@ -32,7 +32,7 @@ function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
 }
 
 function MyApp({Component, pageProps}): JSX.Element {
-    const [darkMode, setDarkMode] = useLocalStorage('darkMode', true);
+    const [darkMode, setDarkMode] = useLocalStorage('darkMode', false);
 
     const theme = createTheme({
         palette: {

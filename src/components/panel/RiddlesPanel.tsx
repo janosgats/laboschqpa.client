@@ -6,10 +6,10 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, {FC, useState} from 'react';
+import React, { FC, useState } from 'react';
 import RiddleSolverDialog from '~/components/riddle/solver/RiddleSolverDialog';
 import useEndpoint from '~/hooks/useEndpoint';
-import {AccessibleRiddle} from '~/model/usergeneratedcontent/AccessibleRiddle';
+import { AccessibleRiddle } from '~/model/usergeneratedcontent/AccessibleRiddle';
 import Spinner from '../Spinner';
 import { getStyles } from '~/components/panel/styles/RiddlePanelStyle';
 import MyPaper from '../mui/MyPaper';
@@ -48,8 +48,9 @@ const RiddlesPanel: FC = () => {
             {usedEndpoint.succeeded && (
                 <TableContainer
                     component={MyPaper}
+                    style={{ maxWidth: "calc(100vw - 30vw)", overflow: "auto" }}
                 >
-                    <Table 
+                    <Table
                         size="medium"
                     >
                         <TableHead>
@@ -65,7 +66,7 @@ const RiddlesPanel: FC = () => {
                                         key={riddle.id}
                                         onClick={() => openRiddle(riddle.id)}
                                         className={classes.tableRow}
-                                        >
+                                    >
                                         <TableCell align="center"><Typography variant="body1">{riddle.title}</Typography></TableCell>
                                         <TableCell align="center"><Typography variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography></TableCell>
                                     </TableRow>
