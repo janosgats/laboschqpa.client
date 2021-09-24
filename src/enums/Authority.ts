@@ -7,6 +7,7 @@ export enum Authority {
     TeamScorer = "TeamScorer",
     SpeedDrinkingEditor = "SpeedDrinkingEditor",
     AcceptedEmailEditor = "AcceptedEmailEditor",
+    FileSupervisor = "FileSupervisor",
     Admin = "Admin",
 }
 
@@ -39,6 +40,9 @@ export const authorityData: Record<Authority, AuthorityDataEntry> = {
     },
     [Authority.AcceptedEmailEditor]: {
         authority: Authority.AcceptedEmailEditor,
+    },
+    [Authority.FileSupervisor]: {
+        authority: Authority.FileSupervisor,
     },
     [Authority.Admin]: {
         authority: Authority.Admin,

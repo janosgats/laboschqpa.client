@@ -133,6 +133,9 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/qrFight/fightStats": ["GET"],
     "/api/qrFight/listAllAreas": ["GET"],
     "/api/qrFight/submit": ["POST"],
+
+    "/api/admin/file/listSucceededImageVariantIdsOfFile": ["GET"],
+    "/api/admin/file/markImageVariantFileAsCorrupt": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

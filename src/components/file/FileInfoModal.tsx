@@ -57,7 +57,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
     const currentUser = useContext(CurrentUserContext);
     const usedEndpoint: UsedEndpoint<FileInfo> = useEndpoint<FileInfo>({
         conf: {
-            url: 'api/up/server/api/file/info',
+            url: '/api/up/server/api/file/info',
             params: {
                 id: fileId,
             },
