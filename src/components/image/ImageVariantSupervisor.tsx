@@ -43,7 +43,7 @@ const ControlsInDialog: FC<ControlsInModalProps> = (props) => {
             {usedEndpoint.error && <button onClick={() => usedEndpoint.reloadEndpoint()}>Error. Retry?</button>}
             {usedEndpoint.succeeded && (
                 <>
-                    <p>Variants:
+                    <p>Variants of {props.originalFileId}:
                         &nbsp;
                         <button onClick={() => usedEndpoint.reloadEndpoint()}>Reload all</button>
                     </p>
