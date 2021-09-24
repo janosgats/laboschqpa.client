@@ -6,9 +6,11 @@ import {
     Grid,
     IconButton,
     makeStyles,
+    TextField,
     Theme,
     Tooltip,
-    Typography
+    Typography,
+    useTheme,
 } from '@material-ui/core';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -16,6 +18,7 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import EditIcon from '@material-ui/icons/Edit';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SaveIcon from '@material-ui/icons/Save';
+import {title} from 'process';
 import React, {useContext, useEffect, useState} from 'react';
 import AttachmentPanel from '~/components/file/AttachmentPanel';
 import RichTextEditor from '~/components/textEditor/RichTextEditor';
@@ -37,6 +40,7 @@ import {getStyles} from './styles/NewsPostDisplayStyle';
 export interface SaveNewsPostCommand {
     content: string;
     attachments: number[];
+    title: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
@@ -45,6 +49,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     const classes = useStyles();
 
     const defaultContent = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.content;
+    const defaultTitle = props.isCreatingNew ? '' : props.existingEntity.title ?? '';
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
     const currentUser = useContext(CurrentUserContext);
@@ -52,11 +57,14 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     const [resetTrigger, setResetTrigger] = useState<number>(1);
 
     const [content, setContent] = useState<string>(defaultContent);
+    const [title, setTitle] = useState<string>(defaultTitle);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
     const [author, setAuthor] = useState<Author>();
     const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
     const [showAuthor, setShowAuthor] = useState<boolean>(false);
+
+    const theme = useTheme();
 
     useEffect(() => {
         setContent(defaultContent);
@@ -64,9 +72,15 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     }, [props.existingEntity]);
 
     function composeSaveNewsPostCommand(): SaveNewsPostCommand {
+        console.log({
+            content: content,
+            attachments: usedAttachments.firmAttachmentIds,
+            title: title,
+        });
         return {
             content: content,
             attachments: usedAttachments.firmAttachmentIds,
+            title: title,
         };
     }
 
@@ -117,7 +131,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                     <Grid item>
                         <Grid container direction="row" alignItems="center">
                             <DescriptionIcon style={{width: 30, height: 30}} />
-                            <Typography variant="h4">Hír</Typography>
+                            <Typography variant="h4">{title}</Typography>
                         </Grid>
                     </Grid>
 
@@ -159,6 +173,17 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                     )}
                 </Grid>
             </Grid>
+
+            {isEdited && (
+                <TextField
+                    label="Cím"
+                    defaultValue={title}
+                    //TODO: This should be a dropdown where people can select a program
+                    onChange={(e) => setTitle(e.target.value)}
+                    variant="outlined"
+                    style={{padding: theme.spacing(1)}}
+                />
+            )}
 
             <RichTextEditor
                 isEdited={isEdited}
