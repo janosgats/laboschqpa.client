@@ -11,6 +11,7 @@ import EventBus from "~/utils/EventBus";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import EditAuthoritiesDialog from "~/components/admin/EditAuthoritiesDialog";
 import MyPaper from "~/components/mui/MyPaper";
+import NavigateAwayIfUserIsNotAdmin from "~/components/admin/NavigateAwayIfUserIsNotAdmin";
 
 
 const Index: NextPage = () => {
@@ -50,6 +51,7 @@ const Index: NextPage = () => {
                 <title>Admin - Users</title>
             </Head>
 
+            <NavigateAwayIfUserIsNotAdmin/>
             <AdminNavBar/>
 
             <EditAuthoritiesDialog onClose={() => setEditAuthoritiesDialogOpen(false)}
