@@ -18,9 +18,9 @@ async function loadCsrfToken() {
 
     ++countOfQueuedWaitingLoadTokenRequests;
     await waitFor(() => isCsrfLoadingPending, 20, 250);
+    isCsrfLoadingPending = true;
     --countOfQueuedWaitingLoadTokenRequests;
 
-    isCsrfLoadingPending = true;
     await callJsonEndpoint<GetCsrfTokenResponse>({
             conf: {
                 url: "/api/up/server/api/currentUser/csrfToken"
