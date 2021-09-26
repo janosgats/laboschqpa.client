@@ -47,11 +47,9 @@ const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, relo
                 </Grid>
             )}
             {usedEndpoint.succeeded &&
-                TimeSpan.asDate(TimeSpan.range(startDate, count, TimeSpan.day)).map((date, i) => (
-                    <Grid key={i} item>
-                        <DayProgramsDisplay programs={usedEndpoint.data} date={date} />
-                    </Grid>
-                ))}
+            TimeSpan.asDate(TimeSpan.range(startDate, count, TimeSpan.day)).map((date, i) => (
+                <DayProgramsDisplay key={i} allPrograms={usedEndpoint.data} date={date}/>
+            ))}
         </Grid>
     );
 };

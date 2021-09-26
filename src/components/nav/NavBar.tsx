@@ -1,16 +1,13 @@
-import React, { FC, useContext, useRef, useState } from 'react';
-import { CurrentUserContext } from '~/context/CurrentUserProvider';
-import { Authority } from '~/enums/Authority';
+import React, {FC, useContext, useRef, useState} from 'react';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import {
     AppBar,
-    Button,
     createStyles,
-    Divider,
     Drawer,
-    Grid,
     Hidden,
     Icon,
     IconButton,
@@ -19,19 +16,13 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
-    Popper,
-    Switch,
     Theme,
     Toolbar,
-    Typography,
     useTheme,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import MyPaper from '../mui/MyPaper';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ThemeSelector from "~/components/nav/ThemeSelector";
 
 interface LinkParams {
     href: string;
@@ -77,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             padding: theme.spacing(3),
         },
-        darkModeSwithcer: {
+        darkModeSwitcher: {
             cursor: 'pointer',
         },
     })
@@ -144,24 +135,36 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
-            <Divider />
+            <div/>
             <List>
+                <ListItem>
+                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode}/>
+                </ListItem>
+
                 {links
                     .filter(link => !link.hidden)
                     .map((link: LinkParams, index: number) => {
-                        return currentUser.hasAuthority(link.authority) ? (
-                            <Link key={'link' + link.displayName + index} href={link.href}>
-                                <ListItem button key={link.displayName + index}>
-                                    <ListItemIcon>
-                                        {' '}
-                                        <Icon fontSize="small">{link.icon}</Icon>{' '}
-                                    </ListItemIcon>
-                                    <ListItemText primary={link.displayName} />
-                                </ListItem>
-                            </Link>
-                        ) : null;
-                    })}
+                            return currentUser.hasAuthority(link.authority) ? (
+                                <Link key={'link' + link.displayName + index} href={link.href}>
+                                    <ListItem button key={link.displayName + index}>
+                                        <ListItemIcon>
+                                            {' '}
+                                            <Icon fontSize="small">{link.icon}</Icon>{' '}
+                                        </ListItemIcon>
+                                        <ListItemText primary={link.displayName}/>
+                                    </ListItem>
+                                </Link>
+                            ) : null;
+                        }
+                    )}
+
+                <ListItem button>
+                    <ListItemIcon>
+                        {' '}
+                        <Icon fontSize="small">logout</Icon>{' '}
+                    </ListItemIcon>
+                    <ListItemText primary="Kijelentkezés"/>
+                </ListItem>
             </List>
         </div>
     );
@@ -177,139 +180,19 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     return (
         <div className={classes.root}>
             <AppBar position="fixed" color="inherit" className={classes.appBar}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h5" noWrap className={classes.title}>
-                        49. Aki másnak vermet ás SCH QPA
-                    </Typography>
-                    <Hidden smDown implementation="css">
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                        >
-
-                            <Grid item >
-
-                                <Icon
-                                    className={classes.darkModeSwithcer}
-                                    fontSize="default"
-                                    color={!darkMode ? 'error' : 'disabled'}
-                                >
-                                    {'wb_sunny'}
-                                </Icon>
-                            </Grid>
-                            <Grid item >
-
-                                <Switch
-                                    checked={darkMode}
-                                    onChange={() => {
-                                        setDarkMode(!darkMode);
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item >
-
-                                <Icon
-                                    className={classes.darkModeSwithcer}
-                                    fontSize="default"
-                                    color={darkMode ? 'primary' : 'disabled'}
-                                >
-                                    {'nights_stay'}
-
-                                </Icon>
-                            </Grid>
-                            <Grid item >
-
-                                <Button color="inherit" onClick={() => doLogout()}>
-                                    Kijelentkezés
-                                </Button>
-                            </Grid>
-
-                        </Grid>
-                    </Hidden>
-                    <Hidden mdUp implementation="css">
-                        <Popper
-                            open={popoverOpen}
-                            placement="bottom-end"
-                            anchorEl={popperRef.current}
-                            transition
-
-                        >
-                            <MyPaper
-                                opacity={1}
-                            >
-                                <Grid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                >
-                                    <Grid
-                                        item
-                                    >
-                                        <Grid
-                                            container
-                                            direction="row"
-                                            alignItems="center"
-                                        >
-                                            <Grid item >
-                                                <Icon
-                                                    className={classes.darkModeSwithcer}
-                                                    fontSize="default"
-                                                    color={!darkMode ? 'error' : 'disabled'}
-                                                >
-                                                    {'wb_sunny'}
-                                                </Icon>
-                                            </Grid>
-                                            <Grid item >
-
-                                                <Switch
-                                                    checked={darkMode}
-                                                    onChange={() => {
-                                                        setDarkMode(!darkMode);
-                                                    }}
-                                                />
-                                            </Grid>
-                                            <Grid item >
-                                                <Icon
-                                                    className={classes.darkModeSwithcer}
-                                                    fontSize="default"
-                                                    color={darkMode ? 'primary' : 'disabled'}
-                                                >
-                                                    {'nights_stay'}
-
-                                                </Icon>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-
-                                    <Grid item >
-
-                                        <Button color="inherit" onClick={() => doLogout()}>
-                                            Kijelentkezés
-                                        </Button>
-                                    </Grid>
-
-                                </Grid>
-
-                            </MyPaper>
-                        </Popper>
+                <Hidden smUp implementation="css">
+                    <Toolbar>
                         <IconButton
-                            ref={popperRef}
-                            onClick={() => setPopoverOpen(p => !p)}
+                            color="inherit"
+                            aria-label="open drawer"
+                            edge="start"
+                            onClick={handleDrawerToggle}
+                            className={classes.menuButton}
                         >
-                            {popoverOpen ? (<ExpandLessIcon />) : (<ExpandMoreIcon />)}
+                            <MenuIcon/>
                         </IconButton>
-                    </Hidden>
-                </Toolbar>
+                    </Toolbar>
+                </Hidden>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">
@@ -342,7 +225,9 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                 </Hidden>
             </nav>
             <main className={classes.content}>
-                <div className={classes.toolbar} />
+                <Hidden smUp implementation="css">
+                    <div className={classes.toolbar}/>
+                </Hidden>
                 <div>{props.children}</div>
             </main>
         </div>

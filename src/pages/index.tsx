@@ -1,10 +1,9 @@
-import {Box, Container, Grid, Typography} from '@material-ui/core';
+import {Box, Container, Grid} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import React from 'react';
 import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBanner';
 import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
-import MyPaper from '~/components/mui/MyPaper';
 import NewsFeedPanel from '~/components/panel/NewsFeedPanel';
 import ProgramCalendar from '~/components/program/ProgramCalendar';
 import TimeSpan from '~/utils/TimeSpan';
@@ -13,7 +12,7 @@ const Index: NextPage = () => {
     return (
         <Container maxWidth="xl">
             <Head>
-                <title>HQ</title>
+                <title>HQ - 49. Aki másnak vermet ás SCH QPA</title>
             </Head>
             <Box mb={2}>
                 <Grid container direction="column" spacing={2}>
@@ -24,11 +23,6 @@ const Index: NextPage = () => {
 
             <Grid container spacing={6} direction="column" justify="flex-end" wrap="nowrap">
                 <Grid item>
-                    <Box mb={2}>
-                        <MyPaper>
-                            <Typography variant="h4">Programok</Typography>
-                        </MyPaper>
-                    </Box>
                     <ProgramCalendar startDate={new Date(TimeSpan.dateOf(new Date()))} count={2} />
                 </Grid>
 
