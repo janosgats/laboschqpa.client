@@ -16,13 +16,14 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
+    Paper,
     Theme,
     Toolbar,
     useTheme,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
-import ThemeSelector from "~/components/nav/ThemeSelector";
+import ThemeSelector from '~/components/nav/ThemeSelector';
 
 interface LinkParams {
     href: string;
@@ -71,6 +72,27 @@ const useStyles = makeStyles((theme: Theme) =>
         darkModeSwitcher: {
             cursor: 'pointer',
         },
+        footer: {
+            position: 'fixed',
+            bottom: '0',
+            width: '100%',
+            height: '90px',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            zIndex: 2000,
+        },
+        footerContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        footerLogo: {
+            padding: '8px 32px',
+            height: '60px',
+        },
     })
 );
 
@@ -81,7 +103,7 @@ interface NavBarInterFaceProps {
 }
 
 const NavBar: FC<NavBarInterFaceProps> = (props) => {
-    const { darkMode: darkMode, setDarkMode: setDarkMode, window: window } = props;
+    const {darkMode: darkMode, setDarkMode: setDarkMode, window: window} = props;
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -90,6 +112,8 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
     const classes = useStyles();
     const theme = useTheme();
+
+    let footerBaseUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/sponsors/logos/';
 
     function doLogout() {
         callJsonEndpoint({
@@ -109,62 +133,57 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             });
     }
 
-
     const links: LinkParams[] = [];
-    links.push({ href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home' });
+    links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
     const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
-    links.push({ href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person', });
+    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person'});
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
-        links.push({ href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups', });
+        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups'});
     }
-    links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
-    links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
-    links.push({ hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
-    links.push({ hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
-    links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
-    links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
-    links.push({ href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in' });
-    links.push({ href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment' });
-    links.push({ href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group' });
-    links.push({ href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people' });
+    links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
+    links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
+    links.push({hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
+    links.push({hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
+    links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
+    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
+    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
+    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment'});
+    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
+    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people'});
 
-    links.push({ href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode' });
-    links.push({ href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read', });
-    links.push({ href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings' });
+    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
+    links.push({
+        href: '/acceptedEmails',
+        displayName: 'Accepted Emails',
+        authority: Authority.AcceptedEmailEditor,
+        icon: 'mark_email_read',
+    });
+    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
 
     const drawer = (
         <div>
-            <div/>
+            <div />
             <List>
                 <ListItem>
-                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode}/>
+                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode} />
                 </ListItem>
 
                 {links
-                    .filter(link => !link.hidden)
+                    .filter((link) => !link.hidden)
                     .map((link: LinkParams, index: number) => {
-                            return currentUser.hasAuthority(link.authority) ? (
-                                <Link key={'link' + link.displayName + index} href={link.href}>
-                                    <ListItem button key={link.displayName + index}>
-                                        <ListItemIcon>
-                                            {' '}
-                                            <Icon fontSize="small">{link.icon}</Icon>{' '}
-                                        </ListItemIcon>
-                                        <ListItemText primary={link.displayName}/>
-                                    </ListItem>
-                                </Link>
-                            ) : null;
-                        }
-                    )}
-
-                <ListItem button onClick={() => doLogout()}>
-                    <ListItemIcon>
-                        {' '}
-                        <Icon fontSize="small">logout</Icon>{' '}
-                    </ListItemIcon>
-                    <ListItemText primary="Kijelentkezés"/>
-                </ListItem>
+                        return currentUser.hasAuthority(link.authority) ? (
+                            <Link key={'link' + link.displayName + index} href={link.href}>
+                                <ListItem button key={link.displayName + index}>
+                                    <ListItemIcon>
+                                        {' '}
+                                        <Icon fontSize="small">{link.icon}</Icon>{' '}
+                                    </ListItemIcon>
+                                    <ListItemText primary={link.displayName} />
+                                </ListItem>
+                            </Link>
+                        ) : null;
+                    })}
             </List>
         </div>
     );
@@ -189,7 +208,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                             onClick={handleDrawerToggle}
                             className={classes.menuButton}
                         >
-                            <MenuIcon/>
+                            <MenuIcon />
                         </IconButton>
                     </Toolbar>
                 </Hidden>
@@ -226,10 +245,34 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             </nav>
             <main className={classes.content}>
                 <Hidden smUp implementation="css">
-                    <div className={classes.toolbar}/>
+                    <div className={classes.toolbar} />
                 </Hidden>
                 <div>{props.children}</div>
             </main>
+            <Paper className={classes.footer}>
+                <div className={classes.footerContainer}>
+                    <span>Főtámogatónk:</span>
+                    <img className={classes.footerLogo} src={footerBaseUrl + 'snapsoft.svg'} />
+                </div>
+
+                <div className={classes.footerContainer}>
+                    <span>Kiemelt támogatóink:</span>
+                    <div>
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol.png'} />
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol_limo.svg'} />
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'nove_services.png'} />
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'sci-network.png'} />
+                    </div>
+                </div>
+
+                <div className={classes.footerContainer}>
+                    <span>Támogatóink:</span>
+                    <div>
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'sch_isiszovi.svg'} />
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'AK.svg'} />
+                    </div>
+                </div>
+            </Paper>
         </div>
     );
 };
