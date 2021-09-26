@@ -4,6 +4,7 @@ export enum Authority {
     ProgramEditor = "ProgramEditor",
     ObjectiveEditor = "ObjectiveEditor",
     RiddleEditor = "RiddleEditor",
+    EventEditor = "EventEditor",
     TeamScorer = "TeamScorer",
     SpeedDrinkingEditor = "SpeedDrinkingEditor",
     AcceptedEmailEditor = "AcceptedEmailEditor",
@@ -31,6 +32,9 @@ export const authorityData: Record<Authority, AuthorityDataEntry> = {
     },
     [Authority.RiddleEditor]: {
         authority: Authority.RiddleEditor,
+    },
+    [Authority.EventEditor]: {
+        authority: Authority.EventEditor,
     },
     [Authority.TeamScorer]: {
         authority: Authority.TeamScorer,

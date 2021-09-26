@@ -12,6 +12,7 @@ import EventBus from "~/utils/EventBus";
 import {CurrentUserContext} from "~/context/CurrentUserProvider";
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import {isValidNumber} from "~/utils/CommonValidators";
+import {Authority} from "~/enums/Authority";
 
 interface EventForUser {
     id: number;
@@ -99,6 +100,28 @@ const Index: NextPage = () => {
         });
     }
 
+    async function logAttendeesToConsole(event: EventForUser): Promise<void> {
+        let url = null;
+        if (event.target === EventTarget.PERSONAL) {
+            url = '/api/up/server/api/event/listAllRegisteredUsers';
+        } else if (event.target === EventTarget.TEAM) {
+            url = '/api/up/server/api/event/listAllRegisteredTeams';
+        }
+
+        return callJsonEndpoint({
+            conf: {
+                url: url,
+                method: 'get',
+                params: {
+                    eventId: event.id,
+                },
+            }
+        }).then((resp) => {
+            EventBus.notifySuccess('Attendees were logged to the console');
+            console.log(`Attendees of ${event.name}`, resp.data);
+        });
+    }
+
     return (
         <Container maxWidth="lg" >
             <Head>
@@ -123,11 +146,12 @@ const Index: NextPage = () => {
                                 <TableCell>Max létszám</TableCell>
                                 <TableCell>Jelentkezési határidő</TableCell>
                                 <TableCell></TableCell>
+                                {currentUser.hasAuthority(Authority.EventEditor) && <TableCell></TableCell>}
                             </TableRow>
                         </TableHead>
                         {usedPersonalEvents.data.map((event: PersonalEventForUser, index) => {
                             return (
-                                <TableRow>
+                                <TableRow key={event.id}>
                                     <TableCell>{event.name}</TableCell>
                                     <TableCell>{isValidNumber(event.registrationLimit) ? event.registrationLimit : "-"}</TableCell>
                                     <TableCell>{DateTimeFormatter.toFullBasic(event.registrationDeadline)}</TableCell>
@@ -143,6 +167,15 @@ const Index: NextPage = () => {
                                             </Button>
                                         )}
                                     </TableCell>
+
+                                    {currentUser.hasAuthority(Authority.EventEditor) && (
+                                        <TableCell>
+                                            <Button variant="contained" color="secondary"
+                                                    onClick={() => logAttendeesToConsole(event)}>
+                                                Show attendees
+                                            </Button>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             );
                         })}
@@ -173,11 +206,12 @@ const Index: NextPage = () => {
                                         <TableCell>Max létszám</TableCell>
                                         <TableCell>Jelentkezési határidő</TableCell>
                                         <TableCell></TableCell>
+                                        {currentUser.hasAuthority(Authority.EventEditor) && <TableCell></TableCell>}
                                     </TableRow>
                                 </TableHead>
                                 {usedTeamEvents.data.map((event: TeamEventForUser, index) => {
                                     return (
-                                        <TableRow>
+                                        <TableRow key={event.id}>
                                             <TableCell>{event.name}</TableCell>
                                             <TableCell>{isValidNumber(event.registrationLimit) ? event.registrationLimit : "-"}</TableCell>
                                             <TableCell>{DateTimeFormatter.toFullBasic(event.registrationDeadline)}</TableCell>
@@ -198,6 +232,15 @@ const Index: NextPage = () => {
                                                     </>
                                                 )}
                                             </TableCell>
+
+                                            {currentUser.hasAuthority(Authority.EventEditor) && (
+                                                <TableCell>
+                                                    <Button variant="contained" color="secondary"
+                                                            onClick={() => logAttendeesToConsole(event)}>
+                                                        Show attendees
+                                                    </Button>
+                                                </TableCell>
+                                            )}
                                         </TableRow>
                                     );
                                 })}
