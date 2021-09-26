@@ -25,7 +25,7 @@ const FileUploaderDialog: FC<Props> = (props) => {
 
     return (
         <Dialog open={props.isOpen} onClose={props.onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Fájl feltöltés</DialogTitle>
+            <DialogTitle>{props.uploadedFileType === UploadedFileType.IMAGE ? 'Kép ':'Fájl '} feltöltés</DialogTitle>
             <DialogContent>
                 <Box mx="auto" width="fit-content">
                     <Button variant="outlined" component="label" startIcon={<Publish />} fullWidth>

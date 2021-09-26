@@ -167,7 +167,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                             fullWidth
                             size="medium"
                         >
-                            Fájl feltöltés
+                            Csatolmány hozzáadása
                         </Button>
                     </Grid>
 

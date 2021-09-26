@@ -1,4 +1,4 @@
-import BackupIcon from '@material-ui/icons/Backup';
+import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
 import React, {FC, useContext, useRef, useState} from 'react';
@@ -106,7 +106,7 @@ const RichTextEditor: FC<Props> = (props) => {
                     customControls={[
                         {
                             name: 'upload-image',
-                            icon: <BackupIcon />,
+                            icon: <InsertPhotoIcon />,
                             type: 'callback',
                             onClick: (_editorState, _name, anchor) => {
                                 setIsUploadImageModalOpen(true);
