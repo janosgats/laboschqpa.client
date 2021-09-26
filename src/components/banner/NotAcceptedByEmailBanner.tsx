@@ -20,6 +20,8 @@ import EmailAddressesPanel from '~/components/email/EmailAddressesPanel';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
 import MyPaper from '../mui/MyPaper';
 import {style} from './styles/style';
+import useCurrentUser from "~/hooks/useCurrentUser";
+import {TeamRole} from "~/enums/TeamRole";
 
 interface AskYourTeamLeadForHelpDialogProps {
     onClose: () => void;
@@ -30,6 +32,8 @@ interface AskYourTeamLeadForHelpDialogProps {
 const useStyles = makeStyles((theme: Theme) => createStyles(style));
 
 const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (props) => {
+    const currentUser = useCurrentUser();
+
     return (
         <Dialog open={props.isOpen} onClose={props.onClose}>
             <DialogTitle>Probléma megoldása</DialogTitle>
@@ -42,6 +46,20 @@ const AskYourTeamLeadForHelpDialog: FC<AskYourTeamLeadForHelpDialogProps> = (pro
                     Kérdezd meg a csk-d, leadta-e már az email címed. Ha igen, de más e-maillel regisztráltál, a lenti gombbal könnyedén
                     hozzáadhatod a fiókodhoz. Ha még nem, a CSK még mindig leadhatja nekünk.
                 </DialogContentText>
+                {currentUser.getUserInfo()?.teamRole === TeamRole.LEADER && (
+                    <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="info">
+                        <p>Mivel CSK vagy, kérjük, küldd el a csapatod tagjainak e-mail címeit a <a
+                            href="mailto:schociqpa@gmail.com">schociqpa@gmail.com</a> címre,
+                            akár egyszerre, akár több részletben!</p>
+                    </Alert>
+                )}
+                {true || currentUser.getUserInfo()?.teamRole === TeamRole.APPLICANT || currentUser.getUserInfo()?.teamRole === TeamRole.MEMBER && (
+                    <Alert variant="outlined" style={{borderRadius: '1rem'}} severity="info">
+                        <p>Esetleg említsd meg a CSK-dnak, hogy, küldje el a csapatod tagjainak e-mail címeit a <a
+                            href="mailto:schociqpa@gmail.com">schociqpa@gmail.com</a> címre,
+                            akár egyszerre, akár több részletben!</p>
+                    </Alert>
+                )}
                 <DialogContentText style={{marginBottom: 0}}>
                     <Typography variant="h6">A jelenleg fiókodhoz rendelt e-mail címeid:</Typography>
                 </DialogContentText>
