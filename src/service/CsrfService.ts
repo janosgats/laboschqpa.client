@@ -1,7 +1,6 @@
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
 import waitFor from "~/utils/waitFor";
-import sleep from "~/utils/sleep";
 
 interface GetCsrfTokenResponse {
     csrfToken: string;
@@ -11,9 +10,9 @@ let csrfToken: string;
 let isCsrfLoadingPending: boolean = false;
 let countOfQueuedWaitingLoadTokenRequests: number = 0;
 
-async function loadCsrfToken() {
-    if(countOfQueuedWaitingLoadTokenRequests > 0){
-        await waitFor(() => !isCsrfLoadingPending, 40, 250);
+async function loadCsrfToken(shouldRetryOnFailure = true) {
+    if (countOfQueuedWaitingLoadTokenRequests > 0) {
+        await waitFor(() => !isCsrfLoadingPending && countOfQueuedWaitingLoadTokenRequests == 0, 40, 250);
         return;
     }
 
@@ -22,7 +21,6 @@ async function loadCsrfToken() {
     --countOfQueuedWaitingLoadTokenRequests;
 
     isCsrfLoadingPending = true;
-    await sleep(2000);
     await callJsonEndpoint<GetCsrfTokenResponse>({
             conf: {
                 url: "/api/up/server/api/currentUser/csrfToken"
@@ -33,6 +31,8 @@ async function loadCsrfToken() {
         console.log("loadCsrfToken response", [res.status, res.data]);
         if (res.status === 200) {
             csrfToken = res.data.csrfToken;
+        } else if (shouldRetryOnFailure) {
+            setTimeout(() => loadCsrfToken(false), 500);
         }
     }).catch(reason => {
         let message = undefined;
@@ -40,6 +40,9 @@ async function loadCsrfToken() {
             message = reason.message;
         }
         EventBus.notifyError(message, 'Could not retrieve CSRF token');
+        if (shouldRetryOnFailure) {
+            setTimeout(() => loadCsrfToken(false), 500);
+        }
     }).finally(() => {
         isCsrfLoadingPending = false;
     });

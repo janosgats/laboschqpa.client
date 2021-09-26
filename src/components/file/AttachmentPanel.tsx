@@ -130,7 +130,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                                 <List component="div" disablePadding>
                                     {usedEndpoint.data.map((attachmentInfo) => {
                                         return (
-                                            <ListItem button onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>
+                                            <ListItem key={attachmentInfo.fileId} button onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>
                                                 <ListItemAvatar>
                                                     <AttachFileOutlinedIcon />
                                                 </ListItemAvatar>
@@ -182,7 +182,7 @@ const AttachmentPanel: FC<Props> = (props) => {
 
             {props.usedAttachments.attachmentsUnderUpload.map((fileUnderUpload) => {
                 return (
-                    <Grid container alignItems="center" spacing={1}>
+                    <Grid key={fileUnderUpload.key} container alignItems="center" spacing={1}>
                         <Typography variant="body1">{fileUnderUpload.getFileName()}</Typography>
                         <CircularProgress />
                         <Tooltip title="Cancel upload">
