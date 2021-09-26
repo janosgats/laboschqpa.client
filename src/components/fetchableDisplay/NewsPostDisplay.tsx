@@ -6,9 +6,11 @@ import {
     Grid,
     IconButton,
     makeStyles,
+    TextField,
     Theme,
     Tooltip,
-    Typography
+    Typography,
+    useTheme
 } from '@material-ui/core';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -35,6 +37,7 @@ import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/NewsPostDisplayStyle';
 
 export interface SaveNewsPostCommand {
+    title: string;
     content: string;
     attachments: number[];
 }
@@ -43,7 +46,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
 const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props) => {
     const classes = useStyles();
+    const theme = useTheme();
 
+    const defaultTitle = props.isCreatingNew ? '' : props.existingEntity.title;
     const defaultContent = props.isCreatingNew ? MuiRteUtils.emptyEditorContent : props.existingEntity.content;
     const defaultAttachments = props.isCreatingNew ? [] : props.existingEntity.attachments;
 
@@ -51,6 +56,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
     const [resetTrigger, setResetTrigger] = useState<number>(1);
 
+    const [title, setTitle] = useState<string>(defaultTitle);
     const [content, setContent] = useState<string>(defaultContent);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
 
@@ -59,12 +65,14 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     const [showAuthor, setShowAuthor] = useState<boolean>(false);
 
     useEffect(() => {
+        setTitle(defaultTitle);
         setContent(defaultContent);
         usedAttachments.reset(defaultAttachments);
     }, [props.existingEntity]);
 
     function composeSaveNewsPostCommand(): SaveNewsPostCommand {
         return {
+            title: title,
             content: content,
             attachments: usedAttachments.firmAttachmentIds,
         };
@@ -82,6 +90,7 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
     function doCancelEdit() {
         setIsEdited(false);
         setResetTrigger(resetTrigger + 1);
+        setTitle(defaultTitle);
         setContent(defaultContent);
         usedAttachments.reset(defaultAttachments);
         props.onCancelEditing();
@@ -116,8 +125,23 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                 <Grid container direction="row" alignItems="center" justify="space-between">
                     <Grid item>
                         <Grid container direction="row" alignItems="center">
-                            <DescriptionIcon style={{width: 30, height: 30}} />
-                            <Typography variant="h4">Hír</Typography>
+                            <Grid item>
+                                <DescriptionIcon style={{width: 30, height: 30}}/>
+                            </Grid>
+                            <Grid item>
+                                {isEdited ? (
+                                    <TextField
+                                        label="Cím"
+                                        defaultValue={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        variant="outlined"
+                                        style={{padding: theme.spacing(1)}}
+                                        fullWidth={true}
+                                    />
+                                ) : (
+                                    <Typography variant="h4">{title}</Typography>
+                                )}
+                            </Grid>
                         </Grid>
                     </Grid>
 
@@ -225,6 +249,7 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
                 url: '/api/up/server/api/newsPost/createNew',
                 method: 'post',
                 data: {
+                    title: command.title,
                     content: command.content,
                     attachments: command.attachments,
                 },
@@ -251,6 +276,7 @@ class FetchingToolsImpl implements FetchingTools<NewsPost, SaveNewsPostCommand> 
                 method: 'post',
                 data: {
                     id: id,
+                    title: command.title,
                     content: command.content,
                     attachments: command.attachments,
                 },

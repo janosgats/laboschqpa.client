@@ -46,7 +46,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
 
     const usedEndpointUsers = useEndpoint<UserInfo[]>({
         conf: {
-            url: '/api/up/server/api/user/listAllWithTeamName',
+            url: '/api/up/server/api/user/listAllEnabledWithTeamName',
         },
     });
     const fetchedUsers = usedEndpointUsers.data;
