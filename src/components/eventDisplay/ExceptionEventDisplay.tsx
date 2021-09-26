@@ -4,6 +4,7 @@ import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException
 import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallException";
 import {ApiErrorDescriptor} from "~/utils/api/ApiErrorDescriptorUtils";
 import {fieldValidationFailed_FIELD_VALIDATION_FAILED, upload_STREAM_LENGTH_LIMIT_EXCEEDED} from "~/enums/ApiErrors";
+import TooManyRequestsRateLimitException from "~/exception/TooManyRequestsRateLimitException";
 
 EventBus.subscribe(EventType.EXCEPTION, "ExceptionEventDisplay", (event => {
     //TODO: Display exceptions
@@ -11,6 +12,8 @@ EventBus.subscribe(EventType.EXCEPTION, "ExceptionEventDisplay", (event => {
         displayApiErrorDescriptor(event.apiErrorDescriptor);
     } else if (event instanceof UnauthorizedApiCallException) {
         EventBus.notifyError("You are not authorized for the requested operation.", "Unauthorized");
+    } else if (event instanceof TooManyRequestsRateLimitException) {
+        EventBus.notifyError("We received too many requests from your IP, so you were limited. If you think this is a mistake, contact the devs.", "You were rate limited");
     } else {
         EventBus.notifyError("TODO: display various types of other exceptions", "Dev TODO");
     }

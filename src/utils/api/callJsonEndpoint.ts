@@ -6,6 +6,7 @@ import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallExcepti
 import FrontendApiCallException from "~/exception/FrontendApiCallException";
 import Exception from "~/exception/Exception";
 import * as CsrfService from "~/service/CsrfService";
+import TooManyRequestsRateLimitException from "~/exception/TooManyRequestsRateLimitException";
 
 export const CSRF_TOKEN_HEADER_NAME = "X-CSRF-TOKEN";
 
@@ -40,6 +41,9 @@ const extractExceptionFromResponse = (
     if (axiosResponse) {
         if (axiosResponse.status === 401 || axiosResponse.status === 403) {
             return new UnauthorizedApiCallException(`You are not authorized to access this resource. (${axiosResponse.status})`, payload);
+        }
+        if (axiosResponse.status === 429) {
+            return new TooManyRequestsRateLimitException(`Rate limit hit. (${axiosResponse.status})`, payload);
         }
 
         if (axiosResponse.status >= 500 && axiosResponse.status < 600) {
