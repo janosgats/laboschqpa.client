@@ -1,15 +1,16 @@
-import React, {FC, useContext, useState} from 'react';
-import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {Authority} from '~/enums/Authority';
+import React, { FC, useContext, useRef, useState } from 'react';
+import { CurrentUserContext } from '~/context/CurrentUserProvider';
+import { Authority } from '~/enums/Authority';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import {
     AppBar,
     Button,
     createStyles,
     Divider,
     Drawer,
+    Grid,
     Hidden,
     Icon,
     IconButton,
@@ -18,6 +19,8 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
+    Popper,
+    Switch,
     Theme,
     Toolbar,
     Typography,
@@ -25,6 +28,10 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import MyPaper from '../mui/MyPaper';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 interface LinkParams {
     href: string;
@@ -72,7 +79,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         darkModeSwithcer: {
             cursor: 'pointer',
-            marginRight: '1rem',
         },
     })
 );
@@ -84,9 +90,12 @@ interface NavBarInterFaceProps {
 }
 
 const NavBar: FC<NavBarInterFaceProps> = (props) => {
-    const {darkMode: darkMode, setDarkMode: setDarkMode, window: window} = props;
+    const { darkMode: darkMode, setDarkMode: setDarkMode, window: window } = props;
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
+
+    const popperRef = useRef(null);
+    const [popoverOpen, setPopoverOpen] = useState(false);
 
     const classes = useStyles();
     const theme = useTheme();
@@ -111,27 +120,27 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
 
     const links: LinkParams[] = [];
-    links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
+    links.push({ href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home' });
     const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
-    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person',});
+    links.push({ href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person', });
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
-        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups',});
+        links.push({ href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups', });
     }
-    links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
-    links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
-    links.push({hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
-    links.push({hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
-    links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
-    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
-    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
-    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment'});
-    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
-    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people'});
+    links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
+    links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
+    links.push({ hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
+    links.push({ hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
+    links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
+    links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
+    links.push({ href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in' });
+    links.push({ href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment' });
+    links.push({ href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group' });
+    links.push({ href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people' });
 
-    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
-    links.push({href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read',});
-    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
+    links.push({ href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode' });
+    links.push({ href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read', });
+    links.push({ href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings' });
 
     const drawer = (
         <div>
@@ -141,18 +150,18 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                 {links
                     .filter(link => !link.hidden)
                     .map((link: LinkParams, index: number) => {
-                    return currentUser.hasAuthority(link.authority) ? (
-                        <Link key={'link' + link.displayName + index} href={link.href}>
-                            <ListItem button key={link.displayName + index}>
-                                <ListItemIcon>
-                                    {' '}
-                                    <Icon fontSize="small">{link.icon}</Icon>{' '}
-                                </ListItemIcon>
-                                <ListItemText primary={link.displayName} />
-                            </ListItem>
-                        </Link>
-                    ) : null;
-                })}
+                        return currentUser.hasAuthority(link.authority) ? (
+                            <Link key={'link' + link.displayName + index} href={link.href}>
+                                <ListItem button key={link.displayName + index}>
+                                    <ListItemIcon>
+                                        {' '}
+                                        <Icon fontSize="small">{link.icon}</Icon>{' '}
+                                    </ListItemIcon>
+                                    <ListItemText primary={link.displayName} />
+                                </ListItem>
+                            </Link>
+                        ) : null;
+                    })}
             </List>
         </div>
     );
@@ -181,38 +190,125 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     <Typography variant="h5" noWrap className={classes.title}>
                         49. Aki másnak vermet ás SCH QPA
                     </Typography>
-                    {darkMode && (
-                        <Icon
-                            className={classes.darkModeSwithcer}
-                            fontSize="small"
-                            onClick={() => {
-                                setDarkMode(!darkMode);
-                            }}
+                    <Hidden smDown implementation="css">
+                        <Grid
+                            container
+                            direction="row"
+                            alignItems="center"
                         >
-                            {'wb_sunny'}
-                        </Icon>
-                    )}
-                    {!darkMode && (
-                        <Icon
-                            className={classes.darkModeSwithcer}
-                            fontSize="small"
-                            onClick={() => {
-                                setDarkMode(!darkMode);
-                            }}
-                        >
-                            {'nights_stay'}
-                        </Icon>
-                    )}
 
-                    {/* <Switch
-                        checked={darkMode}
-                        onChange={() => {
-                            setDarkMode(!darkMode);
-                        }}
-                    /> */}
-                    <Button color="inherit" onClick={() => doLogout()}>
-                        Kijelentkezés
-                    </Button>
+                            <Grid item >
+
+                                <Icon
+                                    className={classes.darkModeSwithcer}
+                                    fontSize="default"
+                                    color={!darkMode ? 'error' : 'disabled'}
+                                >
+                                    {'wb_sunny'}
+                                </Icon>
+                            </Grid>
+                            <Grid item >
+
+                                <Switch
+                                    checked={darkMode}
+                                    onChange={() => {
+                                        setDarkMode(!darkMode);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item >
+
+                                <Icon
+                                    className={classes.darkModeSwithcer}
+                                    fontSize="default"
+                                    color={darkMode ? 'primary' : 'disabled'}
+                                >
+                                    {'nights_stay'}
+
+                                </Icon>
+                            </Grid>
+                            <Grid item >
+
+                                <Button color="inherit" onClick={() => doLogout()}>
+                                    Kijelentkezés
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                    </Hidden>
+                    <Hidden mdUp implementation="css">
+                        <Popper
+                            open={popoverOpen}
+                            placement="bottom-end"
+                            anchorEl={popperRef.current}
+                            transition
+
+                        >
+                            <MyPaper
+                                opacity={1}
+                            >
+                                <Grid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                >
+                                    <Grid
+                                        item
+                                    >
+                                        <Grid
+                                            container
+                                            direction="row"
+                                            alignItems="center"
+                                        >
+                                            <Grid item >
+                                                <Icon
+                                                    className={classes.darkModeSwithcer}
+                                                    fontSize="default"
+                                                    color={!darkMode ? 'error' : 'disabled'}
+                                                >
+                                                    {'wb_sunny'}
+                                                </Icon>
+                                            </Grid>
+                                            <Grid item >
+
+                                                <Switch
+                                                    checked={darkMode}
+                                                    onChange={() => {
+                                                        setDarkMode(!darkMode);
+                                                    }}
+                                                />
+                                            </Grid>
+                                            <Grid item >
+                                                <Icon
+                                                    className={classes.darkModeSwithcer}
+                                                    fontSize="default"
+                                                    color={darkMode ? 'primary' : 'disabled'}
+                                                >
+                                                    {'nights_stay'}
+
+                                                </Icon>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+
+                                    <Grid item >
+
+                                        <Button color="inherit" onClick={() => doLogout()}>
+                                            Kijelentkezés
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+
+                            </MyPaper>
+                        </Popper>
+                        <IconButton
+                            ref={popperRef}
+                            onClick={() => setPopoverOpen(p => !p)}
+                        >
+                            {popoverOpen ? (<ExpandLessIcon />) : (<ExpandMoreIcon />)}
+                        </IconButton>
+                    </Hidden>
                 </Toolbar>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">

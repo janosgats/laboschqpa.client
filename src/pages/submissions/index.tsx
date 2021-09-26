@@ -119,7 +119,10 @@ const Index: NextPage = () => {
                         <Grid item>
                             <MyPaper>
                                 <Typography variant="h4">Szűrés feladatra</Typography>
-                                <TableContainer>
+                                <TableContainer
+                                    component={MyPaper}
+                                    style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
+                                >
                                     <Table size="small">
                                         <TableHead>
                                             <TableRow>

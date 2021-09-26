@@ -53,7 +53,10 @@ const ProgramScoresOfTeam: FC<Props> = (props) => {
                     </Grid>
 
                     <MyPaper>
-                        <TableContainer>
+                        <TableContainer
+                            component={MyPaper}
+                            style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
+                        >
                             <Table size="medium">
                                 <TableHead>
                                     <TableRow>

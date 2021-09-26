@@ -56,7 +56,10 @@ const Index: NextPage = () => {
             {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
             {usedEndpoint.data && (
                 <MyPaper>
-                    <TableContainer>
+                    <TableContainer
+                    component={MyPaper}
+                    style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
+                    >
                         <Table size="medium">
                             <TableHead>
                                 <TableRow>

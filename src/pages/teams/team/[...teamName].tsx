@@ -516,9 +516,9 @@ const Index: NextPage = () => {
                         <Tab label="Sörmérések" value={'3'} />
                     </Tabs>
 
-                    <TabPanel value="2">{router.isReady && <ProgramScoresOfTeam teamId={teamId} />}</TabPanel>
+                    <TabPanel value="2" style={{padding: '8px'}}>{router.isReady && <ProgramScoresOfTeam teamId={teamId} />}</TabPanel>
 
-                    <TabPanel value="1">
+                    <TabPanel value="1" style={{padding: '8px'}}>
                         {usedTeamMembers.pending && <Spinner />}
                         {usedTeamMembers.failed && <Typography variant="body1">Couldn't load members :'(</Typography>}
                         <>
@@ -571,7 +571,7 @@ const Index: NextPage = () => {
                             </List>
                         </>
                     </TabPanel>
-                    <TabPanel value="3">
+                    <TabPanel value="3" style={{padding: '8px'}}>
                         {usedTeamInfo.succeeded && (
                             <SpeedDrinkingPanel
                                 filteredCategory={SpeedDrinkingCategory.BEER}

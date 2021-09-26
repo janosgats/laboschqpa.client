@@ -1,9 +1,10 @@
-import {Box, Container, Grid, Tab, Tabs} from '@material-ui/core';
-import {NextPage} from 'next';
+import { Box, Container, Grid, Tab, Tabs } from '@material-ui/core';
+import { NextPage } from 'next';
 import Head from 'next/head';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import MyPaper from '~/components/mui/MyPaper';
 import ObjectivesPanel from '~/components/panel/ObjectivesPanel';
-import {ObjectiveType} from '~/enums/ObjectiveType';
+import { ObjectiveType } from '~/enums/ObjectiveType';
 
 const Index: NextPage = () => {
     const [filteredObjectiveTypes, setFilteredObjectiveTypes] = useState<Set<ObjectiveType>>(new Set([ObjectiveType.MAIN_OBJECTIVE]));
@@ -37,17 +38,21 @@ const Index: NextPage = () => {
                         padding: '24px',
                     }}
                 >
-                    <Tabs
-                        value={selectedTab}
-                        onChange={handleChange}
-                        centered
-                        variant="fullWidth"
-                        indicatorColor="secondary"
-                        textColor="secondary"
+                    <MyPaper
+                        style={{marginBottom: '4px'}}
                     >
-                        <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
-                        <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
-                    </Tabs>
+                        <Tabs
+                            value={selectedTab}
+                            onChange={handleChange}
+                            centered
+                            variant="fullWidth"
+                            indicatorColor="secondary"
+                            textColor="secondary"
+                        >
+                            <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
+                            <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
+                        </Tabs>
+                    </MyPaper>
 
                     <ObjectivesPanel filteredObjectiveTypes={Array.from(filteredObjectiveTypes)} />
                 </Box>
