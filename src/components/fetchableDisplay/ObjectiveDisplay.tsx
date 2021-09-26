@@ -274,9 +274,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                 </Grid>
             )}
 
-            {props.existingEntity?.observerTeamHasScore && (
+            {props.existingEntity?.isAccepted && (
                 <Typography variant="subtitle1" className={classes.subtitle}>
-                    - A csapatod már teljesítette e feladatot.
+                    - A csapatod beadását elfogadtuk.
                 </Typography>
             )}
             <Box className={classes.richTextEditor}>

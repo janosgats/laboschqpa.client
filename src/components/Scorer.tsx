@@ -9,6 +9,7 @@ import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import {isValidNumber} from '~/utils/CommonValidators';
 import EventBus from '~/utils/EventBus';
 import Spinner from './Spinner';
+import {ObjectiveAcceptance} from "~/model/ObjectiveAcceptance";
 
 interface Props {
     defaultObjectiveId?: number;
@@ -39,6 +40,18 @@ const Scorer: FC<Props> = (props) => {
     const usedEndpointTeamScore = useEndpoint<TeamScore[]>({
         conf: {
             url: '/api/up/server/api/teamScore/find',
+            params: {
+                objectiveId: selectedObjectiveId,
+                teamId: selectedTeamId,
+            },
+        },
+        deps: [selectedObjectiveId, selectedTeamId],
+        enableRequest: isValidNumber(selectedTeamId) && isValidNumber(selectedObjectiveId),
+    });
+
+    const usedEndpointAcceptance = useEndpoint<ObjectiveAcceptance>({
+        conf: {
+            url: '/api/up/server/api/objectiveAcceptance/isAccepted',
             params: {
                 objectiveId: selectedObjectiveId,
                 teamId: selectedTeamId,
@@ -104,12 +117,28 @@ const Scorer: FC<Props> = (props) => {
             .finally(() => setSaveOrDeletionInProgress(false));
     }
 
+    async function doSetAcceptance(wantedIsAccepted: boolean) {
+        await callJsonEndpoint({
+            conf: {
+                url: '/api/up/server/api/objectiveAcceptance/setAcceptance',
+                method: 'post',
+                data: {
+                    objectiveId: selectedObjectiveId,
+                    teamId: selectedTeamId,
+                    wantedIsAccepted: wantedIsAccepted,
+                }
+            }
+        }).then(() => {
+            usedEndpointAcceptance.reloadEndpoint();
+        });
+    }
+
     return (
         <div style={{borderStyle: 'solid'}}>
             <p>TODO: This should be a modal</p>
             <button onClick={() => props.onClose()}>Close modal</button>
 
-            {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && <Spinner />}
+            {(usedEndpointObjectives.pending || usedEndpointTeams.pending) && <Spinner/>}
 
             {(usedEndpointObjectives.failed || usedEndpointTeams.failed) && (
                 <>
@@ -127,7 +156,7 @@ const Scorer: FC<Props> = (props) => {
 
             {fetchedObjectives && fetchedTeams && (
                 <>
-                    <br />
+                    <br/>
                     <label>Objective: </label>
                     <select
                         value={selectedObjectiveId}
@@ -147,7 +176,7 @@ const Scorer: FC<Props> = (props) => {
                             );
                         })}
                     </select>
-                    <br />
+                    <br/>
                     <label>Team: </label>
                     <select
                         value={selectedTeamId}
@@ -167,9 +196,9 @@ const Scorer: FC<Props> = (props) => {
                             );
                         })}
                     </select>
-                    <br />
+                    <br/>
 
-                    {usedEndpointTeamScore.pending && <Spinner />}
+                    {usedEndpointTeamScore.pending && <Spinner/>}
 
                     {usedEndpointTeamScore.failed && (
                         <>
@@ -180,7 +209,8 @@ const Scorer: FC<Props> = (props) => {
 
                     {usedEndpointTeamScore.data && (
                         <>
-                            <input type="number" value={givenScore} onChange={(e) => setGivenScore(Number.parseInt(e.target.value))} />
+                            <input type="number" value={givenScore}
+                                   onChange={(e) => setGivenScore(Number.parseInt(e.target.value))}/>
                             {isTeamScoreAlreadyExisting ? (
                                 <>
                                     <button onClick={doSave} disabled={saveOrDeletionInProgress}>
@@ -196,6 +226,29 @@ const Scorer: FC<Props> = (props) => {
                                         Create
                                     </button>
                                 </>
+                            )}
+                        </>
+                    )}
+
+                    {usedEndpointAcceptance.pending && <Spinner/>}
+
+                    {usedEndpointAcceptance.failed && (
+                        <>
+                            <p>Couldn't load acceptance of this team for this objective :'(</p>
+                            <button onClick={() => usedEndpointAcceptance.reloadEndpoint()}>Retry</button>
+                        </>
+                    )}
+
+                    {usedEndpointAcceptance.data && (
+                        <>
+                            {usedEndpointAcceptance.data.isAccepted ? (
+                                <button onClick={() => doSetAcceptance(false)}>
+                                    Megjelölés NEM elfogadottként
+                                </button>
+                            ) : (
+                                <button onClick={() => doSetAcceptance(true)}>
+                                    Megjelölés elfogadottként
+                                </button>
                             )}
                         </>
                     )}

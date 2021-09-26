@@ -53,6 +53,9 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/teamScore/createNew": ["POST"],
     "/api/teamScore/delete": ["DELETE"],
 
+    "/api/objectiveAcceptance/isAccepted": ["GET"],
+    "/api/objectiveAcceptance/setAcceptance": ["POST"],
+
     "/api/user/info": ["GET"],
     "/api/user/infoWithAuthorities": ["GET"],
     "/api/user/setInfo": ["POST"],
