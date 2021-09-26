@@ -158,7 +158,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                         }
                     )}
 
-                <ListItem button>
+                <ListItem button onClick={() => doLogout()}>
                     <ListItemIcon>
                         {' '}
                         <Icon fontSize="small">logout</Icon>{' '}
