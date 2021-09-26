@@ -109,6 +109,13 @@ const nextPage: NextPage = () => {
             <Head>
                 <title>Almost there...</title>
             </Head>
+            {isLoginInProgress || isLoginSucceeded && (
+                <div style={{alignContent: 'center'}}>
+                    <img
+                        src="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/login/old_man_elevator_fall.gif"
+                        alt="please wait..."/>
+                </div>
+            )}
             {isLoginInProgress && (
                 <p>Logging you in...</p>
             )}
@@ -123,7 +130,8 @@ const nextPage: NextPage = () => {
                     <ButtonGroup size="large" color="inherit" variant="contained"
                                  aria-label="large outlined primary button group">
                         <Button color='primary' onClick={() => createNewAccount()}>Create new account</Button>
-                        <Button onClick={() => router.push(LoginRedirectionService.peekRedirectionUrl('/'))}>Try another login method</Button>
+                        <Button onClick={() => router.push(LoginRedirectionService.peekRedirectionUrl('/'))}>Try another
+                            login method</Button>
                     </ButtonGroup>
                 </>
             )}
@@ -132,6 +140,7 @@ const nextPage: NextPage = () => {
             )}
         </div>
     )
-};
+}
+;
 
 export default nextPage;

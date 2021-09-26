@@ -10,7 +10,7 @@ EventBus.subscribe(EventType.EXCEPTION, "ExceptionEventDisplay", (event => {
     if (event instanceof ApiErrorDescriptorException) {
         displayApiErrorDescriptor(event.apiErrorDescriptor);
     } else if (event instanceof UnauthorizedApiCallException) {
-        EventBus.notifyError("TODO: display UnauthorizedApiCallException", "Dev TODO");
+        EventBus.notifyError("You are not authorized for the requested operation.", "Unauthorized");
     } else {
         EventBus.notifyError("TODO: display various types of other exceptions", "Dev TODO");
     }

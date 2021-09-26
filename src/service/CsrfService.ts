@@ -1,5 +1,7 @@
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
+import waitFor from "~/utils/waitFor";
+import sleep from "~/utils/sleep";
 
 interface GetCsrfTokenResponse {
     csrfToken: string;
@@ -7,17 +9,20 @@ interface GetCsrfTokenResponse {
 
 let csrfToken: string;
 let isCsrfLoadingPending: boolean = false;
-
-function sleep(ms: number): Promise<number> {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+let countOfQueuedWaitingLoadTokenRequests: number = 0;
 
 async function loadCsrfToken() {
-    for (let i = 0; i < 20 && isCsrfLoadingPending; ++i) {
-        await sleep(250);
+    if(countOfQueuedWaitingLoadTokenRequests > 0){
+        await waitFor(() => !isCsrfLoadingPending, 40, 250);
+        return;
     }
 
+    ++countOfQueuedWaitingLoadTokenRequests;
+    await waitFor(() => isCsrfLoadingPending, 20, 250);
+    --countOfQueuedWaitingLoadTokenRequests;
+
     isCsrfLoadingPending = true;
+    await sleep(2000);
     await callJsonEndpoint<GetCsrfTokenResponse>({
             conf: {
                 url: "/api/up/server/api/currentUser/csrfToken"

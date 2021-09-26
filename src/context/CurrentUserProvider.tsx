@@ -9,6 +9,7 @@ import * as CsrfService from '~/service/CsrfService';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import {isValidBoolean} from '~/utils/CommonValidators';
 import EventBus, {EventType} from '~/utils/EventBus';
+import waitFor from "~/utils/waitFor";
 
 export interface CurrentUser {
     getUserInfo: () => UserInfo;
@@ -67,6 +68,8 @@ const FetchErrorBlock: FC<{ onRetryClick: () => void }> = (props) => {
     );
 };
 
+let countOfQueuedWaitingFetchUserInfoRequests: number = 0;
+
 const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element => {
     const router = useRouter();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(null);
@@ -79,27 +82,36 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
     }
 
     async function updateStateFromServer() {
+        if(countOfQueuedWaitingFetchUserInfoRequests > 0){
+            await waitFor(() => !pendingFetchingUserInfo, 40, 250);
+            return;
+        }
+
+        ++countOfQueuedWaitingFetchUserInfoRequests;
+        await waitFor(() => pendingFetchingUserInfo, 20, 250);
+        --countOfQueuedWaitingFetchUserInfoRequests;
+
         setPendingFetchingUserInfo(true);
-        CsrfService.reloadCsrfToken();
-        await callJsonEndpoint<UserInfo>({
+        const csrfPromise = CsrfService.reloadCsrfToken();
+        const userInfoPromise = callJsonEndpoint<UserInfo>({
             conf: {
                 url: '/api/up/server/api/currentUser/userInfoWithAuthoritiesAndTeam',
             },
             acceptedResponseCodes: [200, 403],
-        })
-            .then((res) => {
-                if (res.status === 200) {
-                    setIsUserLoggedIn(true);
-                    setUserInfo(res.data);
-                } else {
-                    setIsUserLoggedIn(false);
-                    setUserInfo(null);
-                }
-                setErrorWhileFetchingUserInfo(false);
-            })
-            .catch((e) => {
-                setErrorWhileFetchingUserInfo(true);
-            })
+        }).then((res) => {
+            if (res.status === 200) {
+                setIsUserLoggedIn(true);
+                setUserInfo(res.data);
+            } else {
+                setIsUserLoggedIn(false);
+                setUserInfo(null);
+            }
+            setErrorWhileFetchingUserInfo(false);
+        }).catch((e) => {
+            setErrorWhileFetchingUserInfo(true);
+        });
+
+        await Promise.all([csrfPromise, userInfoPromise])
             .finally(() => {
                 setPendingFetchingUserInfo(false);
             });
@@ -110,9 +122,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
             return isUserLoggedIn;
         }
 
-        if (!pendingFetchingUserInfo) {
-            updateStateFromServer();
-        }
+        updateStateFromServer();
 
         return null;
     }
@@ -125,9 +135,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
             return userInfo;
         }
 
-        if (!pendingFetchingUserInfo) {
-            updateStateFromServer();
-        }
+        updateStateFromServer();
 
         return null;
     }
