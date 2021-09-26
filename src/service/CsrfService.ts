@@ -10,7 +10,7 @@ let csrfToken: string;
 let isCsrfLoadingPending: boolean = false;
 let countOfQueuedWaitingLoadTokenRequests: number = 0;
 
-async function loadCsrfToken(shouldRetryOnFailure = true) {
+async function loadCsrfToken() {
     if (countOfQueuedWaitingLoadTokenRequests > 0) {
         await waitFor(() => !isCsrfLoadingPending && countOfQueuedWaitingLoadTokenRequests == 0, 40, 250);
         return;
@@ -31,8 +31,6 @@ async function loadCsrfToken(shouldRetryOnFailure = true) {
         console.log("loadCsrfToken response", [res.status, res.data]);
         if (res.status === 200) {
             csrfToken = res.data.csrfToken;
-        } else if (shouldRetryOnFailure) {
-            setTimeout(() => loadCsrfToken(false), 500);
         }
     }).catch(reason => {
         let message = undefined;
@@ -40,9 +38,6 @@ async function loadCsrfToken(shouldRetryOnFailure = true) {
             message = reason.message;
         }
         EventBus.notifyError(message, 'Could not retrieve CSRF token');
-        if (shouldRetryOnFailure) {
-            setTimeout(() => loadCsrfToken(false), 500);
-        }
     }).finally(() => {
         isCsrfLoadingPending = false;
     });

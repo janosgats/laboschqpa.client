@@ -138,16 +138,20 @@ const SubmissionsPanel: FC<Props> = (props) => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Grid item container justify="center">
-                            <Button
-                                size="large"
-                                variant="text"
-                                fullWidth
-                                color="secondary"
-                                onClick={() => infiniteScroller.increaseShownCount(3)}
-                            >
-                                &darr; Show more Objectives &darr;
-                            </Button>
+                        <Grid item>
+                            <MyPaper p={0}>
+                                <Grid container justify="center">
+                                    <Button
+                                        size="large"
+                                        variant="text"
+                                        fullWidth
+                                        color="secondary"
+                                        onClick={() => infiniteScroller.increaseShownCount(3)}
+                                    >
+                                        &darr; Show more Objectives &darr;
+                                    </Button>
+                                </Grid>
+                            </MyPaper>
                         </Grid>
                     )}
                 </Grid>
