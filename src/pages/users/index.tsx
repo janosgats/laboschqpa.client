@@ -1,14 +1,24 @@
 import Head from 'next/head'
-import { NextPage } from "next";
+import {NextPage} from "next";
 import React from "react";
 import useEndpoint from "~/hooks/useEndpoint";
-import { Container, createStyles, makeStyles, Table, TableCell, TableHead, TableRow, Theme } from "@material-ui/core";
+import {
+    Avatar,
+    Container,
+    createStyles,
+    makeStyles,
+    Table,
+    TableCell,
+    TableHead,
+    TableRow,
+    Theme
+} from "@material-ui/core";
 import Spinner from "~/components/Spinner";
 import MyPaper from "~/components/mui/MyPaper";
 import Link from "next/link";
-import { UsersPageUserInfo } from "~/model/UserInfo";
+import {UsersPageUserInfo} from "~/model/UserInfo";
 import UserNameFormatter from "~/utils/UserNameFormatter";
-import { isValidNumber } from "~/utils/CommonValidators";
+import {isValidNumber} from "~/utils/CommonValidators";
 
 const styles = {
     tableRow: {
@@ -41,6 +51,7 @@ const Index: NextPage = () => {
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell></TableCell>
                                 <TableCell>Név</TableCell>
                                 <TableCell>Csapat</TableCell>
 
@@ -50,8 +61,12 @@ const Index: NextPage = () => {
                             return (
                                 <Link href={`/users/user/${UserNameFormatter.getUrlName(user)}?id=${user.userId}`}>
                                     <TableRow className={classes.tableRow}>
-                                        <TableCell
-                                            style={{ cursor: 'hand' }}>{UserNameFormatter.getBasicDisplayName(user)}</TableCell>
+                                        <TableCell style={{ cursor: 'hand' }}>
+                                            <Avatar src={user.profilePicUrl} alt="pic" />
+                                        </TableCell>
+                                        <TableCell style={{ cursor: 'hand' }}>
+                                            {UserNameFormatter.getBasicDisplayName(user)}
+                                        </TableCell>
                                         <TableCell>{isValidNumber(user.teamId) ? user.teamName : "-"}</TableCell>
 
                                     </TableRow>
