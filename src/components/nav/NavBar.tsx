@@ -24,6 +24,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import ThemeSelector from '~/components/nav/ThemeSelector';
+import {Height} from '@material-ui/icons';
 
 interface LinkParams {
     href: string;
@@ -260,7 +261,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     <div>
                         <img className={classes.footerLogo} src={footerBaseUrl + 'mol.png'} />
                         <img className={classes.footerLogo} src={footerBaseUrl + 'mol_limo.svg'} />
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'nove_services.png'} />
+                        <img className={classes.footerLogo} src={footerBaseUrl + 'nova_services.png'} />
                         <img className={classes.footerLogo} src={footerBaseUrl + 'sci-network.png'} />
                     </div>
                 </div>
