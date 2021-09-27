@@ -106,7 +106,10 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     const classes = useStyles();
     const theme = useTheme();
 
-    let footerBaseUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/sponsors/logos/';
+    let sponsorLogosBaseUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/sponsors/logos/';
+    if(darkMode){
+        sponsorLogosBaseUrl += 'darkMode/';
+    }
 
     function doLogout() {
         callJsonEndpoint({
@@ -289,7 +292,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                     alignItems="center"
                                 >
                                     <Typography variant="h5"><b>Főtámogatónk:</b></Typography>
-                                    <img style={{width: '280px'}} src={footerBaseUrl + 'snapsoft.svg'} />
+                                    <img style={{width: '280px'}} src={sponsorLogosBaseUrl + 'snapsoft.svg'} />
                                 </Grid>
                             </Grid>
 
@@ -310,10 +313,10 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                         alignItems="center"
                                     >
                                         
-                                        <img style={{width: '130px'}} src={footerBaseUrl + 'mol.png'} />
-                                        <img style={{width: '130px'}} src={footerBaseUrl + 'mol_limo.svg'} />
-                                        <img style={{width: '130px'}} src={footerBaseUrl + 'nova_services.png'} />
-                                        <img style={{width: '130px'}} src={footerBaseUrl + 'sci-network.png'} />
+                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'mol.png'} />
+                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'mol_limo.svg'} />
+                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'nova_services.png'} />
+                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'sci-network.png'} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -335,8 +338,8 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                         alignItems="center"
                                         justify="center"
                                     >
-                                        <img style={{width: '110px' }} src={footerBaseUrl + 'sch_isiszovi.svg'} />
-                                        <img style={{width: '90px'}} src={footerBaseUrl + 'AK.svg'} />
+                                        <img style={{width: '110px' }} src={sponsorLogosBaseUrl + 'sch_isiszovi.svg'} />
+                                        <img style={{width: '90px'}} src={sponsorLogosBaseUrl + 'AK.svg'} />
                                     </Grid>
                                 </Grid>
                             </Grid>
