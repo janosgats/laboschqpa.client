@@ -1,17 +1,15 @@
-import { makeStyles, TableContainer, Theme, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import MUIPaper from '@material-ui/core/Paper';
+import {makeStyles, TableContainer, Theme, Typography} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React, { FC, useState } from 'react';
+import React, {FC, useState} from 'react';
 import RiddleSolverDialog from '~/components/riddle/solver/RiddleSolverDialog';
 import useEndpoint from '~/hooks/useEndpoint';
-import { AccessibleRiddle } from '~/model/usergeneratedcontent/AccessibleRiddle';
+import {AccessibleRiddle} from '~/model/usergeneratedcontent/AccessibleRiddle';
 import Spinner from '../Spinner';
-import { getStyles } from '~/components/panel/styles/RiddlePanelStyle';
+import {getStyles} from '~/components/panel/styles/RiddlePanelStyle';
 import MyPaper from '../mui/MyPaper';
 
 const useStyles = makeStyles((theme: Theme) => getStyles(theme))
@@ -27,6 +25,7 @@ const RiddlesPanel: FC = () => {
         conf: {
             url: '/api/up/server/api/riddle/listAccessibleRiddles',
         },
+        keepOldDataWhileFetchingNew: true,
     });
 
     function openRiddle(id: number) {
@@ -45,7 +44,7 @@ const RiddlesPanel: FC = () => {
 
             {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
-            {usedEndpoint.succeeded && (
+            {usedEndpoint.data && (
                 <TableContainer
                     component={MyPaper}
                     style={{ maxWidth: "calc(100vw - 30vw)", overflow: "auto" }}

@@ -16,6 +16,8 @@ import EventBus from "~/utils/EventBus";
 import {AccessibleRiddle} from "~/model/usergeneratedcontent/AccessibleRiddle";
 import Image from "~/components/image/Image";
 import {dialogStyles} from "~/styles/dialog-styles";
+import {isValidNumber} from "~/utils/CommonValidators";
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
 
 
 interface RiddleSubmitSolutionResponse {
@@ -154,6 +156,16 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     <Image fileId={riddle.attachments[0]} maxSize={300}/>
                                 </Grid>
                             )}
+                            {isValidNumber(riddle.firstSolvingTeamId) && (
+                                <Grid
+                                    item
+                                    justify="center"
+                                >
+                                    <Typography variant="caption">
+                                        Először megoldotta: {riddle.firstSolvingTeamName} @{DateTimeFormatter.toFullBasic(riddle.firstSolvingTime)}
+                                    </Typography>
+                                </Grid>
+                            )}
 
                             <Grid
                                 item
@@ -182,7 +194,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                         onClick={() => askForHint()}
                                         fullWidth
                                     >
-                                        Kérek hintet
+                                        Kérek hint
                                     </Button>
                                 )}
                             </Grid>
