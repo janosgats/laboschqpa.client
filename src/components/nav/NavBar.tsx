@@ -79,7 +79,6 @@ const useStyles = makeStyles((theme: Theme) =>
             left: '0',
             bottom: '0',
             width: '100%',
-            zIndex: 2000,
         },
         footerContainer: {
         },
@@ -251,6 +250,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             >
                 <Grid
                     item
+                    style={{minHeight: '68vw'}}
                 >
 
                     <main className={classes.content}>
@@ -280,8 +280,8 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                     direction="column"
                                     alignItems="center"
                                 >
-                                    <Typography variant="subtitle1"><b>Főtámogatónk:</b></Typography>
-                                    <img className={classes.footerLogo} src={footerBaseUrl + 'snapsoft.svg'} />
+                                    <Typography variant="h5"><b>Főtámogatónk:</b></Typography>
+                                    <img style={{width: '280px'}} src={footerBaseUrl + 'snapsoft.svg'} />
                                 </Grid>
                             </Grid>
 
@@ -295,17 +295,17 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                     alignItems="center"
                                     justify="center"
                                 >
-                                    <Typography variant="subtitle1"><b>Kiemelt támogatóink:</b></Typography>
+                                    <Typography variant="h5"><b>Kiemelt támogatóink:</b></Typography>
                                     <Grid
                                         container
                                         justify="center"
                                         alignItems="center"
                                     >
                                         
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol.png'} />
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol_limo.svg'} />
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'nova_services.png'} />
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'sci-network.png'} />
+                                        <img style={{width: '130px'}} src={footerBaseUrl + 'mol.png'} />
+                                        <img style={{width: '130px'}} src={footerBaseUrl + 'mol_limo.svg'} />
+                                        <img style={{width: '130px'}} src={footerBaseUrl + 'nova_services.png'} />
+                                        <img style={{width: '130px'}} src={footerBaseUrl + 'sci-network.png'} />
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -318,13 +318,17 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                     container
                                     direction="column"
                                     alignItems="center"
+                                    justify="center"
                                 >
-                                    <Typography variant="subtitle1"><b>Támogatóink:</b></Typography>
+                                    <Typography variant="h5"><b>Támogatóink:</b></Typography>
                                     <Grid
+                                        container
                                         direction="row"
+                                        alignItems="center"
+                                        justify="center"
                                     >
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'sch_isiszovi.svg'} />
-                                        <img className={classes.footerLogo} src={footerBaseUrl + 'AK.svg'} />
+                                        <img style={{width: '110px' }} src={footerBaseUrl + 'sch_isiszovi.svg'} />
+                                        <img style={{width: '90px'}} src={footerBaseUrl + 'AK.svg'} />
                                     </Grid>
                                 </Grid>
                             </Grid>
