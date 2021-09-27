@@ -1,12 +1,11 @@
-import React, { FC, useContext, useRef, useState } from 'react';
-import { CurrentUserContext } from '~/context/CurrentUserProvider';
-import { Authority } from '~/enums/Authority';
+import React, {FC, useContext, useRef, useState} from 'react';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import {
     AppBar,
-    Box,
     createStyles,
     Drawer,
     Grid,
@@ -27,8 +26,6 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import ThemeSelector from '~/components/nav/ThemeSelector';
-import { Height } from '@material-ui/icons';
-import MyPaper from '../mui/MyPaper';
 
 interface LinkParams {
     href: string;
@@ -181,6 +178,14 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                             </Link>
                         ) : null;
                     })}
+
+                <ListItem button onClick={() => doLogout()}>
+                    <ListItemIcon>
+                        {' '}
+                        <Icon fontSize="small">logout</Icon>{' '}
+                    </ListItemIcon>
+                    <ListItemText primary="Kijelentkezés"/>
+                </ListItem>
             </List>
         </div>
     );
