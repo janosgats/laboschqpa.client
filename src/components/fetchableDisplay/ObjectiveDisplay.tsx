@@ -43,6 +43,7 @@ import EventBus from '~/utils/EventBus';
 import MuiRteUtils from '~/utils/MuiRteUtils';
 import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/ObjectiveDisplayStyle';
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
@@ -353,6 +354,22 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
             {!isEdited && (
                 <>
+                    {submittable && (
+                        <>
+                            {!!hideSubmissionsBefore ? (
+                                <Typography variant="caption">
+                                    A
+                                    beadások <i><b>{DateTimeFormatter.toDayMinutes(hideSubmissionsBefore)}</b></i> után
+                                    nyilvánosak a
+                                    többi Qpázó számára.
+                                </Typography>
+                            ) : (
+                                <Typography variant="caption">
+                                    A beadások <i><b>azonnal nyilvánosak</b></i> a többi Qpázó számára.
+                                </Typography>
+                            )}
+                        </>
+                    )}
                     <Grid container direction="row" justify="space-between" alignItems="center">
                         {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
                             <Button size="large" variant="contained" onClick={() => setIsSubmissionDisplayOpen(true)} color="primary">
