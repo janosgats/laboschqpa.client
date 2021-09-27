@@ -1,16 +1,14 @@
-import { Box, Button, Grid, Table, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
-import MUIPaper from '@material-ui/core/Paper';
-import React, { FC, useContext, useState } from 'react';
-import { SpeedDrinkingDisplayContainer } from '~/components/fetchableDisplay/FetchableDisplayContainer';
-import { CurrentUserContext } from '~/context/CurrentUserProvider';
-import { Authority } from '~/enums/Authority';
-import { SpeedDrinkingCategory } from '~/enums/SpeedDrinkingCategory';
+import {Button, Table, TableCell, TableContainer, TableHead, TableRow} from '@material-ui/core';
+import React, {FC, useContext, useState} from 'react';
+import {SpeedDrinkingDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
+import {CurrentUserContext} from '~/context/CurrentUserProvider';
+import {Authority} from '~/enums/Authority';
+import {SpeedDrinkingCategory} from '~/enums/SpeedDrinkingCategory';
 import useEndpoint from '~/hooks/useEndpoint';
-import { SpeedDrinking } from '~/model/usergeneratedcontent/SpeedDrinking';
+import {SpeedDrinking} from '~/model/usergeneratedcontent/SpeedDrinking';
 import Spinner from '../Spinner';
-import { UniqueValueIndexer } from '~/utils/UniqueValueIndexer';
+import {UniqueValueIndexer} from '~/utils/UniqueValueIndexer';
 import MyPaper from '../mui/MyPaper';
-import Responsive from '../Responsive';
 
 interface Props {
     filteredCategory: SpeedDrinkingCategory;
@@ -132,7 +130,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                         if (props.onlyShowPersonalBests && uniqueValueIndexer.isAlreadyIndexed(speedDrinking.drinkerUserId)) {
                                             return null;
                                         }
-                                        if (props.filteredTeamId != null && props.filteredTeamId != speedDrinking.drinkerTeamId) return null;
+
                                         return (
                                             <SpeedDrinkingDisplayContainer
                                                 key={speedDrinking.id}
