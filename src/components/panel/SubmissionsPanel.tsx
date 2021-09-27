@@ -112,7 +112,7 @@ const SubmissionsPanel: FC<Props> = (props) => {
                 }
             });
             infiniteScroller.setMaxLength(tempHashMap.size);
-            infiniteScroller.setCurrentShownCount(OUTER_SCROLLER_STARTING_SHOW_COUNT);
+            infiniteScroller.resetCurrentShownCount();
             setObjectiveSubmissionMap(tempHashMap);
             setObjectivesIdList(tempObjectives);
         },

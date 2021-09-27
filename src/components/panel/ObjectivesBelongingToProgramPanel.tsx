@@ -33,7 +33,7 @@ const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
     const classes = useStyles();
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 5,
+        startingShowCount: 40,
     });
 
     const usedEndpoint = useEndpoint<Objective[]>({
@@ -52,7 +52,7 @@ const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
     });
 
     useEffect(() => {
-        infiniteScroller.setCurrentShownCount(5);
+        infiniteScroller.resetCurrentShownCount();
     }, [props.filteredObjectiveType, props.programId]);
 
     const [wasCreateNewObjectiveClicked, setWasCreateNewObjectiveClicked] = useState<boolean>(false);

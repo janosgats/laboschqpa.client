@@ -23,7 +23,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     const currentUser = useContext(CurrentUserContext);
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 5,
+        startingShowCount: 15,
     });
 
     const [wasCreateNewObjectiveClicked, setWasCreateNewObjectiveClicked] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
     }, [usedEndpoint.data]);
 
     useEffect(() => {
-        infiniteScroller.setCurrentShownCount(5);
+        infiniteScroller.resetCurrentShownCount();
     }, [props.filteredObjectiveTypes]);
 
     return (
