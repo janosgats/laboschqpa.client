@@ -69,13 +69,13 @@ const FetchErrorBlock: FC<{ onRetryClick: () => void }> = (props) => {
 };
 
 let countOfQueuedWaitingFetchUserInfoRequests: number = 0;
+let pendingFetchingUserInfo: boolean = false;
 
 const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element => {
     const router = useRouter();
     const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(null);
     const [userInfo, setUserInfo] = useState<UserInfo>(null);
     const [errorWhileFetchingUserInfo, setErrorWhileFetchingUserInfo] = useState<boolean>(false);
-    const [pendingFetchingUserInfo, setPendingFetchingUserInfo] = useState<boolean>(false);
 
     function shouldApplyLoginWallOnCurrentPath(): boolean {
         return !router.pathname.startsWith('/login/') && !router.pathname.startsWith('/emailVerification/');
@@ -83,15 +83,15 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         if(countOfQueuedWaitingFetchUserInfoRequests > 0){
-            await waitFor(() => !pendingFetchingUserInfo, 40, 250);
+            await waitFor(() => !pendingFetchingUserInfo && countOfQueuedWaitingFetchUserInfoRequests == 0, 40, 250);
             return;
         }
 
         ++countOfQueuedWaitingFetchUserInfoRequests;
         await waitFor(() => pendingFetchingUserInfo, 20, 250);
+        pendingFetchingUserInfo = true;
         --countOfQueuedWaitingFetchUserInfoRequests;
 
-        setPendingFetchingUserInfo(true);
         const csrfPromise = CsrfService.reloadCsrfToken();
         const userInfoPromise = callJsonEndpoint<UserInfo>({
             conf: {
@@ -113,7 +113,7 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
         await Promise.all([csrfPromise, userInfoPromise])
             .finally(() => {
-                setPendingFetchingUserInfo(false);
+                pendingFetchingUserInfo = false;
             });
     }
 
