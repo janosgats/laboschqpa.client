@@ -12,12 +12,14 @@ let countOfQueuedWaitingLoadTokenRequests: number = 0;
 
 async function loadCsrfToken() {
     if (countOfQueuedWaitingLoadTokenRequests > 0) {
-        await waitFor(() => !isCsrfLoadingPending && countOfQueuedWaitingLoadTokenRequests == 0, 40, 250);
+        await waitFor(() => !isCsrfLoadingPending && countOfQueuedWaitingLoadTokenRequests === 0,
+            40, 250);
         return;
     }
 
     ++countOfQueuedWaitingLoadTokenRequests;
-    await waitFor(() => isCsrfLoadingPending, 20, 250);
+    await waitFor(() => !isCsrfLoadingPending,
+        20, 250, 500);
     isCsrfLoadingPending = true;
     --countOfQueuedWaitingLoadTokenRequests;
 

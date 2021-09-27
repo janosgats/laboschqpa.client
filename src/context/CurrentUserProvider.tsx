@@ -83,12 +83,14 @@ const CurrentUserProvider: FunctionComponent = ({children}: Props): JSX.Element 
 
     async function updateStateFromServer() {
         if(countOfQueuedWaitingFetchUserInfoRequests > 0){
-            await waitFor(() => !pendingFetchingUserInfo && countOfQueuedWaitingFetchUserInfoRequests == 0, 40, 250);
+            await waitFor(() => !pendingFetchingUserInfo && countOfQueuedWaitingFetchUserInfoRequests === 0,
+                40, 250);
             return;
         }
 
         ++countOfQueuedWaitingFetchUserInfoRequests;
-        await waitFor(() => pendingFetchingUserInfo, 20, 250);
+        await waitFor(() => !pendingFetchingUserInfo,
+            20, 250, 500);
         pendingFetchingUserInfo = true;
         --countOfQueuedWaitingFetchUserInfoRequests;
 
