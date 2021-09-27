@@ -180,11 +180,19 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
                 <ListItem button onClick={() => doLogout()}>
                     <ListItemIcon>
-                        {' '}
-                        <Icon fontSize="small">logout</Icon>{' '}
+                        {' '}<Icon fontSize="small">logout</Icon>{' '}
                     </ListItemIcon>
                     <ListItemText primary="Kijelentkezés"/>
                 </ListItem>
+                <a target="_blank" href="https://github.com/janosgats/laboschqpa/issues" rel="noopener noreferrer"
+                   style={{textDecoration: 'none', color: 'inherit'}}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            {' '}<Icon fontSize="small">bug_report</Icon>{' '}
+                        </ListItemIcon>
+                        <ListItemText primary="Javaslatom van"/>
+                    </ListItem>
+                </a>
             </List>
         </div>
     );
