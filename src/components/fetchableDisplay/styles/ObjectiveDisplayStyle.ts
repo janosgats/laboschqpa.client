@@ -28,5 +28,24 @@ export function getStyles(theme: Theme) {
         buttonScore: {
             marginRight: '16px',
         },
+
+        acceptedObjective: {
+            color: '#618833',
+        },
+
+        acceptedTitle:{
+            marginLeft: '4px',
+            color: '#618833',
+        },
+
+
+        acceptedSubtitle:{
+            textIndent: '50px',
+            fontStyle: 'oblique',
+            fontSize: 'small',
+            color: '#618833',
+        }
+
+        
     };
 }
