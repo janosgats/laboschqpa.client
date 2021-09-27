@@ -178,7 +178,9 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
     }
 
-    const isAccepted = props.existingEntity?.isAccepted ? classes.acceptedObjective : null;
+    const iconClassName = props.existingEntity?.isAccepted ? classes.acceptedObjective : null;
+    const titleClassName = props.existingEntity?.isAccepted ? classes.acceptedTitle : classes.title;
+    const subtitleClassName = props.existingEntity?.isAccepted ? classes.acceptedSubtitle: classes.subtitle;
 
     return (
         <MyPaper>
@@ -257,11 +259,11 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                                 <>
                                     {React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon, {
                                         style: {width: 50, height: 50,},
-                                        className: isAccepted,
+                                        className: iconClassName,
                                     })}
                                 </>
                             )}
-                            <Typography variant="h4" className={[classes.title, isAccepted]}>
+                            <Typography variant="h4" className={titleClassName}>
                                 {title}
                             </Typography>
                         </Grid>
@@ -278,7 +280,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
             )}
 
             {props.existingEntity?.isAccepted && (
-                <Typography variant="subtitle1" className={[classes.subtitle, isAccepted]}>
+                <Typography variant="subtitle1" className={subtitleClassName}>
                     - A csapatod beadását elfogadtuk.
                 </Typography>
             )}
