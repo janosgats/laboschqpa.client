@@ -134,7 +134,7 @@ const Index: NextPage = () => {
                         {isViewingOwnProfile && (
                             <>
                                 <Grid item>
-                                    <Typography variant="h5">Használatban lévő email címek:</Typography>
+                                    <Typography variant="h5">Fiókodhoz rendelt email címek:</Typography>
                                     <EmailAddressesPanel />
                                 </Grid>
                                 <Grid>
