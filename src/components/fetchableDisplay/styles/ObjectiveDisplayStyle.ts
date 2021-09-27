@@ -28,5 +28,11 @@ export function getStyles(theme: Theme) {
         buttonScore: {
             marginRight: '16px',
         },
+
+        acceptedObjective: {
+            color: '#8bc34a',
+        },
+
+        
     };
 }
