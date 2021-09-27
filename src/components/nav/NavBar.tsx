@@ -140,7 +140,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
     links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
     links.push({ hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
-    links.push({ hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
+    links.push({ href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
     links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
     links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
     links.push({ href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in' });
@@ -149,12 +149,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     links.push({ href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people' });
 
     links.push({ href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode' });
-    links.push({
-        href: '/acceptedEmails',
-        displayName: 'Accepted Emails',
-        authority: Authority.AcceptedEmailEditor,
-        icon: 'mark_email_read',
-    });
+    links.push({href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read',});
     links.push({ href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings' });
 
     const drawer = (

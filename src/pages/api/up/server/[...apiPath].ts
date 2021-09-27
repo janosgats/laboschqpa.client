@@ -95,12 +95,10 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/riddleEditor/edit": ["POST"],
     "/api/riddleEditor/delete": ["DELETE"],
 
-    /* TODO: Uncomment riddle endpoints when we turn on riddles
     "/api/riddle/listAccessibleRiddles": ["GET"],
     "/api/riddle/riddle": ["GET"],
     "/api/riddle/useHint": ["POST"],
     "/api/riddle/submitSolution": ["POST"],
-    */
 
     "/api/admin/users/logInAsUser": ["POST"],
 
