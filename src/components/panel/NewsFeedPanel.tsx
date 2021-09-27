@@ -14,7 +14,7 @@ const NewsFeedPanel: FC = ({children}) => {
     const currentUser = useContext(CurrentUserContext);
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 5,
+        startingShowCount: 10,
     });
 
     const [wasCreateNewPostClicked, setWasCreateNewPostClicked] = useState<boolean>(false);

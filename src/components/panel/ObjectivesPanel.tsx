@@ -10,6 +10,7 @@ import useInfiniteScroller, {InfiniteScroller} from '~/hooks/useInfiniteScroller
 import {Objective} from '~/model/usergeneratedcontent/Objective';
 import Spinner from '../Spinner';
 import styles from './styles/ObjectivePanelStyle';
+import MyPaper from "~/components/mui/MyPaper";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
@@ -44,6 +45,10 @@ const ObjectivesPanel: FC<Props> = (props) => {
     useEffect(() => {
         setWasCreateNewObjectiveClicked(false);
     }, [usedEndpoint.data]);
+
+    useEffect(() => {
+        infiniteScroller.setCurrentShownCount(5);
+    }, [props.filteredObjectiveTypes]);
 
     return (
         <div>
@@ -84,18 +89,20 @@ const ObjectivesPanel: FC<Props> = (props) => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Grid item container justify="center">
-                            <Button
-                                size="large"
-                                variant="text"
-                                fullWidth
-                                color="secondary"
-                                onClick={() => infiniteScroller.increaseShownCount(5)}
-                                className={classes.showMoreButton}
-                            >
-                                &darr; Show more &darr;
-                            </Button>
-                        </Grid>
+                        <MyPaper p={0}>
+                            <Grid item container justify="center">
+                                <Button
+                                    size="large"
+                                    variant="text"
+                                    fullWidth
+                                    color="secondary"
+                                    onClick={() => infiniteScroller.increaseShownCount(5)}
+                                    className={classes.showMoreButton}
+                                >
+                                    &darr; Show more &darr;
+                                </Button>
+                            </Grid>
+                        </MyPaper>
                     )}
                 </Grid>
             )}

@@ -57,7 +57,7 @@ const ControlsInDialog: FC<ControlsInModalProps> = (props) => {
                                             corrupt
                                         </button>
                                     </p>
-                                    <Image maxSize={70}
+                                    <Image maxSize={100}
                                            forcedSrc={FileHostUtils.getUrlOfOriginalFile(variantFileId)}
                                            alt={'alt variantFileId: ' + variantFileId}
                                     />

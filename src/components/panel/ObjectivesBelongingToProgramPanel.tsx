@@ -10,7 +10,7 @@ import {
     Theme
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {ObjectiveDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
 import {Authority} from '~/enums/Authority';
@@ -20,6 +20,7 @@ import useInfiniteScroller, {InfiniteScroller} from '~/hooks/useInfiniteScroller
 import {Objective} from '~/model/usergeneratedcontent/Objective';
 import Spinner from '../Spinner';
 import styles from './styles/ObjectivePanelStyle';
+import MyPaper from "~/components/mui/MyPaper";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
@@ -49,6 +50,10 @@ const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
             infiniteScroller.setMaxLength(res.data.length);
         },
     });
+
+    useEffect(() => {
+        infiniteScroller.setCurrentShownCount(5);
+    }, [props.filteredObjectiveType, props.programId]);
 
     const [wasCreateNewObjectiveClicked, setWasCreateNewObjectiveClicked] = useState<boolean>(false);
     const currentUser = useContext(CurrentUserContext);
@@ -103,18 +108,20 @@ const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Grid item container justify="center">
-                            <Button
-                                size="large"
-                                variant="text"
-                                fullWidth
-                                color="secondary"
-                                onClick={() => infiniteScroller.increaseShownCount(5)}
-                                className={classes.showMoreButton}
-                            >
-                                &darr; Show more &darr;
-                            </Button>
-                        </Grid>
+                        <MyPaper p={0}>
+                            <Grid item container justify="center">
+                                <Button
+                                    size="large"
+                                    variant="text"
+                                    fullWidth
+                                    color="secondary"
+                                    onClick={() => infiniteScroller.increaseShownCount(5)}
+                                    className={classes.showMoreButton}
+                                >
+                                    &darr; Show more &darr;
+                                </Button>
+                            </Grid>
+                        </MyPaper>
                     )}
                 </Grid>
             )}
