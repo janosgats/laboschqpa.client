@@ -19,6 +19,7 @@ import MyPaper from '~/components/mui/MyPaper';
 import Spinner from '~/components/Spinner';
 import {getStyles} from '~/components/team/styles/TeamStyle';
 import useEndpoint from '~/hooks/useEndpoint';
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
 
 interface TeamWithScore {
     id: number;
@@ -77,7 +78,7 @@ const Index: NextPage = () => {
                             <TableBody>
                                 {usedEndpoint.data.map((team, index) => {
                                     return (
-                                        <Link href={`/teams/team/${team.name}?id=${team.id}`}>
+                                        <Link href={`/teams/team/${getUrlFriendlyString(team.name)}?id=${team.id}`}>
                                             <TableRow key={index} hover className={classes.tableRow}>
                                                 <TableCell align="center">
                                                     {index < 3 ? loadQpaIcon(index) : <Typography variant="h5">{index + 1}.</Typography>}

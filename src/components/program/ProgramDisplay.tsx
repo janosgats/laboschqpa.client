@@ -4,6 +4,7 @@ import React from 'react';
 import MyPaper from '~/components/mui/MyPaper';
 import {Program} from '~/model/usergeneratedcontent/Program';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
 
 interface ProgramDisplayProps {
     program: Program;
@@ -13,8 +14,8 @@ interface ProgramDisplayProps {
 const ProgramDisplay: React.FC<ProgramDisplayProps> = ({program, date}) => {
     return (
         <MyPaper>
-            <Link href={`/programs/program/${program.title}?id=${program.id}`}>
-                <MuiLink underline="none" color="inherit" href={`/programs/program/${program.title}?id=${program.id}`}>
+            <Link href={`/programs/program/${getUrlFriendlyString(program.title)}?id=${program.id}`}>
+                <MuiLink underline="none" color="inherit" href={`/programs/program/${getUrlFriendlyString(program.title)}?id=${program.id}`}>
                     <Grid container direction="column" spacing={2}>
                         <Grid item>
                             <Typography variant="h4">{program.title}</Typography>

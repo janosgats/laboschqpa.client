@@ -1,5 +1,6 @@
 import {isValidNonEmptyString} from "~/utils/CommonValidators";
 import {UserNameContainer} from "~/model/UserInfo";
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
 
 function getBasicDisplayName(userNameContainer: UserNameContainer, defaultName: string = 'N/A'): string {
     if (!userNameContainer) {
@@ -21,23 +22,20 @@ function getBasicDisplayName(userNameContainer: UserNameContainer, defaultName: 
 }
 
 function getUrlName(userNameContainer: UserNameContainer, defaultName: string = 'u'): string {
+    let unsafeUrlPart = defaultName;
+
     if (!userNameContainer) {
-        return defaultName;
-    }
-
-    if (isValidNonEmptyString(userNameContainer.nickName)
+        unsafeUrlPart = defaultName;
+    } else if (isValidNonEmptyString(userNameContainer.nickName)
         && (isValidNonEmptyString(userNameContainer.firstName) || isValidNonEmptyString(userNameContainer.lastName))) {
-        return userNameContainer.nickName + "_" + userNameContainer.firstName + "_" + userNameContainer.lastName;
+        unsafeUrlPart = userNameContainer.nickName + "_" + userNameContainer.firstName + "_" + userNameContainer.lastName;
+    } else if (isValidNonEmptyString(userNameContainer.nickName)) {
+        unsafeUrlPart = userNameContainer.nickName;
+    } else if (isValidNonEmptyString(userNameContainer.firstName) || isValidNonEmptyString(userNameContainer.lastName)) {
+        unsafeUrlPart = userNameContainer.firstName + "_" + userNameContainer.lastName;
     }
 
-    if (isValidNonEmptyString(userNameContainer.nickName)) {
-        return userNameContainer.nickName;
-    }
-    if (isValidNonEmptyString(userNameContainer.firstName) || isValidNonEmptyString(userNameContainer.lastName)) {
-        return userNameContainer.firstName + "_" + userNameContainer.lastName;
-    }
-
-    return defaultName;
+    return getUrlFriendlyString(unsafeUrlPart);
 }
 
 function getFullName(userNameContainer: UserNameContainer, defaultName: string = 'N/A'): string {
