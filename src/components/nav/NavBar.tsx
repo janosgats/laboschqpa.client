@@ -1,13 +1,15 @@
-import React, {FC, useContext, useRef, useState} from 'react';
-import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {Authority} from '~/enums/Authority';
+import React, { FC, useContext, useRef, useState } from 'react';
+import { CurrentUserContext } from '~/context/CurrentUserProvider';
+import { Authority } from '~/enums/Authority';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import EventBus from '~/utils/EventBus';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import {
     AppBar,
+    Box,
     createStyles,
     Drawer,
+    Grid,
     Hidden,
     Icon,
     IconButton,
@@ -19,12 +21,14 @@ import {
     Paper,
     Theme,
     Toolbar,
+    Typography,
     useTheme,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import ThemeSelector from '~/components/nav/ThemeSelector';
-import {Height} from '@material-ui/icons';
+import { Height } from '@material-ui/icons';
+import MyPaper from '../mui/MyPaper';
 
 interface LinkParams {
     href: string;
@@ -74,21 +78,13 @@ const useStyles = makeStyles((theme: Theme) =>
             cursor: 'pointer',
         },
         footer: {
-            position: 'fixed',
+            position: 'relative',
+            left: '0',
             bottom: '0',
             width: '100%',
-            height: '90px',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-evenly',
             zIndex: 2000,
         },
         footerContainer: {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
         },
         footerLogo: {
             padding: '8px 32px',
@@ -104,7 +100,7 @@ interface NavBarInterFaceProps {
 }
 
 const NavBar: FC<NavBarInterFaceProps> = (props) => {
-    const {darkMode: darkMode, setDarkMode: setDarkMode, window: window} = props;
+    const { darkMode: darkMode, setDarkMode: setDarkMode, window: window } = props;
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -135,32 +131,32 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     }
 
     const links: LinkParams[] = [];
-    links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
+    links.push({ href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home' });
     const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
-    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person'});
+    links.push({ href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person' });
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
-        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups'});
+        links.push({ href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups' });
     }
-    links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
-    links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
-    links.push({hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
-    links.push({hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
-    links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
-    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
-    links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
-    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment'});
-    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
-    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people'});
+    links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
+    links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
+    links.push({ hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
+    links.push({ hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
+    links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
+    links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
+    links.push({ href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in' });
+    links.push({ href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment' });
+    links.push({ href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group' });
+    links.push({ href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people' });
 
-    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
+    links.push({ href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode' });
     links.push({
         href: '/acceptedEmails',
         displayName: 'Accepted Emails',
         authority: Authority.AcceptedEmailEditor,
         icon: 'mark_email_read',
     });
-    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
+    links.push({ href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings' });
 
     const drawer = (
         <div>
@@ -244,36 +240,95 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     </Drawer>
                 </Hidden>
             </nav>
-            <main className={classes.content}>
-                <Hidden smUp implementation="css">
-                    <div className={classes.toolbar} />
-                </Hidden>
-                <div>{props.children}</div>
-            </main>
-            <Paper className={classes.footer}>
-                <div className={classes.footerContainer}>
-                    <span>Főtámogatónk:</span>
-                    <img className={classes.footerLogo} src={footerBaseUrl + 'snapsoft.svg'} />
-                </div>
+            <Grid
+                container
+                direction="column"
+            >
+                <Grid
+                    item
+                >
 
-                <div className={classes.footerContainer}>
-                    <span>Kiemelt támogatóink:</span>
-                    <div>
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol.png'} />
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol_limo.svg'} />
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'nova_services.png'} />
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'sci-network.png'} />
-                    </div>
-                </div>
+                    <main className={classes.content}>
+                        <Hidden smUp implementation="css">
+                            <div className={classes.toolbar} />
+                        </Hidden>
+                        <div>{props.children}</div>
+                    </main>
+                </Grid>
+                <Grid
+                    item
+                >
+                    <Paper className={classes.footer}>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-evenly"
+                            alignItems="center"
+                        >
 
-                <div className={classes.footerContainer}>
-                    <span>Támogatóink:</span>
-                    <div>
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'sch_isiszovi.svg'} />
-                        <img className={classes.footerLogo} src={footerBaseUrl + 'AK.svg'} />
-                    </div>
-                </div>
-            </Paper>
+                            <Grid
+                                className={classes.footerContainer}
+                                item
+                            >
+                                <Grid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                >
+                                    <Typography variant="subtitle1"><b>Főtámogatónk:</b></Typography>
+                                    <img className={classes.footerLogo} src={footerBaseUrl + 'snapsoft.svg'} />
+                                </Grid>
+                            </Grid>
+
+                            <Grid
+                                className={classes.footerContainer}
+                                item
+                            >
+                                <Grid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                    justify="center"
+                                >
+                                    <Typography variant="subtitle1"><b>Kiemelt támogatóink:</b></Typography>
+                                    <Grid
+                                        container
+                                        justify="center"
+                                        alignItems="center"
+                                    >
+                                        
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol.png'} />
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'mol_limo.svg'} />
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'nova_services.png'} />
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'sci-network.png'} />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+
+                            <Grid
+                                className={classes.footerContainer}
+                                item
+                            >
+                                <Grid
+                                    container
+                                    direction="column"
+                                    alignItems="center"
+                                >
+                                    <Typography variant="subtitle1"><b>Támogatóink:</b></Typography>
+                                    <Grid
+                                        direction="row"
+                                    >
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'sch_isiszovi.svg'} />
+                                        <img className={classes.footerLogo} src={footerBaseUrl + 'AK.svg'} />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                    </Paper>
+                </Grid>
+
+            </Grid>
         </div>
     );
 };
