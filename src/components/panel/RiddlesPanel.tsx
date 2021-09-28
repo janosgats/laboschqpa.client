@@ -59,7 +59,7 @@ const RiddlesPanel: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {usedEndpoint.data.reverse().map((riddle, index) => {
+                            {[...(usedEndpoint.data)].reverse().map((riddle, index) => {
                                 return (
                                     <TableRow
                                         key={riddle.id}
