@@ -139,7 +139,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     }
     links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
     links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
-    links.push({ hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
+    links.push({ href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
     links.push({ href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
     links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
     links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
