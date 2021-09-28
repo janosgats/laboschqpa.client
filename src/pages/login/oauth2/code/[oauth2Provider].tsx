@@ -52,6 +52,7 @@ const nextPage: NextPage = () => {
                     });
             }, 500);
         }).catch((reason) => {
+            router.push(LoginRedirectionService.peekRedirectionUrl('/'));
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {
                 if (auth_CANNOT_FIND_EXISTING_ACCOUNT_TO_LOG_IN.is(reason.apiErrorDescriptor)) {

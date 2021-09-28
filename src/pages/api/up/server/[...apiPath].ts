@@ -12,8 +12,10 @@ import {CSRF_TOKEN_HEADER_NAME} from "~/utils/api/callJsonEndpoint";
 const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/login/oauth2/google": ["GET"],
     "/login/oauth2/github": ["GET"],
+    "/login/oauth2/authsch": ["GET"],
     "/login/oauth2/code/google": ["GET"],
     "/login/oauth2/code/github": ["GET"],
+    "/login/oauth2/code/authsch": ["GET"],
     "/logout": ["POST"],
 
     "/api/noAuthRequired/register/createNewAccountFromSessionOAuthInfo": ["POST"],
