@@ -37,8 +37,11 @@ function MyApp({Component, pageProps}): JSX.Element {
     const theme = createTheme({
         palette: {
             type: darkMode ? 'dark' : 'light',
+            primary: {
+                 main: '#00c4ff'
+            }
         },
-    });
+    });console.log(theme.palette.primary.main)
 
     const router = useRouter();
 
@@ -53,14 +56,15 @@ function MyApp({Component, pageProps}): JSX.Element {
             <Head>
                 <style>{'::-webkit-scrollbar { width: 0px }'}</style>
                 <title>Qpa</title>
-                <link rel="icon" href="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/favicon/yellow.svg" />
-                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+                <link rel="icon"
+                      href="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/favicon/yellow.svg"/>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
             </Head>
 
             <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <ClientRender>{() => <div style={getBackgroundImageDivStyle(darkMode)} />}</ClientRender>
-                <EventDisplayContainer />
+                <CssBaseline/>
+                <ClientRender>{() => <div style={getBackgroundImageDivStyle(darkMode)}/>}</ClientRender>
+                <EventDisplayContainer/>
                 <CurrentUserProvider>
                     <NavBar darkMode={darkMode} setDarkMode={setDarkMode}>
                         <Component {...pageProps} />

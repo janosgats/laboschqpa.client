@@ -94,7 +94,8 @@ const LoginForm: FC<Props> = (props) => {
                     <Grid item>
                         <Button
                             variant="contained"
-                            color="primary"
+                            style={{backgroundColor: '#0066ff', color:'white'}}
+                           color="primary"
                             onClick={() => doStartLogin("google")}
                             startIcon={<GTranslateIcon/>}
                             size="large"
