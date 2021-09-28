@@ -1,4 +1,5 @@
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
+import FeaturedPlayListSharpIcon from '@material-ui/icons/FeaturedPlayListSharp';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
 import React, {FC, useContext, useRef, useState} from 'react';
@@ -12,6 +13,7 @@ import {UsedAttachments} from '~/hooks/useAttachments';
 import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
 import EventBus from '~/utils/EventBus';
 import MyPaper from '../mui/MyPaper';
+import {QrFightResultsPanelBlock} from "~/components/textEditor/imageBlock/QrFightResultsPanelBlock";
 
 interface Props {
     isEdited: boolean;
@@ -102,6 +104,7 @@ const RichTextEditor: FC<Props> = (props) => {
                         'clear',
                         'link',
                         ...(enableImageUpload ? ['upload-image'] : []),
+                        'add-qr-fight-results-panel-block',
                     ]}
                     customControls={[
                         {
@@ -116,6 +119,19 @@ const RichTextEditor: FC<Props> = (props) => {
                             name: 'image-block',
                             type: 'atomic',
                             atomicComponent: ImageBlock,
+                        },
+                        {
+                            name: 'add-qr-fight-results-panel-block',
+                            icon: <FeaturedPlayListSharpIcon />,
+                            type: 'callback',
+                            onClick: (_editorState, _name, anchor) => {
+                                ref.current?.insertAtomicBlockSync('qr-fight-results-panel-block', {});
+                            },
+                        },
+                        {
+                            name: 'qr-fight-results-panel-block',
+                            type: 'atomic',
+                            atomicComponent: QrFightResultsPanelBlock,
                         },
                     ]}
                     draftEditorProps={{
