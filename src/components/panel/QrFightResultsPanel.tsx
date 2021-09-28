@@ -111,7 +111,7 @@ const QrFightResultsPanel: NextPage = () => {
                                         {fightArea.name}:&nbsp;
                                         {fightArea.submissionStats[0] ? (
                                             <>
-                                                <i>{fightArea.submissionStats[0].teamName} kézben</i>
+                                                <i>{fightArea.submissionStats[0].teamName} kezében</i>
                                             </>
                                         ) : (
                                             <><i>Senki földje </i></>
