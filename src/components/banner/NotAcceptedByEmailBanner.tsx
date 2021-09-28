@@ -111,6 +111,11 @@ const NotAcceptedByEmailBanner: FC = () => {
                             setAddNewEmailDialogOpen(true);
                         }}
                     />
+                    <br/>
+                    <br/>
+                    <AlertTitle style={{color: 'skyblue'}}>
+                        Update: <b>Lepattanó e-mailek fixálva</b>. Már tényleg tudsz új címeket felvenni.
+                    </AlertTitle>
                 </Alert>
             </MyPaper>
         </Grid>
