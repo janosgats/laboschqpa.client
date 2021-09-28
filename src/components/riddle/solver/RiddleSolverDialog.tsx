@@ -120,6 +120,8 @@ const RiddleSolverDialog: FC<Props> = (props) => {
         <Dialog
             open={props.isOpen}
             onClose={() => props.onClose(shouldReloadRiddleList)}
+            fullWidth
+            maxWidth='xs'
         >
             <DialogContent>
                 {usedEndpoint.pending && <p>Fetching riddle...</p>}
@@ -137,14 +139,14 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                             justify="center"
                             direction="column"
                             spacing={2}
-                            style={{minWidth: 450}}
+                            style={{}}
                         >
                             <Grid
                                 item
                                 container
                                 justify="center"
                             >
-                                <Typography variant="h2">{riddle.title}</Typography>
+                                <Typography variant="h5">{riddle.title}</Typography>
                             </Grid>
                             {riddle.attachments?.[0] && (
 
@@ -153,7 +155,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     container
                                     justify="center"
                                 >
-                                    <Image fileId={riddle.attachments[0]} maxSize={300}/>
+                                    <Image fileId={riddle.attachments[0]} maxSize={250}/>
                                 </Grid>
                             )}
                             {isValidNumber(riddle.firstSolvingTeamId) && (
