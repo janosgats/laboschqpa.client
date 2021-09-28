@@ -52,7 +52,6 @@ const nextPage: NextPage = () => {
                     });
             }, 500);
         }).catch((reason) => {
-            router.push(LoginRedirectionService.peekRedirectionUrl('/'));
             //TODO: more messages based on the ApiErrorDescriptor
             if (reason instanceof ApiErrorDescriptorException) {
                 if (auth_CANNOT_FIND_EXISTING_ACCOUNT_TO_LOG_IN.is(reason.apiErrorDescriptor)) {
@@ -64,6 +63,7 @@ const nextPage: NextPage = () => {
                         "E-mail got from OAuth2 response is saved in the system as a different User's e-mail address",
                         'E-mail is already taken',
                         60000);
+                    router.push(LoginRedirectionService.peekRedirectionUrl('/'));
                     return;
                 }
                 if (auth_AUTH_EXTERNAL_ACCOUNT_GOT_FROM_OAUTH2_RESPONSE_BELONGS_TO_ANOTHER_ACCOUNT.is(reason.apiErrorDescriptor)) {
@@ -71,11 +71,13 @@ const nextPage: NextPage = () => {
                         "External account got from OAuth2 response is saved in the system as a different User's external account",
                         'External account is already taken',
                         60000);
+                    router.push(LoginRedirectionService.peekRedirectionUrl('/'));
                     return;
                 }
             }
             EventBus.notifyError("We cannot log you in", "Something went wrong :/");
             EventBus.publishException(reason);
+            router.push(LoginRedirectionService.peekRedirectionUrl('/'));
         }).finally(() => setLoginInProgress(false));
     }
 
