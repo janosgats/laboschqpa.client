@@ -2,11 +2,12 @@ import {Button, Grid, Table, TableBody, TableCell, TableHead, TableRow} from '@m
 import React, {FC, useContext, useState} from 'react';
 import RiddleEditorDialog from '~/components/riddle/editor/RiddleEditorDialog';
 import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import {Authority} from '~/enums/Authority';
 import useEndpoint from '~/hooks/useEndpoint';
 import {Riddle} from '~/model/usergeneratedcontent/Riddle';
 import MyPaper from '../mui/MyPaper';
 import Spinner from '../Spinner';
+import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import EventBus from "~/utils/EventBus";
 
 const RiddleEditorPanel: FC = () => {
     const currentUser = useContext(CurrentUserContext);
@@ -38,16 +39,33 @@ const RiddleEditorPanel: FC = () => {
         setEditedRiddleId(null);
     }
 
+    function logProgressOfTeamsToConsole() {
+        callJsonEndpoint({
+            conf: {
+                url: '/api/up/server/api/riddleEditor/listProgressOfTeams',
+            },
+        }).then(resp => {
+            console.log('Riddle Team Progress',resp.data);
+            EventBus.notifySuccess('Team progress report was logged to the console');
+        });
+    }
+
     return (
         <MyPaper>
             <Grid container direction="column" spacing={2}>
-                {currentUser.hasAuthority(Authority.RiddleEditor) && (
+                <Grid container direction="row" spacing={2}>
                     <Grid item>
-                        <Button size="small" variant="contained" color="primary" onClick={() => startCreatingNewRiddle()}>
+                        <Button size="small" variant="contained" color="primary"
+                                onClick={() => startCreatingNewRiddle()}>
                             Create new riddle
                         </Button>
                     </Grid>
-                )}
+                    <Grid item>
+                        <Button size="small" color="secondary" variant="contained" onClick={() => logProgressOfTeamsToConsole()}>
+                            Mutasd a csapatok haladását
+                        </Button>
+                    </Grid>
+                </Grid>
 
                 {usedEndpoint.pending && <Spinner />}
 
@@ -74,7 +92,8 @@ const RiddleEditorPanel: FC = () => {
                                             <TableCell>{riddle.hint}</TableCell>
                                             <TableCell>{riddle.solution}</TableCell>
                                             <TableCell>
-                                                <Button size="small" variant="contained" onClick={() => startEditingRiddle(riddle.id)}>
+                                                <Button size="small" variant="contained"
+                                                        onClick={() => startEditingRiddle(riddle.id)}>
                                                     edit
                                                 </Button>
                                             </TableCell>
