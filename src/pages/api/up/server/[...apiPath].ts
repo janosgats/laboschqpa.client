@@ -134,7 +134,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/program/program": ["GET"],
 
     "/api/qrFight/fightStats": ["GET"],
-    "/api/qrFight/listAllAreas": ["GET"],
+    "/api/qrFight/listEnabledAreas": ["GET"],
     "/api/qrFight/submit": ["POST"],
 
     "/api/admin/file/listSucceededImageVariantIdsOfFile": ["GET"],

@@ -66,7 +66,7 @@ const Index: NextPage = () => {
 
     const usedAreas = useEndpoint<QrFightAreaResponse[]>({
         conf: {
-            url: '/api/up/server/api/qrFight/listAllAreas',
+            url: '/api/up/server/api/qrFight/listEnabledAreas',
         }
     });
 
