@@ -26,6 +26,7 @@ const RiddlesPanel: FC = () => {
             url: '/api/up/server/api/riddle/listAccessibleRiddles',
         },
         keepOldDataWhileFetchingNew: true,
+        customSuccessProcessor: resp => [...(resp.data)].reverse()
     });
 
     function openRiddle(id: number) {
@@ -59,7 +60,7 @@ const RiddlesPanel: FC = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {[...(usedEndpoint.data)].reverse().map((riddle, index) => {
+                            {usedEndpoint.data.map((riddle, index) => {
                                 return (
                                     <TableRow
                                         key={riddle.id}
