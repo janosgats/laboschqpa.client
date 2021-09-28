@@ -69,6 +69,10 @@ const RiddleSolverDialog: FC<Props> = (props) => {
     }, [props.isOpen]);
 
     function askForHint() {
+        if(!confirm('Biztos akarsz hintet kérni?')){
+            return;
+        }
+
         callJsonEndpoint({
             conf: {
                 url: "/api/up/server/api/riddle/useHint",
