@@ -179,9 +179,19 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
     }
 
-    const iconClassName = props.existingEntity?.isAccepted ? classes.acceptedObjective : null;
-    const titleClassName = props.existingEntity?.isAccepted ? classes.acceptedTitle : classes.title;
-    const subtitleClassName = props.existingEntity?.isAccepted ? classes.acceptedSubtitle: classes.subtitle;
+    let iconClassName: string = null;
+    let titleClassName: string = classes.title;
+    let subtitleClassName: string = classes.subtitle;
+
+    if (props.existingEntity?.isAccepted) {
+        iconClassName = classes.acceptedIcon;
+        titleClassName = classes.acceptedTitle;
+        subtitleClassName = classes.acceptedSubtitle;
+    } else if (props.existingEntity?.hasSubmission) {
+        iconClassName = classes.hasSubmissionIcon;
+        titleClassName = classes.hasSubmissionTitle;
+        subtitleClassName = classes.hasSubmissionSubtitle;
+    }
 
     return (
         <MyPaper>
@@ -280,10 +290,18 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                 </Grid>
             )}
 
-            {props.existingEntity?.isAccepted && (
+            {props.existingEntity?.isAccepted ? (
                 <Typography variant="subtitle1" className={subtitleClassName}>
                     - A csapatod beadását elfogadtuk.
                 </Typography>
+            ) : (
+                <>
+                    {props.existingEntity?.hasSubmission && (
+                        <Typography variant="subtitle1" className={subtitleClassName}>
+                            - A csapatodnak már legalább egy beadása van ezen a feladaton.
+                        </Typography>
+                    )}
+                </>
             )}
             <Box className={classes.richTextEditor}>
                 <RichTextEditor

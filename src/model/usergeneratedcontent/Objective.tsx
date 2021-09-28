@@ -12,4 +12,5 @@ export interface Objective extends UserGeneratedContent {
     isHidden: boolean;
 
     isAccepted?: boolean;
+    hasSubmission?: boolean;
 }

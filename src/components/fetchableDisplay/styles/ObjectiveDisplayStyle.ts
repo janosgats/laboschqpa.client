@@ -29,7 +29,7 @@ export function getStyles(theme: Theme) {
             marginRight: '16px',
         },
 
-        acceptedObjective: {
+        acceptedIcon: {
             color: '#618833',
         },
 
@@ -38,13 +38,28 @@ export function getStyles(theme: Theme) {
             color: '#618833',
         },
 
-
         acceptedSubtitle:{
             textIndent: '50px',
             fontStyle: 'oblique',
             fontSize: 'small',
             color: '#618833',
-        }
+        },
+
+        hasSubmissionIcon: {
+            color: '#ff7700',
+        },
+
+        hasSubmissionTitle:{
+            marginLeft: '4px',
+            color: '#ff7700',
+        },
+
+        hasSubmissionSubtitle:{
+            textIndent: '50px',
+            fontStyle: 'oblique',
+            fontSize: 'small',
+            color: '#ff7700',
+        },
 
         
     };
