@@ -90,6 +90,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/speedDrinking/delete": ["DELETE"],
 
     "/api/riddleEditor/listAll": ["GET"],
+    "/api/riddleEditor/listProgressOfTeams": ["GET"],
     "/api/riddleEditor/riddle": ["GET"],
     "/api/riddleEditor/createNew": ["POST"],
     "/api/riddleEditor/edit": ["POST"],
