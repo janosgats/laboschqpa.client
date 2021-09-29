@@ -62,7 +62,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
     useEffect(() => {
         setIsHintShown(false);
         setIsSolutionShown(false);
-        setSolutionToSubmit("");
+        setSolutionToSubmit('');
         if (props.isOpen) {
             setShouldReloadRiddleList(false);
         }
@@ -101,21 +101,20 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                     solution: solutionToSubmit,
                 },
             },
-        })
-            .then((res) => {
-                if (res.data.isGivenSolutionCorrect) {
-                    if (!res.data.wasAlreadySolved) {
-                        setShouldReloadRiddleList(true);
-                    }
-                    usedEndpoint.reloadEndpoint();
-                    alert("Yaay! It's correct!");
-                } else {
-                    alert("Nah! Try again!");
+        }).then((res) => {
+            if (res.data.isGivenSolutionCorrect) {
+                if (!res.data.wasAlreadySolved) {
+                    setShouldReloadRiddleList(true);
                 }
-            })
-            .catch(() => {
-                EventBus.notifyError("Error while submitting solution");
-            });
+                usedEndpoint.reloadEndpoint();
+                alert("Yaay! It's correct!");
+            } else {
+                alert("Nah! Try again!");
+            }
+            setSolutionToSubmit('');
+        }).catch(() => {
+            EventBus.notifyError("Error while submitting solution");
+        });
     }
 
     const riddle: AccessibleRiddle = usedEndpoint.data;
@@ -215,11 +214,16 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     variant="outlined"
                                     color="secondary"
                                     type="text"
-                                    value={solutionToSubmit}
-                                    onChange={(e) => setSolutionToSubmit(e.target.value)}
                                     label="Tipped"
                                     fullWidth
-
+                                    autoFocus
+                                    value={solutionToSubmit}
+                                    onChange={(e) => setSolutionToSubmit(e.target.value)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            submitSolution();
+                                        }
+                                    }}
                                 />
                                 <Button
                                     className={classes.inputs}
