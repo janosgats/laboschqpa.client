@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    ButtonGroup,
     Dialog,
     DialogActions,
     DialogContent,
@@ -29,6 +30,8 @@ import {FileSizeFormatter} from '~/utils/FileSizeFormatter';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import Responsive from '../Responsive';
 import Spinner from '../Spinner';
+import {copyTextToClipboard} from "~/utils/copyTextToClipboard";
+import LinkIcon from '@material-ui/icons/Link';
 
 interface FileInfo {
     id: number;
@@ -138,7 +141,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
         if (isImage) {
             return (
                 <Box mx="auto" my={2} width="fit-content">
-                    <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name} />
+                    <Image fileId={fileInfo.id} maxSize={300} alt={fileInfo.name}/>
                 </Box>
             );
         }
@@ -153,7 +156,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
                     <Typography variant="h4">File info</Typography>
                 </DialogTitle>
                 <DialogContent>
-                    {usedEndpoint.pending && <Spinner minWidth="10em" />}
+                    {usedEndpoint.pending && <Spinner minWidth="10em"/>}
 
                     {usedEndpoint.failed && (
                         <>
@@ -215,7 +218,7 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
                                             </TableRow>
                                         </TableBody>
                                     </Table>
-                                    <ImagePreview />
+                                    <ImagePreview/>
                                 </>
                             ) : (
                                 <>
@@ -231,28 +234,41 @@ const FileInfoModal: FC<Props> = ({onClose, fileId}) => {
                 <DialogActions>
                     {isVisible && (
                         <>
-                            <Button
-                                component="a"
-                                href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)}
-                                target="_blank"
-                                children="Download original"
-                                color="primary"
-                                variant="outlined"
-                            />
-                            <Button
-                                component="a"
-                                href={FileHostUtils.getUrlOfFile(fileInfo.id)}
-                                target="_blank"
-                                children="Download optimized"
-                                color="primary"
-                                variant="outlined"
-                            />
+                            <ButtonGroup>
+                                <Button
+                                    onClick={(e) => {
+                                        const urlToCopy = FileHostUtils.getUrlOfFile(fileInfo.id, true);
+                                        copyTextToClipboard(urlToCopy);
+                                        EventBus.notifySuccess(urlToCopy, 'Link copied to clipboard');
+                                    }}
+                                    children="Copy URL"
+                                    color="primary"
+                                    variant="outlined"
+                                    startIcon={<LinkIcon/>}
+                                />
+                                <Button
+                                    component="a"
+                                    href={FileHostUtils.getUrlOfOriginalFile(fileInfo.id)}
+                                    target="_blank"
+                                    children="Download original"
+                                    color="primary"
+                                    variant="outlined"
+                                />
+                                <Button
+                                    component="a"
+                                    href={FileHostUtils.getUrlOfFile(fileInfo.id)}
+                                    target="_blank"
+                                    children="Download optimized"
+                                    color="primary"
+                                    variant="outlined"
+                                />
+                                {canUserEditFile() && (
+                                <Button color="secondary" variant="outlined" onClick={onDeleteFileClick}>
+                                    Delete
+                                </Button>
+                            )}
+                            </ButtonGroup>
                         </>
-                    )}
-                    {canUserEditFile() && (
-                        <Button color="secondary" variant="outlined" onClick={onDeleteFileClick}>
-                            Delete
-                        </Button>
                     )}
                 </DialogActions>
             </Box>

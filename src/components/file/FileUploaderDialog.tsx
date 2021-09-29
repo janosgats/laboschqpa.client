@@ -27,6 +27,7 @@ const FileUploaderDialog: FC<Props> = (props) => {
         <Dialog open={props.isOpen} onClose={props.onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{props.uploadedFileType === UploadedFileType.IMAGE ? 'Kép ':'Fájl '} feltöltés</DialogTitle>
             <DialogContent>
+                <Typography variant="caption">Max 30MB</Typography>
                 <Box mx="auto" width="fit-content">
                     <Button variant="outlined" component="label" startIcon={<Publish />} fullWidth>
                         <Typography>{file?.name || 'SEARCH FILE'}</Typography>
