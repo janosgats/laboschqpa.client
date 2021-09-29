@@ -156,6 +156,15 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
         <div>
             <div />
             <List>
+                <a target="_blank" href="https://github.com/janosgats/laboschqpa/issues" rel="noopener noreferrer"
+                   style={{textDecoration: 'none', color: 'red'}}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            {' '}<Icon fontSize="small" style={{color: 'red'}}>bug_report</Icon>{' '}
+                        </ListItemIcon>
+                        <ListItemText primary="Javaslat / Hiba"/>
+                    </ListItem>
+                </a>
                 <ListItem>
                     <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode} />
                 </ListItem>
@@ -182,15 +191,6 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     </ListItemIcon>
                     <ListItemText primary="Kijelentkezés"/>
                 </ListItem>
-                <a target="_blank" href="https://github.com/janosgats/laboschqpa/issues" rel="noopener noreferrer"
-                   style={{textDecoration: 'none', color: 'inherit'}}>
-                    <ListItem button>
-                        <ListItemIcon>
-                            {' '}<Icon fontSize="small">bug_report</Icon>{' '}
-                        </ListItemIcon>
-                        <ListItemText primary="Javaslatom van"/>
-                    </ListItem>
-                </a>
             </List>
         </div>
     );
