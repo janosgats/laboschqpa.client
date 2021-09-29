@@ -1,4 +1,4 @@
-import {Box, Container, Grid} from '@material-ui/core';
+import {Box, Container, Grid, Typography} from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -7,6 +7,7 @@ import NotTeamMemberBanner from '~/components/banner/NotTeamMemberBanner';
 import NewsFeedPanel from '~/components/panel/NewsFeedPanel';
 import ProgramCalendar from '~/components/program/ProgramCalendar';
 import TimeSpan from '~/utils/TimeSpan';
+import MyPaper from "~/components/mui/MyPaper";
 
 const Index: NextPage = () => {
     return (
@@ -23,11 +24,16 @@ const Index: NextPage = () => {
 
             <Grid container spacing={6} direction="column" justify="flex-end" wrap="nowrap">
                 <Grid item>
-                    <ProgramCalendar startDate={new Date(TimeSpan.dateOf(new Date()))} count={2} />
+                    <NewsFeedPanel />
                 </Grid>
 
                 <Grid item>
-                    <NewsFeedPanel />
+                    <MyPaper p={1}>
+                        <Typography variant="h3">Programok</Typography>
+                    </MyPaper>
+                </Grid>
+                <Grid item>
+                    <ProgramCalendar startDate={new Date(TimeSpan.dateOf(new Date()))} count={2} />
                 </Grid>
             </Grid>
         </Container>
