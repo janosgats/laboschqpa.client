@@ -1,12 +1,15 @@
-import {NextPage} from "next";
-import React, {useEffect, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import useEndpoint from "~/hooks/useEndpoint";
 import Spinner from "~/components/Spinner";
 import MyPaper from "~/components/mui/MyPaper";
+import {QrFightArea} from "~/components/qrFight/QrFightTypes";
+import QrFightAreaDisplay from "~/components/qrFight/QrFightAreaDisplay";
 
 interface QrFightAreaResponse {
     id: number;
     name: string;
+    description: string;
+    tagCount: number;
 }
 
 interface QrFightStat {
@@ -14,18 +17,6 @@ interface QrFightStat {
     teamId: number;
     teamName: string;
     submissionCount: number;
-}
-
-interface TeamSubmissionStat {
-    teamId: number;
-    teamName: string;
-    submissionCount: number;
-}
-
-interface QrFightArea {
-    id: number;
-    name: string;
-    submissionStats: TeamSubmissionStat[];
 }
 
 function convertApiDataToDisplayData(areasArray: QrFightAreaResponse[], statisticsArray: QrFightStat[]): QrFightArea[] {
@@ -36,6 +27,8 @@ function convertApiDataToDisplayData(areasArray: QrFightAreaResponse[], statisti
             areaMap.set(area.id, {
                 id: area.id,
                 name: area.name,
+                description: area.description,
+                tagCount: area.tagCount,
                 submissionStats: [],
             });
         }
@@ -60,12 +53,12 @@ function convertApiDataToDisplayData(areasArray: QrFightAreaResponse[], statisti
     );
 }
 
-const QrFightResultsPanel: NextPage = () => {
-    const [dataToDisplay, setDataToDisplay] = useState<QrFightArea[]>(null);
+const QrFightResultsPanel: FC = () => {
+    const [areaDataToDisplay, setAreaDataToDisplay] = useState<QrFightArea[]>(null);
 
     const usedAreas = useEndpoint<QrFightAreaResponse[]>({
         conf: {
-            url: '/api/up/server/api/qrFight/listEnabledAreas',
+            url: '/api/up/server/api/qrFight/listEnabledAreasWithTagCount',
         }
     });
 
@@ -77,13 +70,14 @@ const QrFightResultsPanel: NextPage = () => {
 
     useEffect(() => {
         if (usedAreas.succeeded && usedStatistics.succeeded) {
-            setDataToDisplay(convertApiDataToDisplayData(usedAreas.data, usedStatistics.data))
+            const dataToDisplay: QrFightArea[] = convertApiDataToDisplayData(usedAreas.data, usedStatistics.data);
+            setAreaDataToDisplay(dataToDisplay)
         }
 
     }, [usedAreas.succeeded, usedStatistics.succeeded])
 
     function reloadData() {
-        setDataToDisplay(null);
+        setAreaDataToDisplay(null);
         usedAreas.reloadEndpoint();
         usedStatistics.reloadEndpoint();
     }
@@ -102,38 +96,9 @@ const QrFightResultsPanel: NextPage = () => {
                     </>
                 )}
 
-                {dataToDisplay && (
-                    <>
-                        {dataToDisplay.map(fightArea => {
-                            return (
-                                <>
-                                    <h2 style={{marginBottom: 0}}>
-                                        {fightArea.name}:&nbsp;
-                                        {fightArea.submissionStats[0] ? (
-                                            <>
-                                                <i>{fightArea.submissionStats[0].teamName} kezében</i>
-                                            </>
-                                        ) : (
-                                            <><i>Senki földje </i></>
-                                        )}
-                                    </h2>
-                                    <ol style={{marginTop: 0}}>
-
-                                        {fightArea.submissionStats.map(teamSubmissionStat => {
-                                            return (
-                                                <li>
-                                                    <p>
-                                                        <b>{teamSubmissionStat.teamName}</b> talált <b>{teamSubmissionStat.submissionCount}</b> kódot
-                                                    </p>
-                                                </li>
-                                            );
-                                        })}
-                                    </ol>
-                                </>
-                            );
-                        })}
-                    </>
-                )}
+                {areaDataToDisplay && areaDataToDisplay.map(fightArea => {
+                    return <QrFightAreaDisplay key={fightArea.id} fightArea={fightArea}/>
+                })}
             </MyPaper>
         </div>
     )
