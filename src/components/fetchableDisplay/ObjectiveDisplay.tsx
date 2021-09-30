@@ -44,6 +44,7 @@ import MuiRteUtils from '~/utils/MuiRteUtils';
 import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/ObjectiveDisplayStyle';
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
+import {isValidNonEmptyString} from "~/utils/CommonValidators";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
@@ -287,6 +288,14 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                             </IconButton>
                         </Grid>
                     )}
+                </Grid>
+            )}
+
+            {isValidNonEmptyString(props.existingEntity?.programTitle) && (
+                <Grid item>
+                    <Typography variant="h5" className={titleClassName}>
+                        {props.existingEntity.programTitle}
+                    </Typography>
                 </Grid>
             )}
 

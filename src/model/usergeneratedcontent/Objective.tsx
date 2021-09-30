@@ -11,6 +11,8 @@ export interface Objective extends UserGeneratedContent {
     objectiveType: ObjectiveType;
     isHidden: boolean;
 
+    programTitle?: string;
+
     isAccepted?: boolean;
     hasSubmission?: boolean;
 }
