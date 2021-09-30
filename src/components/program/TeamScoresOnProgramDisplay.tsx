@@ -59,7 +59,7 @@ const TeamScoresOnProgramDisplay: FC<Props> = (props) => {
                                     return (
                                         <Link key={teamWithScore.id}
                                               href={`/teams/team/${getUrlFriendlyString(teamWithScore.name)}?id=${teamWithScore.id}`}>
-                                            <TableRow hover>
+                                            <TableRow hover style={{cursor: 'pointer'}}>
                                                 <TableCell>
                                                     <Typography> {teamWithScore.name} </Typography>{' '}
                                                 </TableCell>
