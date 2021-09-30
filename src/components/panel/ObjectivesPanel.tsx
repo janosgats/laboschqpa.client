@@ -46,6 +46,8 @@ const ObjectivesPanel: FC<Props> = (props) => {
     const [shouldSearchInProgramTitle, setShouldSearchInProgramTitle] = useState<boolean>(true);
     const [shouldSearchInDescription, setShouldSearchInDescription] = useState<boolean>(false);
 
+    const [filteredFetchedObjectives, setFilteredFetchedObjectives] = useState<Objective[]>([]);
+
     const usedEndpoint = useEndpoint<Objective[]>({
         conf: {
             url: '/api/up/server/api/objective/listForDisplay',
@@ -55,9 +57,6 @@ const ObjectivesPanel: FC<Props> = (props) => {
             },
         },
         deps: props.filteredObjectiveTypes,
-        onSuccess: (res) => {
-            infiniteScroller.setMaxLength(res.data.length);
-        },
     });
 
     useEffect(() => {
@@ -68,6 +67,36 @@ const ObjectivesPanel: FC<Props> = (props) => {
         infiniteScroller.resetCurrentShownCount();
         setFilterTextInputValue('');
     }, [props.filteredObjectiveTypes]);
+
+
+    function getFilteredUseEndpointData(): Objective[] {
+        return filterByNormalizedWorldSplit<Objective>(usedEndpoint.data, {
+            inputValue: filterTextInputValue,
+            getOptionLabel: (objective) => {
+                const searchParts: string[] = [];
+
+                if (shouldSearchInTitle) {
+                    searchParts.push(objective.title);
+                }
+
+                if (shouldSearchInProgramTitle && isValidNonEmptyString(objective.programTitle)) {
+                    searchParts.push(objective.programTitle);
+                }
+                if (shouldSearchInDescription) {
+                    searchParts.push(getHumanReadableTextFromRTEContent(objective.description));
+                }
+                return searchParts.join(' ');
+            },
+        })
+    }
+
+    useEffect(() => {
+        if (usedEndpoint.succeeded) {
+            setFilteredFetchedObjectives(getFilteredUseEndpointData())
+            infiniteScroller.setMaxLength(filteredFetchedObjectives.length);
+        }
+    }, [shouldSearchInTitle, shouldSearchInProgramTitle, shouldSearchInDescription, filterTextInputValue,
+        usedEndpoint.succeeded, usedEndpoint.pending, usedEndpoint.data]);
 
     return (
         <div>
@@ -159,24 +188,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
                         </MyPaper>
                     </Grid>
-                    {filterByNormalizedWorldSplit<Objective>(usedEndpoint.data, {
-                        inputValue: filterTextInputValue,
-                        getOptionLabel: (objective) => {
-                            const searchParts: string[] = [];
-
-                            if (shouldSearchInTitle) {
-                                searchParts.push(objective.title);
-                            }
-
-                            if (shouldSearchInProgramTitle && isValidNonEmptyString(objective.programTitle)) {
-                                searchParts.push(objective.programTitle);
-                            }
-                            if (shouldSearchInDescription) {
-                                searchParts.push(getHumanReadableTextFromRTEContent(objective.description));
-                            }
-                            return searchParts.join(' ');
-                        },
-                    }).slice(0, infiniteScroller.shownCount)
+                    {filteredFetchedObjectives?.slice(0, infiniteScroller.shownCount)
                         .map((objective, index) => {
                             return (
                                 <Grid item>
