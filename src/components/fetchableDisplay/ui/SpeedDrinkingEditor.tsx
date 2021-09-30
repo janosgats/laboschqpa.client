@@ -9,7 +9,8 @@ import {dialogStyles} from '~/styles/dialog-styles';
 import {isValidNumber} from '~/utils/CommonValidators';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
-import useGlobalCache, {GlobalCache, GlobalCacheKey} from "~/hooks/useGlobalCache";
+import {useSpeedDrinkingUsersSharedCache} from "~/context/cache/SpeedDrinkingUsersSharedCacheProvider";
+import SharedCache from "~/context/cache/SharedCache";
 
 interface Props {
     isOpen: boolean;
@@ -45,14 +46,15 @@ function getSelectorOptionLabelForUser(userInfo: UserInfo): string {
 const SpeedDrinkingEditor: FC<Props> = (props) => {
     const classes = useStyles();
 
-    const usersCache: GlobalCache<UserInfo[]> = useGlobalCache<UserInfo[]>(GlobalCacheKey.SPEED_DRINKING_USERS);
+    const usersCache: SharedCache<UserInfo[]> = useSpeedDrinkingUsersSharedCache();
     const usedEndpointUsers = useEndpoint<UserInfo[]>({
         conf: {
             url: '/api/up/server/api/user/listAllEnabledWithTeamName',
         },
         onSuccess: resp => {
             usersCache.setData(resp.data);
-        }
+        },
+        enableRequest: !usersCache.isSet,
     });
 
     function getRefreshUsersCacheButtonText() {

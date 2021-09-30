@@ -11,6 +11,7 @@ import CurrentUserProvider from '~/context/CurrentUserProvider';
 import useLocalStorage from '~/hooks/useLocalStorage';
 import {applyOrganicDDoSProtection} from '~/utils/DDoSProtector';
 import '../components/eventDisplay/style/reactNotifications.css';
+import SpeedDrinkingUsersSharedCacheProvider from "~/context/cache/SpeedDrinkingUsersSharedCacheProvider";
 
 function getBackgroundImageDivStyle(isDarkMode: boolean): CSSProperties {
     let backgroundImageUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/background/light-1.svg';
@@ -66,9 +67,11 @@ function MyApp({Component, pageProps}): JSX.Element {
                 <ClientRender>{() => <div style={getBackgroundImageDivStyle(darkMode)}/>}</ClientRender>
                 <EventDisplayContainer/>
                 <CurrentUserProvider>
-                    <NavBar darkMode={darkMode} setDarkMode={setDarkMode}>
-                        <Component {...pageProps} />
-                    </NavBar>
+                    <SpeedDrinkingUsersSharedCacheProvider>
+                        <NavBar darkMode={darkMode} setDarkMode={setDarkMode}>
+                            <Component {...pageProps} />
+                        </NavBar>
+                    </SpeedDrinkingUsersSharedCacheProvider>
                 </CurrentUserProvider>
             </ThemeProvider>
         </>
