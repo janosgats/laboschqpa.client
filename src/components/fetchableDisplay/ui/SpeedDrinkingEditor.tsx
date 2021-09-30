@@ -1,4 +1,4 @@
-import {Button, createStyles, Dialog, DialogContent, makeStyles, TextField, Theme} from '@material-ui/core';
+import {Button, createStyles, Dialog, DialogContent, Grid, makeStyles, TextField, Theme} from '@material-ui/core';
 import {Autocomplete} from '@material-ui/lab';
 import React, {FC} from 'react';
 import SpeedDrinkingCategorySelector from '~/components/selector/SpeedDrinkingCategorySelector';
@@ -118,24 +118,32 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                         />
 
                         {props.isCreatingNew && (
-                            <Button variant="contained" onClick={props.onSave} disabled={props.isApiCallPending}>
+                            <Button variant="contained" color="primary" onClick={props.onSave} disabled={props.isApiCallPending}>
                                 Létrehoz
                             </Button>
                         )}
                         {!props.isCreatingNew && (
                             <>
-                                <Button variant="contained" onClick={props.onSave}
-                                        disabled={props.isApiCallPending}>
-                                    Szerkesztés
-                                </Button>
-                                <Button variant="contained" onClick={props.onCancel}
-                                        disabled={props.isApiCallPending}>
-                                    Mégse
-                                </Button>
-                                <Button variant="contained" onClick={props.onDelete}
-                                        disabled={props.isApiCallPending}>
-                                    Törlés
-                                </Button>
+                                <Grid container direction="column" spacing={2} justify="center">
+                                    <Grid item>
+                                        <Button variant="contained" onClick={props.onSave} color="primary"
+                                                disabled={props.isApiCallPending} fullWidth>
+                                            Mentés
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="outlined" onClick={props.onCancel} color="secondary"
+                                                disabled={props.isApiCallPending} fullWidth>
+                                            Mégsem
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button variant="contained" onClick={props.onDelete}  color="secondary"
+                                                disabled={props.isApiCallPending} fullWidth>
+                                            Törlés
+                                        </Button>
+                                    </Grid>
+                                </Grid>
                             </>
                         )}
                     </>
