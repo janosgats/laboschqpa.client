@@ -85,6 +85,7 @@ const SpeedDrinkingPanel: FC<Props> = (props) => {
                                                 showCategory: true,
                                                 showName: true,
                                                 showTeam: true,
+                                                defaultEditorCategory: props.filteredCategory ?? SpeedDrinkingCategory.BEER,
                                             }}
                                             onCreatedNew={(id) => {
                                                 setNewlyCreatedSpeedDrinkingIds([...newlyCreatedSpeedDrinkingIds, id]);

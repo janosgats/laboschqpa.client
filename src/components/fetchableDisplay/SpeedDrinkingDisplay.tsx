@@ -12,7 +12,7 @@ import {SpeedDrinkingCategory, speedDrinkingCategoryData,} from "~/enums/SpeedDr
 import {SpeedDrinking} from "~/model/usergeneratedcontent/SpeedDrinking";
 import {isValidNumber} from "~/utils/CommonValidators";
 import SpeedDrinkingEditor from "~/components/fetchableDisplay/ui/SpeedDrinkingEditor";
-import {Button, TableCell, TableHead, TableRow} from "@material-ui/core";
+import {Button, TableCell, TableRow} from "@material-ui/core";
 
 export interface SaveSpeedDrinkingCommand {
     drinkerUserId: number;
@@ -29,34 +29,27 @@ export interface SpeedDrinkingDisplayExtraProps {
     showCategory: boolean;
     showName: boolean;
     showTeam: boolean;
+    defaultEditorCategory?: SpeedDrinkingCategory;
 }
 
-const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking,
-    SaveSpeedDrinkingCommand,
-    SpeedDrinkingDisplayExtraProps> = (props) => {
-    const defaultDrinkerUserId = props.isCreatingNew
-        ? null
-        : props.existingEntity.drinkerUserId;
+const SpeedDrinkingDisplay: FetchableDisplay<SpeedDrinking, SaveSpeedDrinkingCommand, SpeedDrinkingDisplayExtraProps>
+    = (props) => {
+    const defaultDrinkerUserId = props.isCreatingNew ? null : props.existingEntity.drinkerUserId;
     const defaultTime = props.isCreatingNew ? 0 : props.existingEntity.time;
-    const defaultCategory = props.isCreatingNew
-        ? SpeedDrinkingCategory.BEER
-        : props.existingEntity.category;
+    const defaultCategory = props.isCreatingNew ? (props.defaultEditorCategory ?? SpeedDrinkingCategory.BEER) : props.existingEntity.category;
     const defaultNote = props.isCreatingNew ? "" : props.existingEntity.note;
 
     const currentUser = useContext(CurrentUserContext);
     const [isEdited, setIsEdited] = useState<boolean>(props.isCreatingNew);
     const [isMetaInfoShown, setIsMetaInfoShown] = useState<boolean>(false);
 
-    const [drinkerUserId, setDrinkerUserId] =
-        useState<number>(defaultDrinkerUserId);
+    const [drinkerUserId, setDrinkerUserId] = useState<number>(defaultDrinkerUserId);
     const [time, setTime] = useState<number>(defaultTime);
-    const [category, setCategory] =
-        useState<SpeedDrinkingCategory>(defaultCategory);
+    const [category, setCategory] = useState<SpeedDrinkingCategory>(defaultCategory);
     const [note, setNote] = useState<string>(defaultNote);
 
     const [author, setAuthor] = useState<Author>();
-    const [isAuthorFetchingPending, setIsAuthorFetchingPending] =
-        useState<boolean>(false);
+    const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
 
     useEffect(() => {
         setDrinkerUserId(defaultDrinkerUserId);
