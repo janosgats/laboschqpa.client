@@ -8,7 +8,7 @@ import {UserInfo} from '~/model/UserInfo';
 import {dialogStyles} from '~/styles/dialog-styles';
 import {isValidNumber} from '~/utils/CommonValidators';
 import UserNameFormatter from '~/utils/UserNameFormatter';
-import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
+import {filterByNormalizedWorldSplit} from "~/utils/filterByNormalizedWorldSplit";
 import {useSpeedDrinkingUsersSharedCache} from "~/context/cache/SpeedDrinkingUsersSharedCacheProvider";
 import SharedCache from "~/context/cache/SharedCache";
 
@@ -94,7 +94,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                                     props.setDrinkerUserId(val.userId);
                                 }
                             }}
-                            filterOptions={filterByNormalizedLowercaseWorldSplit}
+                            filterOptions={filterByNormalizedWorldSplit}
                         />
 
                         <SpeedDrinkingCategorySelector value={props.category} onChange={props.setCategory}/>

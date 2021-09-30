@@ -10,17 +10,18 @@ stringReplacementMap.set('ő', 'o');
 stringReplacementMap.set('ú', 'u');
 stringReplacementMap.set('ü', 'u');
 stringReplacementMap.set('ű', 'u');
-stringReplacementMap.set('Ł', 'L');
-stringReplacementMap.set('$', 's');
-stringReplacementMap.set('_', ' ');
-stringReplacementMap.set('@', ' ');
-stringReplacementMap.set('#', ' ');
-stringReplacementMap.set('~', ' ');
-stringReplacementMap.set('+', ' ');
-stringReplacementMap.set('.', ' ');
-stringReplacementMap.set('/', ' ');
+stringReplacementMap.set('Ł', ' Ł ');
+stringReplacementMap.set('$', ' $ ');
+stringReplacementMap.set('@', ' @ ');
+stringReplacementMap.set('_', ' _ ');
+stringReplacementMap.set('-', ' - ');
+stringReplacementMap.set('#', ' # ');
+stringReplacementMap.set('~', ' ~ ');
+stringReplacementMap.set('+', ' + ');
+stringReplacementMap.set('.', ' . ');
+stringReplacementMap.set('/', ' / ');
 
-export function filterByNormalizedLowercaseWorldSplit<T>(options: T[], state: FilterOptionsState<unknown>): T[] {
+export function filterByNormalizedWorldSplit<T>(options: T[], state: FilterOptionsState<unknown>): T[] {
     const inputValue = normalizeString(state.inputValue);
     const inputWords = inputValue.split(/\s+/)
 

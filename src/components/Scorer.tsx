@@ -12,7 +12,7 @@ import Spinner from './Spinner';
 import {ObjectiveAcceptance} from "~/model/ObjectiveAcceptance";
 import {Autocomplete} from "@material-ui/lab";
 import {TextField} from "@material-ui/core";
-import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
+import {filterByNormalizedWorldSplit} from "~/utils/filterByNormalizedWorldSplit";
 
 interface Props {
     defaultObjectiveId?: number;
@@ -171,7 +171,7 @@ const Scorer: FC<Props> = (props) => {
                                 setSelectedObjectiveId(Number.parseInt(val.id as any));
                             }
                         }}
-                        filterOptions={filterByNormalizedLowercaseWorldSplit}
+                        filterOptions={filterByNormalizedWorldSplit}
                     />
                     <br/>
                     <Autocomplete
@@ -185,7 +185,7 @@ const Scorer: FC<Props> = (props) => {
                                 setSelectedTeamId(Number.parseInt(val.id as any));
                             }
                         }}
-                        filterOptions={filterByNormalizedLowercaseWorldSplit}
+                        filterOptions={filterByNormalizedWorldSplit}
                     />
                     <br/>
 

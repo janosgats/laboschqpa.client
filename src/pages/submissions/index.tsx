@@ -28,7 +28,7 @@ import {Objective} from '~/model/usergeneratedcontent/Objective';
 import {isValidNumber} from '~/utils/CommonValidators';
 import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import {styles} from '../../styles/submissionStyles/submissionsPage.styles';
-import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
+import {filterByNormalizedWorldSplit} from "~/utils/filterByNormalizedWorldSplit";
 import {Autocomplete} from "@material-ui/lab";
 
 const NOT_FILTERED_TEAM_INFO: TeamInfo = {
@@ -111,7 +111,7 @@ const Index: NextPage = () => {
                                             setFilteredObjectiveId(Number.parseInt(val.id as any));
                                         }
                                     }}
-                                    filterOptions={filterByNormalizedLowercaseWorldSplit}
+                                    filterOptions={filterByNormalizedWorldSplit}
                                 />
 
                             </FormControl>
@@ -186,7 +186,7 @@ const Index: NextPage = () => {
                                             setFilteredTeamId(Number.parseInt(val.id as any));
                                         }
                                     }}
-                                    filterOptions={filterByNormalizedLowercaseWorldSplit}
+                                    filterOptions={filterByNormalizedWorldSplit}
                                 />
 
                             </FormControl>
