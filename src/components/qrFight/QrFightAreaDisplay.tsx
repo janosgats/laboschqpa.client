@@ -40,7 +40,7 @@ const QrFightAreaDisplay: FC<Props> = (props) => {
                         options={{
                             pieSliceText: 'label',
                             is3D: true,
-                            sliceVisibilityThreshold: 0.1,
+                            sliceVisibilityThreshold: 0.05,
                             backgroundColor: "transparent",
                             legend: {textStyle: {color: theme.palette.text.primary}},
                             chartArea: {width: '100%', height: '100%'},
