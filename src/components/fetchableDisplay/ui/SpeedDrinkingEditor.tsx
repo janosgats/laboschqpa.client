@@ -54,7 +54,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
         onSuccess: resp => {
             usersCache.setData(resp.data);
         },
-        enableRequest: !usersCache.isSet,
+        enableRequest: !usersCache.isSet && props.isOpen,
     });
 
     function getRefreshUsersCacheButtonText() {

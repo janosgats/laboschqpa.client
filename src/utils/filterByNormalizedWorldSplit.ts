@@ -21,7 +21,7 @@ stringReplacementMap.set('+', ' + ');
 stringReplacementMap.set('.', ' . ');
 stringReplacementMap.set('/', ' / ');
 
-export function filterByNormalizedWorldSplit<T>(options: T[], state: FilterOptionsState<unknown>): T[] {
+export function filterByNormalizedWorldSplit<T>(options: T[], state: FilterOptionsState<T>): T[] {
     const inputValue = normalizeString(state.inputValue);
     const inputWords = inputValue.split(/\s+/)
 
