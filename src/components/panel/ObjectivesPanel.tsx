@@ -92,8 +92,9 @@ const ObjectivesPanel: FC<Props> = (props) => {
 
     useEffect(() => {
         if (usedEndpoint.succeeded) {
-            setFilteredFetchedObjectives(getFilteredUseEndpointData())
-            infiniteScroller.setMaxLength(filteredFetchedObjectives.length);
+            const filteredData = getFilteredUseEndpointData();
+            setFilteredFetchedObjectives(filteredData)
+            infiniteScroller.setMaxLength(filteredData.length);
             infiniteScroller.resetCurrentShownCount();
         }
     }, [shouldSearchInTitle, shouldSearchInProgramTitle, shouldSearchInDescription, filterTextInputValue,
