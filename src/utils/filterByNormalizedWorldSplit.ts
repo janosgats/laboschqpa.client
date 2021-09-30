@@ -10,7 +10,7 @@ stringReplacementMap.set('ő', 'o');
 stringReplacementMap.set('ú', 'u');
 stringReplacementMap.set('ü', 'u');
 stringReplacementMap.set('ű', 'u');
-stringReplacementMap.set('Ł', ' Ł ');
+stringReplacementMap.set('Ł', 'L');
 stringReplacementMap.set('$', ' $ ');
 stringReplacementMap.set('@', ' @ ');
 stringReplacementMap.set('_', ' _ ');

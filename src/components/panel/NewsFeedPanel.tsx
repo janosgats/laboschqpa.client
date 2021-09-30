@@ -88,7 +88,7 @@ const NewsFeedPanel: FC = ({children}) => {
                                 onClick={() => infiniteScroller.increaseShownCount(5)}
                                 style={{margin: '8px'}}
                             >
-                                &darr; Show more &darr;
+                                &darr; Show more News &darr;
                             </Button>
                         </Grid>
                     </MyPaper>
