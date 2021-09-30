@@ -1,4 +1,14 @@
-import {Button, ButtonGroup, Collapse, createStyles, Grid, IconButton, makeStyles, Theme, Typography} from '@material-ui/core';
+import {
+    Button,
+    ButtonGroup,
+    Collapse,
+    createStyles,
+    Grid,
+    IconButton,
+    makeStyles,
+    Theme,
+    Typography
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -196,7 +206,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                 </Grid>
 
                 <Grid item>
-                    <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} />
+                    <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} displayConsiderEmbeddingFileAsImageAlert={true} />
                 </Grid>
                 {isEdited && props.isCreatingNew && (
                     <Grid item>

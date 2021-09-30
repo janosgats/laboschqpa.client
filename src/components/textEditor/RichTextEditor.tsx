@@ -74,6 +74,7 @@ const RichTextEditor: FC<Props> = (props) => {
                 }}
                 isOpen={isUploadImageModalOpen}
                 onClose={() => setIsUploadImageModalOpen(false)}
+                overrideUploadButtonText="Kép beágyazása"
             />
             <ReactPlayerBlockEditor
                 value={{url: '', hideControls: false, width: 512, height: 288, justification: 'center'}}

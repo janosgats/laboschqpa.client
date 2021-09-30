@@ -46,6 +46,7 @@ interface Props {
      * Set this if you want to limit allowed file types
      */
     onlyAllowUploadedFileType?: UploadedFileType;
+    displayConsiderEmbeddingFileAsImageAlert?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
@@ -176,6 +177,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                         onUploadInitiation={handleUploadInitiation}
                         isOpen={isFileUploaderShown}
                         onClose={() => setIsFileUploaderShown(false)}
+                        displayConsiderEmbeddingFileAsImageAlert={props.displayConsiderEmbeddingFileAsImageAlert}
                     />
                 </>
             )}
