@@ -55,6 +55,7 @@ const RiddlesPanel: FC = () => {
                     >
                         <TableHead>
                             <TableRow>
+                                <TableCell align="center" ><Typography variant="h5">#</Typography></TableCell>
                                 <TableCell align="center" ><Typography variant="h5"> <b>Cím</b></Typography></TableCell>
                                 <TableCell align="center" ><Typography variant="h5"> <b>Megoldva?</b></Typography></TableCell>
                             </TableRow>
@@ -67,8 +68,15 @@ const RiddlesPanel: FC = () => {
                                         onClick={() => openRiddle(riddle.id)}
                                         className={classes.tableRow}
                                     >
-                                        <TableCell align="center"><Typography variant="body1">{riddle.title}</Typography></TableCell>
-                                        <TableCell align="center"><Typography variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography></TableCell>
+                                        <TableCell align="center">
+                                            <Typography variant="body1">{usedEndpoint.data.length - index}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Typography variant="body1">{riddle.title}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Typography variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
