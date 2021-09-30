@@ -24,8 +24,8 @@ export const objectiveTypeData: Record<ObjectiveType, ObjectiveTypeDataEntry> = 
     },
     [ObjectiveType.ACHIEVEMENT]: {
         objectiveType: ObjectiveType.ACHIEVEMENT,
-        displayName: "Achí",
-        shortDisplayName: "Achi",
+        displayName: "Acsi",
+        shortDisplayName: "Acsi",
         icon: RedeemIcon,
     },
 };

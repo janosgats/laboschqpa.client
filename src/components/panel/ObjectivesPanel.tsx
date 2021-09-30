@@ -103,7 +103,7 @@ const ObjectivesPanel: FC<Props> = (props) => {
                                 <Grid item>
                                     <TextField autoFocus
                                                fullWidth
-                                               label="Feladatok szűrése"
+                                               label="Feladatok / Acsik szűrése"
                                                value={filterTextInputValue}
                                                onChange={(e) => setFilterTextInputValue(e.target.value)}
                                                InputProps={{

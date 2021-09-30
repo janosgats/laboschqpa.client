@@ -87,7 +87,7 @@ const Index: NextPage = () => {
                                     textColor="secondary"
                                 >
                                     <Tab label="Feladatok" value={ObjectiveType.MAIN_OBJECTIVE} />
-                                    <Tab label="Acsík" value={ObjectiveType.ACHIEVEMENT} />
+                                    <Tab label="Acsik" value={ObjectiveType.ACHIEVEMENT} />
                                 </Tabs>
                             </MyPaper>
                         </Grid>
