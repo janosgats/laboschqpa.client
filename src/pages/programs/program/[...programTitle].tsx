@@ -12,6 +12,7 @@ import useEndpoint from '~/hooks/useEndpoint';
 import TeamScoreResponse from '~/model/TeamScoreResponse';
 import {separatedPoints} from '~/pages/teams';
 import {prefixWordWithArticle} from '~/utils/wordPrefixingUtils';
+import TeamScoresOnProgramDisplay from "~/components/program/TeamScoresOnProgramDisplay";
 
 interface ProgramPageContextProps {
     programId: number;
@@ -94,6 +95,10 @@ const Index: NextPage = () => {
 
                         <Grid item>
                             <ObjectivesBelongingToProgramPanel programId={programId} filteredObjectiveType={selectedTab} />
+                        </Grid>
+
+                        <Grid item>
+                            <TeamScoresOnProgramDisplay programId={programId} />
                         </Grid>
                     </Grid>
                 )}

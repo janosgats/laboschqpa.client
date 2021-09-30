@@ -135,6 +135,7 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/program/delete": ["DELETE"],
     "/api/program/edit": ["POST"],
     "/api/program/program": ["GET"],
+    "/api/program/listTeamScoresOnProgram": ["GET"],
 
     "/api/qrFight/fightStats": ["GET"],
     "/api/qrFight/listEnabledAreasWithTagCount": ["GET"],
