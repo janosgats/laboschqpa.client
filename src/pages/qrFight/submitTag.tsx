@@ -94,7 +94,7 @@ const Index: NextPage = () => {
 
                 {usedEndpoint.failed && (
                     <>
-                        <ErrorDetails err={usedEndpoint.error}/>
+                        <ErrorDetails err={usedEndpoint.errorData}/>
                     </>
                 )}
 

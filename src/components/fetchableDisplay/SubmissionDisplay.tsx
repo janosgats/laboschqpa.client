@@ -5,9 +5,10 @@ import {
     createStyles,
     Grid,
     IconButton,
+    Link as MuiLink,
     makeStyles,
     Theme,
-    Typography
+    Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -36,6 +37,8 @@ import EventBus from '~/utils/EventBus';
 import MuiRteUtils from '~/utils/MuiRteUtils';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import MyPaper from '../mui/MyPaper';
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
+import Link from 'next/link';
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
@@ -161,19 +164,24 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
             <Grid container direction="column" spacing={0}>
                 <Grid item container alignItems="center" justify="space-between" className={classes.header}>
                     {props.existingEntity && (
-                        <Typography variant="h6">
-                            Beadta{' '}
-                            <b>
-                                <i>{props.existingEntity.teamName}</i>
-                            </b>{' '}
-                            csapata.
-                        </Typography>
+                        <Link
+                            href={`/submissions/submission/for_${getUrlFriendlyString(props.existingEntity.objectiveTitle)}_by_${getUrlFriendlyString(props.existingEntity.teamName)}/?id=${props.existingEntity.id}`}>
+                            <MuiLink style={{cursor: 'pointer'}}>
+                                <Typography variant="h6">
+                                    Beadta{' '}
+                                    <b>
+                                        <i>{props.existingEntity.teamName}</i>
+                                    </b>{' '}
+                                    csapata.
+                                </Typography>
+                            </MuiLink>
+                        </Link>
                     )}
 
                     {!isEdited && canEditSubmission() && (
                         <>
                             <IconButton onClick={() => setIsEdited(true)}>
-                                <EditIcon color="action" />
+                                <EditIcon color="action"/>
                             </IconButton>
                         </>
                     )}
@@ -182,13 +190,13 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                         <>
                             <ButtonGroup variant="text" size="large">
                                 <IconButton onClick={doSave} disabled={props.isApiCallPending}>
-                                    <SaveIcon color="primary" />
+                                    <SaveIcon color="primary"/>
                                 </IconButton>
                                 <IconButton onClick={doDelete} disabled={props.isApiCallPending}>
-                                    <DeleteIcon color="secondary" />
+                                    <DeleteIcon color="secondary"/>
                                 </IconButton>
                                 <IconButton onClick={doCancelEdit} disabled={props.isApiCallPending}>
-                                    <CloseIcon color="action" />
+                                    <CloseIcon color="action"/>
                                 </IconButton>
                             </ButtonGroup>
                         </>
@@ -206,7 +214,8 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                 </Grid>
 
                 <Grid item>
-                    <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited} displayConsiderEmbeddingFileAsImageAlert={true} />
+                    <AttachmentPanel usedAttachments={usedAttachments} isEdited={isEdited}
+                                     displayConsiderEmbeddingFileAsImageAlert={true}/>
                 </Grid>
                 {isEdited && props.isCreatingNew && (
                     <Grid item>
@@ -225,7 +234,8 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                 {!isEdited && (
                     <Grid item>
                         {currentUser.hasAuthority(Authority.TeamScorer) && (
-                            <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="primary" fullWidth>
+                            <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)}
+                                    color="primary" fullWidth>
                                 Pontozás
                             </Button>
                         )}
@@ -249,7 +259,7 @@ const SubmissionDisplay: FetchableDisplay<Submission, SaveSubmissionCommand, Sub
                                 </Typography>
                             )}
                             <IconButton onClick={fetchAuthor} disabled={isAuthorFetchingPending}>
-                                <InfoOutlinedIcon color="secondary" />
+                                <InfoOutlinedIcon color="secondary"/>
                             </IconButton>
                         </Grid>
 

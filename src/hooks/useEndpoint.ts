@@ -22,7 +22,7 @@ export interface UsedEndpoint<R> {
     pending: boolean;
     succeeded: boolean;
     failed: boolean;
-    error: any;
+    errorData: any;
 
     reloadEndpoint: () => void;
 }
@@ -117,7 +117,7 @@ const useEndpoint = <T, R = T>({
         pending: pending,
         succeeded: succeeded,
         failed: failed,
-        error: error,
+        errorData: error,
         reloadEndpoint: refreshOnChange,
     };
 };

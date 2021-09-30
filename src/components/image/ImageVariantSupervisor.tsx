@@ -40,7 +40,7 @@ const ControlsInDialog: FC<ControlsInModalProps> = (props) => {
     return (
         <MyPaper>
             {usedEndpoint.pending && <Spinner/>}
-            {usedEndpoint.error && <button onClick={() => usedEndpoint.reloadEndpoint()}>Error. Retry?</button>}
+            {usedEndpoint.failed && <button onClick={() => usedEndpoint.reloadEndpoint()}>Error. Retry?</button>}
             {usedEndpoint.succeeded && (
                 <>
                     <p>Variants of {props.originalFileId}:
