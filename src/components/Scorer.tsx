@@ -10,6 +10,9 @@ import {isValidNumber} from '~/utils/CommonValidators';
 import EventBus from '~/utils/EventBus';
 import Spinner from './Spinner';
 import {ObjectiveAcceptance} from "~/model/ObjectiveAcceptance";
+import {Autocomplete} from "@material-ui/lab";
+import {TextField} from "@material-ui/core";
+import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
 
 interface Props {
     defaultObjectiveId?: number;
@@ -157,45 +160,33 @@ const Scorer: FC<Props> = (props) => {
             {fetchedObjectives && fetchedTeams && (
                 <>
                     <br/>
-                    <label>Objective: </label>
-                    <select
-                        value={selectedObjectiveId}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (isValidNumber(val)) {
-                                setSelectedObjectiveId(Number.parseInt(val));
+                    <Autocomplete
+                        style={{width: '350px', padding: '10px 0'}}
+                        options={fetchedObjectives}
+                        getOptionLabel={(objective: Objective) => `${objectiveTypeData[objective.objectiveType]?.displayName} > ${objective.title}`}
+                        renderInput={(params) => <TextField {...params} label="Feladat" variant="outlined" />}
+                        value={fetchedObjectives.filter((o) => o.id === selectedObjectiveId)[0]}
+                        onChange={(e, val: Objective) => {
+                            if (val && isValidNumber(val.id)) {
+                                setSelectedObjectiveId(Number.parseInt(val.id as any));
                             }
                         }}
-                    >
-                        <option>Select an objective...</option>
-                        {fetchedObjectives.map((objective) => {
-                            return (
-                                <option key={objective.id} value={objective.id}>
-                                    {`${objectiveTypeData[objective.objectiveType].shortDisplayName} > ${objective.title}`}
-                                </option>
-                            );
-                        })}
-                    </select>
+                        filterOptions={filterByNormalizedLowercaseWorldSplit}
+                    />
                     <br/>
-                    <label>Team: </label>
-                    <select
-                        value={selectedTeamId}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (isValidNumber(val)) {
-                                setSelectedTeamId(Number.parseInt(val));
+                    <Autocomplete
+                        style={{width: '350px', padding: '10px 0'}}
+                        options={fetchedTeams}
+                        getOptionLabel={(team: TeamInfo) => team.name + (team.archived ? ' (archive)' : '')}
+                        renderInput={(params) => <TextField {...params} label="Csapat" variant="outlined" />}
+                        value={fetchedTeams.filter((t) => t.id === selectedTeamId)[0]}
+                        onChange={(e, val: TeamInfo) => {
+                            if (val && isValidNumber(val.id)) {
+                                setSelectedTeamId(Number.parseInt(val.id as any));
                             }
                         }}
-                    >
-                        <option>Select a team...</option>
-                        {fetchedTeams.map((team) => {
-                            return (
-                                <option key={team.id} value={team.id}>
-                                    {team.name + (team.archived ? ' (archive)' : '')}
-                                </option>
-                            );
-                        })}
-                    </select>
+                        filterOptions={filterByNormalizedLowercaseWorldSplit}
+                    />
                     <br/>
 
                     {usedEndpointTeamScore.pending && <Spinner/>}

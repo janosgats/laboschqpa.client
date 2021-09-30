@@ -9,6 +9,7 @@ import {UserInfo} from '~/model/UserInfo';
 import {dialogStyles} from '~/styles/dialog-styles';
 import {isValidNumber} from '~/utils/CommonValidators';
 import UserNameFormatter from '~/utils/UserNameFormatter';
+import {filterByNormalizedLowercaseWorldSplit} from "~/utils/filterByNormalizedLowercaseWorldSplit";
 
 interface Props {
     isOpen: boolean;
@@ -84,6 +85,7 @@ const SpeedDrinkingEditor: FC<Props> = (props) => {
                                         props.setDrinkerUserId(val.userId);
                                     }
                                 }}
+                                filterOptions={filterByNormalizedLowercaseWorldSplit}
                             />
 
                             <SpeedDrinkingCategorySelector value={props.category} onChange={props.setCategory} />
