@@ -5,6 +5,7 @@ import UnauthorizedApiCallException from "~/exception/UnauthorizedApiCallExcepti
 import {ApiErrorDescriptor} from "~/utils/api/ApiErrorDescriptorUtils";
 import {fieldValidationFailed_FIELD_VALIDATION_FAILED, upload_STREAM_LENGTH_LIMIT_EXCEEDED} from "~/enums/ApiErrors";
 import TooManyRequestsRateLimitException from "~/exception/TooManyRequestsRateLimitException";
+import nonRegexReplaceAll from "~/utils/nonRegexReplaceAll";
 
 EventBus.subscribe(EventType.EXCEPTION, "ExceptionEventDisplay", (event => {
     //TODO: Display exceptions
@@ -33,7 +34,7 @@ function displayApiErrorDescriptor(descriptor: ApiErrorDescriptor) {
 
 function formatApiErrorName(descriptor: ApiErrorDescriptor) {
     let name = descriptor.apiErrorName;
-    name = String(name).replaceAll('_', ' ');
+    name = nonRegexReplaceAll(String(name), '_', ' ');
     name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     return name;
 }

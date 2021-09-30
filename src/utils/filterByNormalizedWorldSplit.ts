@@ -1,4 +1,5 @@
 import {FilterOptionsState} from "@material-ui/lab";
+import nonRegexReplaceAll from "~/utils/nonRegexReplaceAll";
 
 const stringReplacementMap = new Map<string, string>();
 stringReplacementMap.set('á', 'a');
@@ -35,8 +36,8 @@ export function filterByNormalizedWorldSplit<T>(options: T[], state: FilterOptio
 function normalizeString(original: string) {
     let processed = original.toLowerCase();
     stringReplacementMap.forEach((replaceTo, replaceFrom) => {
-        processed = processed.replaceAll(replaceFrom, replaceTo.toLowerCase())
-        processed = processed.replaceAll(replaceFrom.toLowerCase(), replaceTo.toLowerCase())
+        processed = nonRegexReplaceAll(processed, replaceFrom, replaceTo.toLowerCase())
+        processed = nonRegexReplaceAll(processed, replaceFrom.toLowerCase(), replaceTo.toLowerCase())
     });
     return processed;
 }
