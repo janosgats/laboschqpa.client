@@ -15,7 +15,7 @@ const QrFightAreaDisplay: FC<Props> = (props) => {
 
     return (
         <>
-            <h2 style={{marginBottom: 0}}>
+            <Typography style={{marginBottom: 0,marginTop: 0,}} variant="h4">
                 {fightArea.name}:&nbsp;
                 {fightArea.submissionStats[0] ? (
                     <>
@@ -24,7 +24,7 @@ const QrFightAreaDisplay: FC<Props> = (props) => {
                 ) : (
                     <><i>Senki földje </i></>
                 )}
-            </h2>
+            </Typography>
             <p style={{marginBottom: 0, marginTop: 0}}><i>{fightArea.description}</i></p>
             <Typography variant="caption">összesen <b>{fightArea.tagCount}db megtalálható kód</b></Typography>
             {fightArea.submissionStats?.length > 0 && (<>
