@@ -8,13 +8,23 @@ export default function nonRegexReplaceAll(subject: string, searchValue: string,
     if (!isValidNonEmptyString(subject)) {
         return '';
     }
-    //TODO: this has a bug that breaks speeddrinking user slection. Fix it later. now just "reverting" it with a quick github edit
-return subject.replaceAll(searchValue,replaceValue);
-    let processed = subject;
 
-    while (processed.includes(searchValue)) {
-        processed = processed.replace(searchValue, replaceValue);
+    let replaced = '';
+
+    const searchLength: number = searchValue.length;
+    if (searchLength === 0) {
+        return subject;
     }
 
-    return processed;
+    for (let i = 0; i < subject.length;) {
+        if (i < subject.length - searchLength + 1 && subject.substring(i, i + searchLength) === searchValue) {
+            replaced += replaceValue;
+            i += searchLength;
+        } else {
+            replaced += subject[i];
+            ++i;
+        }
+    }
+
+    return replaced;
 }
