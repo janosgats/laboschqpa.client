@@ -12,15 +12,17 @@ const QpaRadio: FC = () => {
 
     const iframeTheme = theme.palette.type === "dark" ? "dark" : "light";
     return (
-        <Grid container direction="row" justify="center" justifyContent="center">
-            <Grid item container direction="column" spacing={1} justify="center" justifyContent="center">
-                <Grid item style={{marginBottom: '-55px'}}>
+        <Grid container direction="row" justify="center" spacing={0} justifyContent="center">
+            <Grid item container direction="column" spacing={0} justify="center" justifyContent="center">
+                <Grid item spacing={0}>
                     <iframe src={`https://qparadio.sch.bme.hu/public/radio_qpa/embed?theme=${iframeTheme}`}
                             frameBorder="0"
+                            height={107}
+                            scrolling="no"
                     />
                 </Grid>
 
-                <Grid item>
+                <Grid item style={{marginTop: 0}} spacing={0}>
                     <Typography variant="caption">
                         <i>
                             <a href="https://qparadio.sch.bme.hu" target="_blank"><b><RedSpan>QpaRádió.sch</RedSpan></b></a>
