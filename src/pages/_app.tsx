@@ -42,7 +42,7 @@ function MyApp({Component, pageProps}): JSX.Element {
                  main: '#00c4ff'
             }
         },
-    });console.log(theme.palette.primary.main)
+    });
 
     const router = useRouter();
 

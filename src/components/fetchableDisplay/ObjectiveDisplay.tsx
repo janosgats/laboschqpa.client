@@ -45,6 +45,8 @@ import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/ObjectiveDisplayStyle';
 import DateTimeFormatter from "~/utils/DateTimeFormatter";
 import {isValidNonEmptyString} from "~/utils/CommonValidators";
+import Link from "next/link";
+import {prefixWordWithArticle} from "~/utils/wordPrefixingUtils";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
@@ -298,20 +300,20 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                     </Typography>
                 </Grid>
             )}
-
-            {props.existingEntity?.isAccepted ? (
-                <Typography variant="subtitle1" className={subtitleClassName}>
-                    - A csapatod beadását elfogadtuk.
-                </Typography>
-            ) : (
-                <>
-                    {props.existingEntity?.hasSubmission && (
-                        <Typography variant="subtitle1" className={subtitleClassName}>
-                            - A csapatodnak már legalább egy beadása van ezen a feladaton.
-                        </Typography>
-                    )}
-                </>
+            {props.existingEntity?.hasSubmission && (
+                <Link
+                    href={`/submissions?objectiveId=${props.existingEntity.id}&teamId=${currentUser.getUserInfo()?.teamId}`}>
+                    <Button size="small" variant="text" fullWidth color="secondary">
+                        Mutasd {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadásait
+                    </Button>
+                </Link>
             )}
+            {props.existingEntity?.isAccepted && (
+                <Typography variant="subtitle1" className={subtitleClassName}>
+                    - {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadását elfogadtuk.
+                </Typography>
+            )}
+
             <Box className={classes.richTextEditor}>
                 <RichTextEditor
                     isEdited={isEdited}

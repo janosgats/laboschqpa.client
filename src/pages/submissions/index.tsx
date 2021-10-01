@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import {NextPage} from 'next';
 import Head from 'next/head';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import NotAcceptedByEmailBanner from '~/components/banner/NotAcceptedByEmailBanner';
 import MyPaper from '~/components/mui/MyPaper';
 import SubmissionsPanel from '~/components/panel/SubmissionsPanel';
@@ -30,6 +30,7 @@ import DateTimeFormatter from '~/utils/DateTimeFormatter';
 import {styles} from '../../styles/submissionStyles/submissionsPage.styles';
 import {filterByNormalizedWorldSplit} from "~/utils/filterByNormalizedWorldSplit";
 import {Autocomplete} from "@material-ui/lab";
+import {useRouter} from "next/router";
 
 const NOT_FILTERED_TEAM_INFO: TeamInfo = {
     id: -99,
@@ -44,6 +45,9 @@ const NOT_FILTERED_OBJECTIVE: Partial<Objective> = {
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
 
 const Index: NextPage = () => {
+    const classes = useStyles();
+    const router = useRouter();
+
     const [filteredObjectiveId, setFilteredObjectiveId] = useState<number>(null);
     const [filteredTeamId, setFilteredTeamId] = useState<number>(null);
 
@@ -61,7 +65,12 @@ const Index: NextPage = () => {
     });
     const fetchedTeams = usedEndpointTeams.data;
 
-    const classes = useStyles();
+    useEffect(() => {
+        if (router.isReady) {
+            setFilteredObjectiveId(Number.parseInt(router.query['objectiveId'] as string));
+            setFilteredTeamId(Number.parseInt(router.query['teamId'] as string));
+        }
+    }, [router.isReady, router.query['objectiveId'], router.query['teamId']])
 
     return (
         <Container maxWidth="lg">
@@ -100,7 +109,8 @@ const Index: NextPage = () => {
                                 <Autocomplete
                                     options={[NOT_FILTERED_OBJECTIVE, ...fetchedObjectives]}
                                     getOptionLabel={(objective: Objective) => objective.title}
-                                    renderInput={(params) => <TextField {...params} label="Feladat" variant="outlined"/>}
+                                    renderInput={(params) => <TextField {...params} label="Feladat"
+                                                                        variant="outlined"/>}
                                     value={filteredObjectiveId !== null ? fetchedObjectives.filter((t) => t.id === filteredObjectiveId)[0] : NOT_FILTERED_OBJECTIVE}
                                     onChange={(e, val: Objective) => {
                                         if (val === NOT_FILTERED_OBJECTIVE) {
