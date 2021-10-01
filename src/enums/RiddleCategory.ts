@@ -1,6 +1,6 @@
 export enum RiddleCategory {
-    BEST = 1,
-    EVEN_BETTER = 2,
+    NETHER = 1,
+    SEVENTH_HEAVEN = 2,
 }
 
 export interface RiddleCategoryDataEntry {
@@ -9,12 +9,12 @@ export interface RiddleCategoryDataEntry {
 }
 
 export const riddleCategoryData: Record<RiddleCategory, RiddleCategoryDataEntry> = {
-    [RiddleCategory.BEST]: {
-        category: RiddleCategory.BEST,
-        displayName: "Best",
+    [RiddleCategory.NETHER]: {
+        category: RiddleCategory.NETHER,
+        displayName: "Nether",
     },
-    [RiddleCategory.EVEN_BETTER]: {
-        category: RiddleCategory.EVEN_BETTER,
-        displayName: "Even better",
+    [RiddleCategory.SEVENTH_HEAVEN]: {
+        category: RiddleCategory.SEVENTH_HEAVEN,
+        displayName: "7th Heaven",
     },
 };

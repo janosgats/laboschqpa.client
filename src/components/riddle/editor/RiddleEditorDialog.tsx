@@ -28,7 +28,7 @@ interface Props {
 
 const RiddleEditorDialog: FC<Props> = (props) => {
     const [title, setTitle] = useState<string>('');
-    const [category, setCategory] = useState<RiddleCategory>(props.defaultCategory ?? RiddleCategory.EVEN_BETTER);
+    const [category, setCategory] = useState<RiddleCategory>(props.defaultCategory ?? RiddleCategory.SEVENTH_HEAVEN);
     const [solution, setSolution] = useState<string>('');
     const [hint, setHint] = useState<string>('');
     const usedAttachments: UsedAttachments = useAttachments([]);
@@ -62,7 +62,7 @@ const RiddleEditorDialog: FC<Props> = (props) => {
             setHint('');
             usedAttachments.reset([]);
         } else {
-            setCategory(props.defaultCategory ?? RiddleCategory.EVEN_BETTER);
+            setCategory(props.defaultCategory ?? RiddleCategory.SEVENTH_HEAVEN);
         }
     }, [props.isOpen])
 

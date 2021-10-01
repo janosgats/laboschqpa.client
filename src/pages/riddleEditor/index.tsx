@@ -6,7 +6,7 @@ import {RiddleCategory} from "~/enums/RiddleCategory";
 import RiddleCategorySelector from "~/components/selector/RiddleCategorySelector";
 
 const Index: NextPage = () => {
-    const [filteredCategory, setFilteredCategory] = useState<RiddleCategory>(RiddleCategory.EVEN_BETTER);
+    const [filteredCategory, setFilteredCategory] = useState<RiddleCategory>(RiddleCategory.SEVENTH_HEAVEN);
 
     return (
         <div>

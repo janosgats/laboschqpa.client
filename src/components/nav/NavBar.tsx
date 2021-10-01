@@ -17,16 +17,16 @@ import {
     ListItemIcon,
     ListItemText,
     makeStyles,
-    Paper,
     Theme,
     Toolbar,
-    Typography,
     useTheme,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import ThemeSelector from '~/components/nav/ThemeSelector';
 import QpaRadio from "~/components/QpaRadio";
+import ClientRender from "~/components/ClientRender";
+import SponsorContainer from "~/components/nav/Sponsors";
 
 interface LinkParams {
     href: string;
@@ -75,18 +75,6 @@ const useStyles = makeStyles((theme: Theme) =>
         darkModeSwitcher: {
             cursor: 'pointer',
         },
-        footer: {
-            position: 'relative',
-            left: '0',
-            bottom: '0',
-            width: '100%',
-        },
-        footerContainer: {
-        },
-        footerLogo: {
-            padding: '8px 32px',
-            height: '60px',
-        },
     })
 );
 
@@ -97,7 +85,7 @@ interface NavBarInterFaceProps {
 }
 
 const NavBar: FC<NavBarInterFaceProps> = (props) => {
-    const { darkMode: darkMode, setDarkMode: setDarkMode, window: window } = props;
+    const {darkMode: darkMode, setDarkMode: setDarkMode, window: window} = props;
     const router = useRouter();
     const currentUser = useContext(CurrentUserContext);
 
@@ -108,7 +96,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     const theme = useTheme();
 
     let sponsorLogosBaseUrl = 'https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/sponsors/logos/';
-    if(darkMode){
+    if (darkMode) {
         sponsorLogosBaseUrl += 'darkMode/';
     }
 
@@ -131,31 +119,41 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     }
 
     const links: LinkParams[] = [];
-    links.push({ href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home' });
+    links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
     const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
-    links.push({ href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person' });
+    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person'});
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
-        links.push({ href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups' });
+        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups'});
     }
-    links.push({ href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events' });
-    links.push({ href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online' });
-    links.push({ href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code' });
-    links.push({ href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz' });
-    links.push({ href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar' });
-    links.push({ href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed' });
-    links.push({ href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in' });
-    links.push({ href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment' });
-    links.push({ href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group' });
-    links.push({ href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people' });
+    links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
+    links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
+    links.push({href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
+    links.push({href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
+    links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
+    links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
+    links.push({
+        href: '/submissions',
+        displayName: 'Beadások',
+        authority: Authority.User,
+        icon: 'assignment_turned_in'
+    });
+    links.push({href: '/objectives', displayName: 'Feladatok', authority: Authority.User, icon: 'assignment'});
+    links.push({href: '/teams', displayName: 'Csapatok', authority: Authority.User, icon: 'group'});
+    links.push({href: '/users', displayName: 'Felhasználók', authority: Authority.User, icon: 'people'});
 
-    links.push({ href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode' });
-    links.push({href: '/acceptedEmails', displayName: 'Accepted Emails', authority: Authority.AcceptedEmailEditor, icon: 'mark_email_read',});
-    links.push({ href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings' });
+    links.push({href: '/riddleEditor', displayName: 'Riddle Editor', authority: Authority.RiddleEditor, icon: 'mode'});
+    links.push({
+        href: '/acceptedEmails',
+        displayName: 'Accepted Emails',
+        authority: Authority.AcceptedEmailEditor,
+        icon: 'mark_email_read',
+    });
+    links.push({href: '/admin', displayName: 'Admin', authority: Authority.Admin, icon: 'admin_panel_settings'});
 
     const drawer = (
         <div>
-            <div />
+            <div/>
             <List>
                 <a target="_blank" href="https://github.com/janosgats/laboschqpa/issues" rel="noopener noreferrer"
                    style={{textDecoration: 'none', color: 'red'}}>
@@ -167,7 +165,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     </ListItem>
                 </a>
                 <ListItem>
-                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode} />
+                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode}/>
                 </ListItem>
 
                 {links
@@ -180,7 +178,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                                         {' '}
                                         <Icon fontSize="small">{link.icon}</Icon>{' '}
                                     </ListItemIcon>
-                                    <ListItemText primary={link.displayName} />
+                                    <ListItemText primary={link.displayName}/>
                                 </ListItem>
                             </Link>
                         ) : null;
@@ -216,7 +214,7 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                             onClick={handleDrawerToggle}
                             className={classes.menuButton}
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                     </Toolbar>
                 </Hidden>
@@ -251,100 +249,21 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     </Drawer>
                 </Hidden>
             </nav>
-            <Grid
-                container
-                direction="column"
-            >
-                <Grid
-                    item
-                    style={{minHeight: '68vw'}}
-                >
+            <Grid container direction="column">
+                <Grid item style={{minHeight: '68vw'}}>
 
                     <main className={classes.content}>
                         <Hidden smUp implementation="css">
-                            <div className={classes.toolbar} />
+                            <div className={classes.toolbar}/>
                         </Hidden>
                         <div>
-                            <QpaRadio/>
+                            <ClientRender>{() => <QpaRadio/>}</ClientRender>
                             {props.children}
                         </div>
                     </main>
                 </Grid>
-                <Grid
-                    item
-                >
-                    <Paper className={classes.footer}>
-                        <Grid
-                            container
-                            direction="row"
-                            justify="space-evenly"
-                            alignItems="center"
-                        >
-
-                            <Grid
-                                className={classes.footerContainer}
-                                item
-                            >
-                                <Grid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                >
-                                    <Typography variant="h5"><b>Főtámogatónk:</b></Typography>
-                                    <img style={{width: '280px'}} src={sponsorLogosBaseUrl + 'snapsoft.svg'} />
-                                </Grid>
-                            </Grid>
-
-                            <Grid
-                                className={classes.footerContainer}
-                                item
-                            >
-                                <Grid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                    justify="center"
-                                >
-                                    <Typography variant="h5"><b>Kiemelt támogatóink:</b></Typography>
-                                    <Grid
-                                        container
-                                        justify="center"
-                                        alignItems="center"
-                                    >
-                                        
-                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'mol.png'} />
-                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'mol_limo.svg'} />
-                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'nova_services.png'} />
-                                        <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'sci-network.png'} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
-                            <Grid
-                                className={classes.footerContainer}
-                                item
-                            >
-                                <Grid
-                                    container
-                                    direction="column"
-                                    alignItems="center"
-                                    justify="center"
-                                >
-                                    <Typography variant="h5"><b>Támogatóink:</b></Typography>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        alignItems="center"
-                                        justify="center"
-                                    >
-                                        <img style={{width: '110px' }} src={sponsorLogosBaseUrl + 'sch_isiszovi.svg'} />
-                                        <img style={{width: '90px'}} src={sponsorLogosBaseUrl + 'AK.svg'} />
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                    </Paper>
+                <Grid item>
+                    <ClientRender>{() => <SponsorContainer darkMode={darkMode}/>}</ClientRender>
                 </Grid>
 
             </Grid>
