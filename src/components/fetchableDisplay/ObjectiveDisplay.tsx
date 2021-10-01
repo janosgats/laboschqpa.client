@@ -36,7 +36,6 @@ import CreatedEntityResponse from '~/model/CreatedEntityResponse';
 import {FetchableDisplay, FetchingTools} from '~/model/FetchableDisplay';
 import {Objective} from '~/model/usergeneratedcontent/Objective';
 import {ProgramPageContext} from '~/pages/programs/program/[...programTitle]';
-import UserInfoService, {Author} from '~/service/UserInfoService';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import {getSurelyDate} from '~/utils/DateHelpers';
 import EventBus from '~/utils/EventBus';
@@ -61,6 +60,10 @@ export interface SaveObjectiveCommand {
     isHidden: boolean;
     attachments: number[];
 }
+export interface ObjectiveDisplayExtraProps {
+    hideScorerButton?: boolean;
+    hideShowSubmissionsButton?: boolean;
+}
 
 function getDefaultDeadline(): Date {
     const date = new Date();
@@ -68,7 +71,7 @@ function getDefaultDeadline(): Date {
     return date;
 }
 
-const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (props) => {
+const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, ObjectiveDisplayExtraProps> = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const programPage = useContext(ProgramPageContext);
@@ -102,11 +105,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
     const [isHidden, setIsHidden] = useState<boolean>(defaultIsHidden);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
-
-    const [author, setAuthor] = useState<Author>();
-    const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
-
-    const [showAuthor, setShowAuthor] = useState<boolean>(false);
 
     useEffect(() => {
         setDescription(defaultDescription);
@@ -162,20 +160,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         if (surelyDelete) {
             props.onDelete();
         }
-    }
-
-    function fetchAuthor() {
-        if (showAuthor) {
-            return setShowAuthor(false);
-        }
-        setShowAuthor(true);
-        if (author) return;
-
-        setIsAuthorFetchingPending(true);
-        UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId, false)
-            .then((value) => setAuthor(value))
-            .catch(() => EventBus.notifyError('Error while loading Author'))
-            .finally(() => setIsAuthorFetchingPending(false));
     }
 
     function isBeforeSubmissionDeadline(): boolean {
@@ -300,7 +284,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                     </Typography>
                 </Grid>
             )}
-            {props.existingEntity?.hasSubmission && (
+            {props.existingEntity?.hasSubmission && !props.hideShowSubmissionsButton && (
                 <Link
                     href={`/submissions?objectiveId=${props.existingEntity.id}&teamId=${currentUser.getUserInfo()?.teamId}`}>
                     <Button size="small" variant="text" fullWidth color="secondary">
@@ -405,7 +389,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                                 Beadás
                             </Button>
                         )}
-                        {currentUser.hasAuthority(Authority.TeamScorer) && (
+                        {currentUser.hasAuthority(Authority.TeamScorer)  && !props.hideScorerButton && (
                             <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="secondary">
                                 Pontozás
                             </Button>

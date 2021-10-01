@@ -76,17 +76,21 @@ const ObjectivesBelongingToProgramPanel: FC<Props> = (props) => {
             )}
 
             {wasCreateNewObjectiveClicked && (
-                <Dialog open={true} onClose={() => setWasCreateNewObjectiveClicked(false)}>
-                    <DialogTitle>Feladat létrehozás</DialogTitle>
+                <Dialog open={true} onClose={() => setWasCreateNewObjectiveClicked(false)} fullWidth>
+                    <DialogTitle>Feladat létrehozása</DialogTitle>
                     <DialogContent>
-                        <ObjectiveDisplayContainer
-                            shouldCreateNew={true}
-                            onCreatedNew={() => {
-                                setWasCreateNewObjectiveClicked(false);
-                                usedEndpoint.reloadEndpoint();
-                            }}
-                            onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)}
-                        />
+                        <Grid container justify="center" direction="column" spacing={2}>
+                            <Grid item container justify="center">
+                                <ObjectiveDisplayContainer
+                                    shouldCreateNew={true}
+                                    onCreatedNew={() => {
+                                        setWasCreateNewObjectiveClicked(false);
+                                        usedEndpoint.reloadEndpoint();
+                                    }}
+                                    onCancelledNewCreation={() => setWasCreateNewObjectiveClicked(false)}
+                                />
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                 </Dialog>
             )}
