@@ -66,11 +66,40 @@ const Index: NextPage = () => {
     const fetchedTeams = usedEndpointTeams.data;
 
     useEffect(() => {
-        if (router.isReady) {
-            setFilteredObjectiveId(Number.parseInt(router.query['objectiveId'] as string));
-            setFilteredTeamId(Number.parseInt(router.query['teamId'] as string));
+        if (!router.isReady) {
+            return;
         }
-    }, [router.isReady, router.query['objectiveId'], router.query['teamId']])
+
+        const objId = Number.parseInt(router.query['objectiveId'] as string);
+        if (isValidNumber(objId)) {
+            setFilteredObjectiveId(objId);
+        }
+        const teamId = Number.parseInt(router.query['teamId'] as string);
+        if (isValidNumber(teamId)) {
+            setFilteredTeamId(teamId);
+        }
+    }, [router.isReady, router.query['objectiveId'], router.query['teamId']]);
+
+    function updateUrl(key: string, newValue: string | number | null) {
+        const alteredQuery = Object.assign(router.query);
+        if (newValue !== null) {
+            alteredQuery[key] = newValue;
+        } else {
+            delete alteredQuery[key];
+        }
+        router.push({
+            pathname: router.pathname,
+            query: alteredQuery,
+        });
+    }
+
+    useEffect(() => {
+        updateUrl('objectiveId', filteredObjectiveId);
+    }, [filteredObjectiveId]);
+
+    useEffect(() => {
+        updateUrl('teamId', filteredTeamId);
+    }, [filteredTeamId]);
 
     return (
         <Container maxWidth="lg">
