@@ -26,6 +26,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
 import ThemeSelector from '~/components/nav/ThemeSelector';
+import QpaRadio from "~/components/QpaRadio";
 
 interface LinkParams {
     href: string;
@@ -263,7 +264,10 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                         <Hidden smUp implementation="css">
                             <div className={classes.toolbar} />
                         </Hidden>
-                        <div>{props.children}</div>
+                        <div>
+                            <QpaRadio/>
+                            {props.children}
+                        </div>
                     </main>
                 </Grid>
                 <Grid
