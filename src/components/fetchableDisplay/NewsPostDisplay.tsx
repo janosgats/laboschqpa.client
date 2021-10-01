@@ -5,6 +5,7 @@ import {
     createStyles,
     Grid,
     IconButton,
+    Link as MuiLink,
     makeStyles,
     TextField,
     Theme,
@@ -35,6 +36,8 @@ import MuiRteUtils from '~/utils/MuiRteUtils';
 import UserNameFormatter from '~/utils/UserNameFormatter';
 import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/NewsPostDisplayStyle';
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
+import Link from "next/link";
 
 export interface SaveNewsPostCommand {
     title: string;
@@ -139,7 +142,11 @@ const NewsPostDisplay: FetchableDisplay<NewsPost, SaveNewsPostCommand> = (props)
                                         fullWidth={true}
                                     />
                                 ) : (
-                                    <Typography variant="h4">{title}</Typography>
+                                    <Link href={`/news/post/${getUrlFriendlyString(title)}/?id=${props.existingEntity.id}`}>
+                                        <MuiLink style={{cursor: 'pointer'}}>
+                                            <Typography variant="h4">{title}</Typography>
+                                        </MuiLink>
+                                    </Link>
                                 )}
                             </Grid>
                         </Grid>

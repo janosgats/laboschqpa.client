@@ -11,11 +11,6 @@ import useEndpoint from '~/hooks/useEndpoint';
 import {Submission} from "~/model/usergeneratedcontent/Submission";
 import {Objective} from "~/model/usergeneratedcontent/Objective";
 
-interface ProgramPageContextProps {
-    programId: number;
-}
-
-export const ProgramPageContext = React.createContext<ProgramPageContextProps>(null);
 
 const SubmissionText: NextPage = () => {
     const router = useRouter();
