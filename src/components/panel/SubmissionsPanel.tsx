@@ -10,7 +10,7 @@ import Spinner from '../Spinner';
 import {styles} from './styles/SubmissionsPanelStyle';
 import ObjectiveDetailsDialog from "~/components/objective/ObjectiveDetailsDialog";
 
-const OUTER_SCROLLER_STARTING_SHOW_COUNT = 3;
+const OUTER_SCROLLER_STARTING_SHOW_COUNT = 7;
 const INNER_SCROLLER_STARTING_SHOW_COUNT = 3;
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
