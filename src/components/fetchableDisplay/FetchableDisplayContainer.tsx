@@ -155,6 +155,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                                 onDelete={handleOnDelete}
                                 onCancelEditing={handleOnCancelEditing}
                                 {...(props.displayExtraProps ? props.displayExtraProps : ({} as P))}
+                                requestEntityReload={() => retrieveEntity(entityId)}
                             />
                         </ErrorBoundary>
                     )}

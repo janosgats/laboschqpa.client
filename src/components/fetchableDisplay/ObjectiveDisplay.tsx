@@ -412,7 +412,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, Object
 
                     {isSubmissionDisplayOpen && (
                         <div>
-                            <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
+                            <Dialog open={isSubmissionDisplayOpen} fullWidth >
                                 <DialogTitle>
                                     <Grid container alignItems="center" justify="space-between" direction="row">
                                         <Typography variant="h3">{props.existingEntity.title}</Typography>
@@ -422,17 +422,18 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, Object
                                     </Grid>
                                 </DialogTitle>
                                 <DialogContent>
-                                    <Grid container>
-                                        <SubmissionDisplayContainer
-                                            shouldCreateNew={true}
-                                            displayExtraProps={{
-                                                creationObjectiveId: props.existingEntity.id,
-                                                creationObjectiveTitle: props.existingEntity.title,
-                                                creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
-                                                showObjectiveTitle: true,
-                                                showTeamName: !!currentUser.getUserInfo(),
-                                            }}
-                                        />
+                                    <Grid container alignItems="center" direction="row" >
+                                            <SubmissionDisplayContainer
+                                                shouldCreateNew={true}
+                                                onCreatedNew={() => props.requestEntityReload()}
+                                                displayExtraProps={{
+                                                    creationObjectiveId: props.existingEntity.id,
+                                                    creationObjectiveTitle: props.existingEntity.title,
+                                                    creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                                    showObjectiveTitle: true,
+                                                    showTeamName: !!currentUser.getUserInfo(),
+                                                }}
+                                            />
                                     </Grid>
                                 </DialogContent>
                             </Dialog>

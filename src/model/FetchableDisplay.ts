@@ -10,6 +10,7 @@ export interface FetchableDisplayProps<E extends Entity, S> {
     onSave: (command: S) => Promise<void>;
     onDelete: () => Promise<void>;
     onCancelEditing: () => void;
+    requestEntityReload: () => void;
 }
 
 export interface FetchingTools<E extends Entity, S> {
