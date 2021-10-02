@@ -9,9 +9,10 @@ import filterDailyPrograms from "~/components/program/tools/filterDailyPrograms"
 interface DayProgramsDisplayProps {
     allPrograms: Program[];
     date: Date;
+    shouldScrollIntoView: boolean;
 }
 
-const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({allPrograms, date}) => {
+const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({allPrograms, date, shouldScrollIntoView}) => {
     const dailyPrograms = useMemo(() => filterDailyPrograms(allPrograms, date), [date, allPrograms]);
     if (dailyPrograms.length === 0) {
         return null;
@@ -20,7 +21,7 @@ const DayProgramsDisplay: React.FC<DayProgramsDisplayProps> = ({allPrograms, dat
     return (
         <Grid item>
             <Box mb={2}>
-                <MyPaper>
+                <MyPaper shouldScrollIntoView={shouldScrollIntoView}>
                     <Grid container justify="center" alignItems="center">
                         <Typography variant="h4">
                             <b>
