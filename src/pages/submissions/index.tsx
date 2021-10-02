@@ -78,7 +78,7 @@ const Index: NextPage = () => {
         if (isValidNumber(teamId)) {
             setFilteredTeamId(teamId);
         }
-    }, [router.isReady, router.query['objectiveId'], router.query['teamId']]);
+    }, [router.isReady]);
 
     function updateUrl(key: string, newValue: string | number | null) {
         const alteredQuery = Object.assign(router.query);
@@ -94,11 +94,15 @@ const Index: NextPage = () => {
     }
 
     useEffect(() => {
-        updateUrl('objectiveId', filteredObjectiveId);
+        if (router.isReady && usedEndpointObjectives.succeeded &&usedEndpointTeams.succeeded) {
+            updateUrl('objectiveId', filteredObjectiveId);
+        }
     }, [filteredObjectiveId]);
 
     useEffect(() => {
-        updateUrl('teamId', filteredTeamId);
+        if (router.isReady && usedEndpointObjectives.succeeded &&usedEndpointTeams.succeeded) {
+            updateUrl('teamId', filteredTeamId);
+        }
     }, [filteredTeamId]);
 
     return (
