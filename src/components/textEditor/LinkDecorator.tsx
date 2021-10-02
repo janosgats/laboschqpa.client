@@ -7,6 +7,30 @@ import {isValidNonEmptyString} from "~/utils/CommonValidators";
 
 export const LinkMatcherRegex = /((https?:\/\/)|(www\.))[^\s]+/gi;
 
+function isInnerLink(url: string): boolean {
+    if (!isValidNonEmptyString(location?.host)) {
+        return false;
+    }
+    return url.startsWith('http://' + location.host) || url.startsWith('https://' + location.host)
+        || url.startsWith('http://www.' + location.host) || url.startsWith('https://www.' + location.host);
+}
+
+function getUrlPreparedForInnerLink(url: string) {
+    let preparedUrl = url;
+    if (preparedUrl.startsWith('http://')) {
+        preparedUrl = preparedUrl.substring('http://'.length);
+    }
+    if (preparedUrl.startsWith('https://')) {
+        preparedUrl = preparedUrl.substring('https://'.length);
+    }
+    if (preparedUrl.startsWith('www.')) {
+        preparedUrl = preparedUrl.substring('www.'.length);
+    }
+    preparedUrl = preparedUrl.substring(location?.host?.length);
+
+    return preparedUrl;
+}
+
 const LinkDecorator: FunctionComponent<{ decoratedText: string }> = (props) => {
     const theme = useTheme();
     const editorContext = useContext(EditorContext);
@@ -17,15 +41,14 @@ const LinkDecorator: FunctionComponent<{ decoratedText: string }> = (props) => {
     }
     targetUrl += props.decoratedText.trim();
 
-    const isInnerLink = isValidNonEmptyString(location?.host) &&
-        (targetUrl.startsWith('http://' + location.host) || targetUrl.startsWith('https://' + location.host)
-            || targetUrl.startsWith('http://www.' + location.host) || targetUrl.startsWith('https://www.' + location.host));
+    const innerLink = isInnerLink(targetUrl);
+
 
     return (
         <>
             <MuiLink style={{cursor: 'pointer'}}>
-                {isInnerLink && !editorContext.isEdited ? (
-                    <Link href={targetUrl}>
+                {innerLink && !editorContext.isEdited ? (
+                    <Link href={getUrlPreparedForInnerLink(targetUrl)}>
                         <span>
                             {props.children}
                         </span>
