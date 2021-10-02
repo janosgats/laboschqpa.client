@@ -32,6 +32,8 @@ export default function MyPaper({
     useEffect(() => {
         if (shouldScrollIntoView && paperRef.current) {
             scrollIntoView(paperRef);
+            setTimeout(() => scrollIntoView(paperRef), 250);
+            setTimeout(() => scrollIntoView(paperRef), 500);
             setTimeout(() => scrollIntoView(paperRef), 1000);
             setTimeout(() => scrollIntoView(paperRef), 1500);
         }
