@@ -149,13 +149,17 @@ const SubmissionsPanel: FC<Props> = (props) => {
             {usedEndpoint.succeeded && (
                 <Grid container direction="column" spacing={2}>
                     {objectivesIdList.slice(0, infiniteScroller.shownCount).map((objectiveId: number, index: number) => {
+                        const submissions = objectiveSubmissionMap.get(objectiveId);
+                        if(!submissions || submissions.length === 0){
+                            return null;
+                        }
                         return (
                             <Grid item>
                                 <SubmissionsInObjective
                                     key={objectiveId}
                                     filteredObjectiveId={props.filteredObjectiveId}
                                     filteredTeamId={props.filteredTeamId}
-                                    submissions={objectiveSubmissionMap.get(objectiveId)}
+                                    submissions={submissions}
                                     showObjectiveDetailsDialog={showObjectiveDetailsDialog}
                                 />
                             </Grid>
