@@ -284,13 +284,27 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, Object
                     </Typography>
                 </Grid>
             )}
-            {props.existingEntity?.hasSubmission && !props.hideShowSubmissionsButton && (
-                <Link
-                    href={`/submissions?objectiveId=${props.existingEntity.id}&teamId=${currentUser.getUserInfo()?.teamId}`}>
-                    <Button size="small" variant="text" fullWidth color="secondary">
-                        Mutasd {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadásait
-                    </Button>
-                </Link>
+            {!props.hideShowSubmissionsButton && (
+                <>
+                    {props.existingEntity?.hasSubmission && currentUser.isMemberOrLeaderOrApplicantOfAnyTeam() ? (
+                        <Link
+                            href={`/submissions?objectiveId=${props.existingEntity.id}&teamId=${currentUser.getUserInfo()?.teamId}`}>
+                            <Button size="small" variant="text" fullWidth color="secondary">
+                                Mutasd {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadásait
+                            </Button>
+                        </Link>
+                    ) : (
+                        <>
+                            {props.existingEntity?.submittable && (
+                                <Link href={`/submissions?objectiveId=${props.existingEntity.id}`}>
+                                    <Button size="small" variant="text" fullWidth color="secondary">
+                                        Mutasd a beadásokat
+                                    </Button>
+                                </Link>
+                            )}
+                        </>
+                    )}
+                </>
             )}
             {props.existingEntity?.isAccepted && (
                 <Typography variant="subtitle1" className={subtitleClassName}>
