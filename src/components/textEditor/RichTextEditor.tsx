@@ -179,7 +179,7 @@ const RichTextEditor: FC<Props> = (props) => {
 
 const ContextWrappedRichTextEditor: FC<Props> = (props) => {
     return (
-        <EditorContextProvider areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
+        <EditorContextProvider isEdited={props.isEdited} areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
             <RichTextEditor {...props} />
         </EditorContextProvider>
     );

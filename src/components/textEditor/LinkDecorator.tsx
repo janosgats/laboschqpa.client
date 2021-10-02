@@ -3,10 +3,9 @@ import {Link as MuiLink, useTheme} from '@material-ui/core';
 import Link from 'next/link';
 import EventBus from "~/utils/EventBus";
 import {EditorContext} from "~/context/EditorContextProvider";
+import {isValidNonEmptyString} from "~/utils/CommonValidators";
 
 export const LinkMatcherRegex = /((https?:\/\/)|(www\.))[^\s]+/gi;
-
-const SITE_DOMAINS: string[] = ['schq.party', 'www.schq.party', 'localhost'];
 
 const LinkDecorator: FunctionComponent<{ decoratedText: string }> = (props) => {
     const theme = useTheme();
@@ -18,12 +17,14 @@ const LinkDecorator: FunctionComponent<{ decoratedText: string }> = (props) => {
     }
     targetUrl += props.decoratedText.trim();
 
-    const isInnerLink = SITE_DOMAINS.some(domain => targetUrl.startsWith('http://' + domain) || targetUrl.startsWith('https://' + domain));
+    const isInnerLink = isValidNonEmptyString(location?.host) &&
+        (targetUrl.startsWith('http://' + location.host) || targetUrl.startsWith('https://' + location.host)
+            || targetUrl.startsWith('http://www.' + location.host) || targetUrl.startsWith('https://www.' + location.host));
 
     return (
         <>
             <MuiLink style={{cursor: 'pointer'}}>
-                {isInnerLink && editorContext.isMuiRteReadonly ? (
+                {isInnerLink && !editorContext.isEdited ? (
                     <Link href={targetUrl}>
                         <span>
                             {props.children}
