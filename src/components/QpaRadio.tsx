@@ -17,7 +17,7 @@ const QpaRadio: FC = () => {
                 <Grid item spacing={0}>
                     <iframe src={`https://qparadio.sch.bme.hu/public/radio_qpa/embed?theme=${iframeTheme}`}
                             frameBorder="0"
-                            height={107}
+                            height={117}
                             scrolling="no"
                     />
                 </Grid>
