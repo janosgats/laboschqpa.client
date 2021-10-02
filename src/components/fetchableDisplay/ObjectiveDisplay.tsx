@@ -422,16 +422,18 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, Object
                                     </Grid>
                                 </DialogTitle>
                                 <DialogContent>
-                                    <SubmissionDisplayContainer
-                                        shouldCreateNew={true}
-                                        displayExtraProps={{
-                                            creationObjectiveId: props.existingEntity.id,
-                                            creationObjectiveTitle: props.existingEntity.title,
-                                            creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
-                                            showObjectiveTitle: true,
-                                            showTeamName: !!currentUser.getUserInfo(),
-                                        }}
-                                    />
+                                    <Grid container>
+                                        <SubmissionDisplayContainer
+                                            shouldCreateNew={true}
+                                            displayExtraProps={{
+                                                creationObjectiveId: props.existingEntity.id,
+                                                creationObjectiveTitle: props.existingEntity.title,
+                                                creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                                showObjectiveTitle: true,
+                                                showTeamName: !!currentUser.getUserInfo(),
+                                            }}
+                                        />
+                                    </Grid>
                                 </DialogContent>
                             </Dialog>
                         </div>
