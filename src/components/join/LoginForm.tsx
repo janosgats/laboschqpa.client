@@ -10,6 +10,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import GTranslateIcon from "@material-ui/icons/GTranslate";
 import SchoolIcon from '@material-ui/icons/School';
 import LoginRedirectionService from "~/service/LoginRedirectionService";
+import PolymerIcon from '@material-ui/icons/Polymer';
 
 const OAUTH2_REDIRECTION_OVERWRITTEN_RESPONSE_CODE = 299;
 export const OAUTH2_OVERWRITE_REDIRECTION_REQUEST_HEADER_NAME = "Return-Api-Oauth-Redirection-Response";
@@ -124,6 +125,20 @@ const LoginForm: FC<Props> = (props) => {
                             size="small"
                         >
                             AuthSCH
+                        </Button>
+                    </Grid>
+                </Grid>
+                <Grid container direction="row" justify="center" alignItems="center" spacing={2}
+                      style={{marginTop: theme.spacing(1)}}>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                           
+                            onClick={() => location?.replace('https://www.youtube.com/watch?v=dQw4w9WgXcQ')}
+                            startIcon={<PolymerIcon/>}
+                            size="small"
+                        >
+                            iWiW
                         </Button>
                     </Grid>
                 </Grid>
