@@ -70,7 +70,9 @@ const SponsorContainer: FC<Props> = (props) => {
                             <LogoLink href='https://www.novaservices.hu/'>
                                 <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'nova_services.png'}/>
                             </LogoLink>
-                            <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'sci-network.png'}/>
+                            <LogoLink href='http://www.scinetwork.hu/'>
+                                <img style={{width: '130px'}} src={sponsorLogosBaseUrl + 'sci-network.png'}/>
+                            </LogoLink>
                         </Grid>
                     </Grid>
                 </Grid>
