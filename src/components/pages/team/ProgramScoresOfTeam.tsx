@@ -25,7 +25,7 @@ const ProgramScoresOfTeam: FC<Props> = (props) => {
         deps: [props.teamId],
     });
 
-    const separatedPoints = (score: number) => score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const separatedPoints = (score: number) => score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
     const classes = useStyles();
 
