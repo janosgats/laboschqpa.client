@@ -1,4 +1,4 @@
-import {Button, createStyles, Grid, makeStyles, Theme, Typography} from '@material-ui/core';
+import {Button, createStyles, Grid, Link as MuiLink, makeStyles, Theme, Typography} from '@material-ui/core';
 import React, {FC, useEffect, useState} from 'react';
 import {SubmissionDisplayContainer} from '~/components/fetchableDisplay/FetchableDisplayContainer';
 import useEndpoint from '~/hooks/useEndpoint';
@@ -8,8 +8,9 @@ import {isValidNumber} from '~/utils/CommonValidators';
 import MyPaper from '../mui/MyPaper';
 import Spinner from '../Spinner';
 import {styles} from './styles/SubmissionsPanelStyle';
+import ObjectiveDetailsDialog from "~/components/objective/ObjectiveDetailsDialog";
 
-const OUTER_SCROLLER_STARTING_SHOW_COUNT = 3;
+const OUTER_SCROLLER_STARTING_SHOW_COUNT = 7;
 const INNER_SCROLLER_STARTING_SHOW_COUNT = 3;
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
@@ -18,6 +19,7 @@ interface SubmissionsInObjectiveProps {
     submissions: Submission[];
     filteredObjectiveId?: number;
     filteredTeamId?: number;
+    showObjectiveDetailsDialog: (objectiveId: number) => void
 }
 
 const SubmissionsInObjective: FC<SubmissionsInObjectiveProps> = (props) => {
@@ -34,7 +36,13 @@ const SubmissionsInObjective: FC<SubmissionsInObjectiveProps> = (props) => {
     return (
         <MyPaper>
             <Typography variant="h4">
-                <b>{props.submissions[0].objectiveTitle}</b> feladat beadásai
+                <MuiLink color="secondary"
+                         onClick={() => props.showObjectiveDetailsDialog(props.submissions[0].objectiveId)}
+                         style={{cursor: 'pointer'}}
+                >
+                    <b>{props.submissions[0].objectiveTitle}</b> feladat
+                </MuiLink>
+                {' '}beadásai
             </Typography>
             <Typography variant="subtitle1" className={classes.subtitle}>
                 Beadások:
@@ -85,8 +93,9 @@ const SubmissionsPanel: FC<Props> = (props) => {
     });
 
     const [objectiveSubmissionMap, setObjectiveSubmissionMap] = useState<Map<number, Submission[]>>(null);
-
     const [objectivesIdList, setObjectivesIdList] = useState<number[]>(null);
+
+    const [objectiveIdToShowDetailsDialogFor, setObjectiveIdToShowDetailsDialogFor] = useState<number>(null);
 
     const usedEndpoint = useEndpoint<Submission[]>({
         conf: {
@@ -112,42 +121,65 @@ const SubmissionsPanel: FC<Props> = (props) => {
                 }
             });
             infiniteScroller.setMaxLength(tempHashMap.size);
-            infiniteScroller.setCurrentShownCount(OUTER_SCROLLER_STARTING_SHOW_COUNT);
+            infiniteScroller.resetCurrentShownCount();
             setObjectiveSubmissionMap(tempHashMap);
             setObjectivesIdList(tempObjectives);
         },
     });
 
+    function showObjectiveDetailsDialog(objectiveId: number) {
+        if (isValidNumber(objectiveId)) {
+            setObjectiveIdToShowDetailsDialogFor(objectiveId);
+        }
+    }
+
+    function hideObjectiveDetailsDialog() {
+        setObjectiveIdToShowDetailsDialogFor(null);
+    }
+
     return (
         <>
-            {usedEndpoint.pending && <Spinner />}
+            <ObjectiveDetailsDialog onClose={hideObjectiveDetailsDialog}
+                                    isOpen={objectiveIdToShowDetailsDialogFor !== null}
+                                    objectiveId={objectiveIdToShowDetailsDialogFor}/>
+
+            {usedEndpoint.pending && <Spinner/>}
             {usedEndpoint.failed && <p>Couldn't load submissions :'(</p>}
 
             {usedEndpoint.succeeded && (
                 <Grid container direction="column" spacing={2}>
                     {objectivesIdList.slice(0, infiniteScroller.shownCount).map((objectiveId: number, index: number) => {
+                        const submissions = objectiveSubmissionMap.get(objectiveId);
+                        if(!submissions || submissions.length === 0){
+                            return null;
+                        }
                         return (
                             <Grid item>
                                 <SubmissionsInObjective
                                     key={objectiveId}
                                     filteredObjectiveId={props.filteredObjectiveId}
                                     filteredTeamId={props.filteredTeamId}
-                                    submissions={objectiveSubmissionMap.get(objectiveId)}
+                                    submissions={submissions}
+                                    showObjectiveDetailsDialog={showObjectiveDetailsDialog}
                                 />
                             </Grid>
                         );
                     })}
                     {infiniteScroller.canShownCountBeIncreased && (
-                        <Grid item container justify="center">
-                            <Button
-                                size="large"
-                                variant="text"
-                                fullWidth
-                                color="secondary"
-                                onClick={() => infiniteScroller.increaseShownCount(3)}
-                            >
-                                &darr; Show more Objectives &darr;
-                            </Button>
+                        <Grid item>
+                            <MyPaper p={0}>
+                                <Grid container justify="center">
+                                    <Button
+                                        size="large"
+                                        variant="text"
+                                        fullWidth
+                                        color="secondary"
+                                        onClick={() => infiniteScroller.increaseShownCount(3)}
+                                    >
+                                        &darr; Show more Objectives &darr;
+                                    </Button>
+                                </Grid>
+                            </MyPaper>
                         </Grid>
                     )}
                 </Grid>

@@ -1,4 +1,5 @@
-import BackupIcon from '@material-ui/icons/Backup';
+import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
+import FeaturedPlayListSharpIcon from '@material-ui/icons/FeaturedPlayListSharp';
 import {convertToRaw} from 'draft-js';
 import MUIRichTextEditor, {TAsyncAtomicBlockResponse, TMUIRichTextEditorRef} from 'mui-rte';
 import React, {FC, useContext, useRef, useState} from 'react';
@@ -12,6 +13,10 @@ import {UsedAttachments} from '~/hooks/useAttachments';
 import FileToUpload, {UploadedFileType} from '~/model/usergeneratedcontent/FileToUpload';
 import EventBus from '~/utils/EventBus';
 import MyPaper from '../mui/MyPaper';
+import {QrFightResultsPanelBlock} from "~/components/textEditor/QrFightResultsPanelBlock";
+import {ReactPlayerBlock} from "~/components/textEditor/reactPlayerBlock/ReactPlayerBlock";
+import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import {ReactPlayerBlockEditor} from "~/components/textEditor/reactPlayerBlock/ReactPlayerBlockEditor";
 
 interface Props {
     isEdited: boolean;
@@ -49,6 +54,7 @@ const RichTextEditor: FC<Props> = (props) => {
     const ref = useRef<TMUIRichTextEditorRef>(null);
 
     const [isUploadImageModalOpen, setIsUploadImageModalOpen] = useState<boolean>(false);
+    const [isAddReactPlayerBlockDialogOpen, setIsReactPlayerBlockEditorOpen] = useState<boolean>(false);
 
     const enableImageUpload = !!props.usedAttachments;
 
@@ -68,6 +74,16 @@ const RichTextEditor: FC<Props> = (props) => {
                 }}
                 isOpen={isUploadImageModalOpen}
                 onClose={() => setIsUploadImageModalOpen(false)}
+                overrideUploadButtonText="Kép beágyazása"
+            />
+            <ReactPlayerBlockEditor
+                value={{url: '', hideControls: false, width: 512, height: 288, justification: 'center'}}
+                onEdit={(spec) => {
+                    ref.current?.insertAtomicBlockSync('react-player-block', spec);
+                    setIsReactPlayerBlockEditorOpen(false);
+                }}
+                isOpen={isAddReactPlayerBlockDialogOpen}
+                onClose={() => setIsReactPlayerBlockEditorOpen(false)}
             />
             <MyPaper  variant="outlined" opacity={0.85}>
                 <MUIRichTextEditor
@@ -102,11 +118,13 @@ const RichTextEditor: FC<Props> = (props) => {
                         'clear',
                         'link',
                         ...(enableImageUpload ? ['upload-image'] : []),
+                        'add-qr-fight-results-panel-block',
+                        'add-react-player-block',
                     ]}
                     customControls={[
                         {
                             name: 'upload-image',
-                            icon: <BackupIcon />,
+                            icon: <InsertPhotoIcon />,
                             type: 'callback',
                             onClick: (_editorState, _name, anchor) => {
                                 setIsUploadImageModalOpen(true);
@@ -116,6 +134,32 @@ const RichTextEditor: FC<Props> = (props) => {
                             name: 'image-block',
                             type: 'atomic',
                             atomicComponent: ImageBlock,
+                        },
+                        {
+                            name: 'add-qr-fight-results-panel-block',
+                            icon: <FeaturedPlayListSharpIcon />,
+                            type: 'callback',
+                            onClick: (_editorState, _name, anchor) => {
+                                ref.current?.insertAtomicBlockSync('qr-fight-results-panel-block', {});
+                            },
+                        },
+                        {
+                            name: 'qr-fight-results-panel-block',
+                            type: 'atomic',
+                            atomicComponent: QrFightResultsPanelBlock,
+                        },
+                        {
+                            name: 'add-react-player-block',
+                            icon: <OndemandVideoIcon />,
+                            type: 'callback',
+                            onClick: (_editorState, _name, anchor) => {
+                                setIsReactPlayerBlockEditorOpen(true);
+                            },
+                        },
+                        {
+                            name: 'react-player-block',
+                            type: 'atomic',
+                            atomicComponent: ReactPlayerBlock,
                         },
                     ]}
                     draftEditorProps={{
@@ -135,7 +179,7 @@ const RichTextEditor: FC<Props> = (props) => {
 
 const ContextWrappedRichTextEditor: FC<Props> = (props) => {
     return (
-        <EditorContextProvider areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
+        <EditorContextProvider isEdited={props.isEdited} areSubcomponentsEditable={props.isEdited && !props.readOnlyControls}>
             <RichTextEditor {...props} />
         </EditorContextProvider>
     );

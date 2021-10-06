@@ -7,6 +7,7 @@ import MyPaper from "~/components/mui/MyPaper";
 import {useRouter} from "next/router";
 import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException";
 import {
+    qrFight_FIGHT_AREA_IS_NOT_ENABLED,
     qrFight_TAG_DOES_NOT_EXIST,
     qrFight_TAG_SECRET_MISMATCH,
     qrFight_TEAM_RATE_LIMIT_HIT_FOR_QR_FIGHT_SUBMISSIONS,
@@ -45,6 +46,9 @@ const ErrorDetails: FC<ErrorDetailsProps> = ({err}) => {
     } else if (qrFight_TEAM_RATE_LIMIT_HIT_FOR_QR_FIGHT_SUBMISSIONS.is(apiErrorDescriptor)) {
         errorMessage = 'Túl sok érvényesítési próbálkozás a csapatod által. Azért van egy határ :c';
         color = 'red';
+    } else if (qrFight_FIGHT_AREA_IS_NOT_ENABLED.is(apiErrorDescriptor)) {
+        errorMessage = 'A kód, amit találtál, olyan területhez tartozik, ami (még) nem nyílt meg. Gyere vissza, és scanneld be később :)';
+        color = 'yellow';
     }
 
     if (!errorMessage) {
@@ -90,7 +94,7 @@ const Index: NextPage = () => {
 
                 {usedEndpoint.failed && (
                     <>
-                        <ErrorDetails err={usedEndpoint.error}/>
+                        <ErrorDetails err={usedEndpoint.errorData}/>
                     </>
                 )}
 

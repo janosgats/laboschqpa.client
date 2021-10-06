@@ -59,7 +59,7 @@ const CreateNewTeamDialog: FC<CreateNewTeamDialogProps> = (props) => {
             .then((res) => {
                 currentUser.reload();
                 EventBus.notifySuccess("You've just created a team");
-                router.push(`/teams/team/My/?id=${res.data.id}`);
+                router.push(`/teams/team/MyTeam/?id=${res.data.id}`);
                 props.onClose();
             })
             .catch((err) => {
@@ -126,7 +126,7 @@ const NotTeamMemberBanner: FC<Props> = ({hideJoinATeamButton = false}: Props) =>
                     <AlertTitle>Már jelentkeztél a {currentUser.getUserInfo()?.teamName} csapatba</AlertTitle>
                     <p>- A csapatkapitány hamarosan ellenőrzi a jelentkezésed.</p>
                     <ButtonGroup size="large" color="inherit" aria-label="large outlined primary button group">
-                        <Button onClick={() => router.push(`/teams/team/My?id=${currentUser.getUserInfo()?.teamId}`)}>
+                        <Button onClick={() => router.push(`/teams/team/MyTeam?id=${currentUser.getUserInfo()?.teamId}`)}>
                             {currentUser.getUserInfo()?.teamName} megtekintése
                         </Button>
                     </ButtonGroup>

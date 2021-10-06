@@ -13,6 +13,8 @@ import ApiErrorDescriptorException from "~/exception/ApiErrorDescriptorException
 import {riddle_A_RIDDLE_HAS_TO_HAVE_EXACTLY_ONE_ATTACHMENT} from "~/enums/ApiErrors";
 import {NOTIFICATION_TIMEOUT_LONG} from "~/components/eventDisplay/AppNotificationEventDisplay";
 import {UploadedFileType} from "~/model/usergeneratedcontent/FileToUpload";
+import {RiddleCategory} from "~/enums/RiddleCategory";
+import RiddleCategorySelector from "~/components/selector/RiddleCategorySelector";
 
 interface Props {
     onClose: (didEntityChangeHappen: boolean) => void;
@@ -20,10 +22,13 @@ interface Props {
 
     isCreatingNew: boolean;
     idToEdit?: number;
+
+    defaultCategory?: RiddleCategory;
 }
 
 const RiddleEditorDialog: FC<Props> = (props) => {
     const [title, setTitle] = useState<string>('');
+    const [category, setCategory] = useState<RiddleCategory>(props.defaultCategory ?? RiddleCategory.SEVENTH_HEAVEN);
     const [solution, setSolution] = useState<string>('');
     const [hint, setHint] = useState<string>('');
     const usedAttachments: UsedAttachments = useAttachments([]);
@@ -41,6 +46,7 @@ const RiddleEditorDialog: FC<Props> = (props) => {
             const data = axiosResponse.data;
 
             setTitle(data.title);
+            setCategory(data.category);
             setSolution(data.solution);
             setHint(data.hint);
             usedAttachments.reset(data.attachments);
@@ -55,6 +61,8 @@ const RiddleEditorDialog: FC<Props> = (props) => {
             setSolution('');
             setHint('');
             usedAttachments.reset([]);
+        } else {
+            setCategory(props.defaultCategory ?? RiddleCategory.SEVENTH_HEAVEN);
         }
     }, [props.isOpen])
 
@@ -64,6 +72,7 @@ const RiddleEditorDialog: FC<Props> = (props) => {
             data: {
                 title: title,
                 hint: hint,
+                category: category,
                 solution: solution,
                 attachments: usedAttachments.firmAttachmentIds,
             }
@@ -138,6 +147,8 @@ const RiddleEditorDialog: FC<Props> = (props) => {
                     <>
                         <label>Title: </label>
                         <input type="text" value={title} onChange={e => setTitle(e.target.value)}/>
+                        <br/>
+                        <RiddleCategorySelector value={category} onChange={setCategory}/>
                         <br/>
                         <label>Solution: </label>
                         <input type="text" value={solution} onChange={e => setSolution(e.target.value)}/>

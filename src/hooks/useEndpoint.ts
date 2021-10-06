@@ -8,6 +8,7 @@ export interface UseEndpointCommand<T, R = T> {
     deps?: ReadonlyArray<any>;
     customSuccessProcessor?: (axiosResponse: AxiosResponse<T>) => R;
     onSuccess?: (axiosResponse: AxiosResponse<T>) => void;
+    onFailure?: (err: any) => void;
     onError?: (err: any) => void;
     enableRequest?: boolean;
     keepOldDataWhileFetchingNew?: boolean;
@@ -21,7 +22,7 @@ export interface UsedEndpoint<R> {
     pending: boolean;
     succeeded: boolean;
     failed: boolean;
-    error: any;
+    errorData: any;
 
     reloadEndpoint: () => void;
 }
@@ -41,6 +42,7 @@ const useEndpoint = <T, R = T>({
     keepOldDataWhileFetchingNew = false,
     onError,
     onSuccess,
+    onFailure,
     delayPendingState = true,
     mockConfig = defaultMockConfig,
 }: UseEndpointCommand<T, R>): UsedEndpoint<R> => {
@@ -89,6 +91,10 @@ const useEndpoint = <T, R = T>({
                 setSucceeded(true);
             })
             .catch((err) => {
+                if (onFailure) {
+                    onFailure(err);
+                }
+
                 setFailed(true);
                 setSucceeded(false);
                 setData(null);
@@ -111,7 +117,7 @@ const useEndpoint = <T, R = T>({
         pending: pending,
         succeeded: succeeded,
         failed: failed,
-        error: error,
+        errorData: error,
         reloadEndpoint: refreshOnChange,
     };
 };

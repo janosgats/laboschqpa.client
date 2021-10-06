@@ -1,18 +1,18 @@
-import Head from 'next/head';
-import {NextPage} from 'next';
-import React, {useContext, useState} from 'react';
-import useEndpoint from '~/hooks/useEndpoint';
-import {UserInfo} from '~/model/UserInfo';
-import {CircularProgress} from '@material-ui/core';
-import AdminNavBar from '~/components/nav/AdminNavBar';
-import {teamRoleData} from '~/enums/TeamRole';
-import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
-import EventBus from '~/utils/EventBus';
-import {CurrentUserContext} from '~/context/CurrentUserProvider';
-import EditAuthoritiesDialog from '~/components/admin/EditAuthoritiesDialog';
-import MyPaper from '~/components/mui/MyPaper';
-import {Authority} from '~/enums/Authority';
-import {useRouter} from 'next/router';
+import Head from 'next/head'
+import {NextPage} from "next";
+import React, {useContext, useState} from "react";
+import useEndpoint from "~/hooks/useEndpoint";
+import {UserInfo} from "~/model/UserInfo";
+import {CircularProgress} from "@material-ui/core";
+import AdminNavBar from "~/components/nav/AdminNavBar";
+import {teamRoleData} from "~/enums/TeamRole";
+import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
+import EventBus from "~/utils/EventBus";
+import {CurrentUserContext} from "~/context/CurrentUserProvider";
+import EditAuthoritiesDialog from "~/components/admin/EditAuthoritiesDialog";
+import MyPaper from "~/components/mui/MyPaper";
+import NavigateAwayIfUserIsNotAdmin from "~/components/admin/NavigateAwayIfUserIsNotAdmin";
+
 
 const Index: NextPage = () => {
     const currentUser = useContext(CurrentUserContext);
@@ -52,12 +52,13 @@ const Index: NextPage = () => {
     }
 
     return (
-        currentUser.getUserInfo() && !currentUser.getUserInfo().authorities.includes(Authority.Admin) && <> {navigateToHome()} </>,
-        currentUser.getUserInfo() && currentUser.getUserInfo().authorities.includes(Authority.Admin) && (
-            <>
-                <Head>
-                    <title>Admin - Users</title>
-                </Head>
+        <>
+            <Head>
+                <title>Admin - Users</title>
+            </Head>
+
+            <NavigateAwayIfUserIsNotAdmin/>
+            <AdminNavBar/>
 
                 <AdminNavBar />
 

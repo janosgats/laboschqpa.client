@@ -53,7 +53,7 @@ const Index: NextPage = () => {
                     </Grid>
                 )}
                 <Grid item>
-                    <ProgramCalendar reloaderRef={reloaderRef} startDate={new Date('2021-09-25T00:00:00')} count={15} />
+                    <ProgramCalendar reloaderRef={reloaderRef} startDate={new Date('2021-09-25T00:00:00')} count={15} shouldScrollToToday={true}/>
                 </Grid>
             </Grid>
         </Container>

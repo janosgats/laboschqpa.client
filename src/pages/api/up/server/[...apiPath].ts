@@ -12,8 +12,10 @@ import {CSRF_TOKEN_HEADER_NAME} from "~/utils/api/callJsonEndpoint";
 const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/login/oauth2/google": ["GET"],
     "/login/oauth2/github": ["GET"],
+    "/login/oauth2/authsch": ["GET"],
     "/login/oauth2/code/google": ["GET"],
     "/login/oauth2/code/github": ["GET"],
+    "/login/oauth2/code/authsch": ["GET"],
     "/logout": ["POST"],
 
     "/api/noAuthRequired/register/createNewAccountFromSessionOAuthInfo": ["POST"],
@@ -53,11 +55,14 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/teamScore/createNew": ["POST"],
     "/api/teamScore/delete": ["DELETE"],
 
+    "/api/objectiveAcceptance/isAccepted": ["GET"],
+    "/api/objectiveAcceptance/setAcceptance": ["POST"],
+
     "/api/user/info": ["GET"],
     "/api/user/infoWithAuthorities": ["GET"],
     "/api/user/setInfo": ["POST"],
     "/api/user/listAll": ["GET"],
-    "/api/user/listAllWithTeamName": ["GET"],
+    "/api/user/listAllEnabledWithTeamName": ["GET"],
     "/api/user/usersPage/listAllEnabled": ["GET"],
 
     "/api/newsPost/listAllWithAttachments": ["GET"],
@@ -86,18 +91,17 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/speedDrinking/createNew": ["POST"],
     "/api/speedDrinking/delete": ["DELETE"],
 
-    "/api/riddleEditor/listAll": ["GET"],
+    "/api/riddleEditor/listAllInCategory": ["GET"],
+    "/api/riddleEditor/listProgressOfTeams": ["GET"],
     "/api/riddleEditor/riddle": ["GET"],
     "/api/riddleEditor/createNew": ["POST"],
     "/api/riddleEditor/edit": ["POST"],
     "/api/riddleEditor/delete": ["DELETE"],
 
-    /* TODO: Uncomment riddle endpoints when we turn on riddles
     "/api/riddle/listAccessibleRiddles": ["GET"],
     "/api/riddle/riddle": ["GET"],
     "/api/riddle/useHint": ["POST"],
     "/api/riddle/submitSolution": ["POST"],
-    */
 
     "/api/admin/users/logInAsUser": ["POST"],
 
@@ -121,6 +125,8 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/event/registration/personal/deRegister": ["POST"],
     "/api/event/registration/team/register": ["POST"],
     "/api/event/registration/team/deRegister": ["POST"],
+    "/api/event/listAllRegisteredUsers": ["GET"],
+    "/api/event/listAllRegisteredTeams": ["GET"],
 
     "/api/program/listAll": ["GET"],
     "/api/program/listAllWithTeamScore": ["GET"],
@@ -129,10 +135,14 @@ const allowedTargetEndpoints: Record<string, Array<HttpMethod>> = {
     "/api/program/delete": ["DELETE"],
     "/api/program/edit": ["POST"],
     "/api/program/program": ["GET"],
+    "/api/program/listTeamScoresOnProgram": ["GET"],
 
     "/api/qrFight/fightStats": ["GET"],
-    "/api/qrFight/listAllAreas": ["GET"],
+    "/api/qrFight/listEnabledAreasWithTagCount": ["GET"],
     "/api/qrFight/submit": ["POST"],
+
+    "/api/admin/file/listSucceededImageVariantIdsOfFile": ["GET"],
+    "/api/admin/file/markImageVariantFileAsCorrupt": ["POST"],
 }
 
 function isEndpointAllowed(method: HttpMethod, url: string): boolean {

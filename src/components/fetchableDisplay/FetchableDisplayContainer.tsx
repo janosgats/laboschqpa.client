@@ -2,7 +2,7 @@ import {CircularProgress} from '@material-ui/core';
 import React, {FC, useEffect, useState} from 'react';
 import {ErrorBoundary} from 'react-error-boundary';
 import NewsPostDisplay from '~/components/fetchableDisplay/NewsPostDisplay';
-import ObjectiveDisplay from '~/components/fetchableDisplay/ObjectiveDisplay';
+import ObjectiveDisplay, {ObjectiveDisplayExtraProps} from '~/components/fetchableDisplay/ObjectiveDisplay';
 import SpeedDrinkingDisplay, {SpeedDrinkingDisplayExtraProps} from '~/components/fetchableDisplay/SpeedDrinkingDisplay';
 import SubmissionDisplay, {SubmissionDisplayExtraProps} from '~/components/fetchableDisplay/SubmissionDisplay';
 import Entity from '~/model/Entity';
@@ -155,6 +155,7 @@ const FetchableDisplayContainer: FC<Props<Entity, unknown, Record<string, any>>>
                                 onDelete={handleOnDelete}
                                 onCancelEditing={handleOnCancelEditing}
                                 {...(props.displayExtraProps ? props.displayExtraProps : ({} as P))}
+                                requestEntityReload={() => retrieveEntity(entityId)}
                             />
                         </ErrorBoundary>
                     )}
@@ -187,6 +188,7 @@ interface ObjectiveDisplayContainerProps extends CallbackProps {
     entityId?: number;
     overriddenBeginningEntity?: Objective;
     shouldCreateNew: boolean;
+    displayExtraProps?: ObjectiveDisplayExtraProps;
 }
 
 export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (props) => {
@@ -198,6 +200,7 @@ export const ObjectiveDisplayContainer: FC<ObjectiveDisplayContainerProps> = (pr
             overriddenBeginningEntity={props.overriddenBeginningEntity}
             onCreatedNew={props.onCreatedNew}
             onCancelledNewCreation={props.onCancelledNewCreation}
+            displayExtraProps={props.displayExtraProps}
         />
     );
 };

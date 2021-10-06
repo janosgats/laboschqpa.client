@@ -16,6 +16,8 @@ import EventBus from "~/utils/EventBus";
 import {AccessibleRiddle} from "~/model/usergeneratedcontent/AccessibleRiddle";
 import Image from "~/components/image/Image";
 import {dialogStyles} from "~/styles/dialog-styles";
+import {isValidNumber} from "~/utils/CommonValidators";
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
 
 
 interface RiddleSubmitSolutionResponse {
@@ -60,13 +62,17 @@ const RiddleSolverDialog: FC<Props> = (props) => {
     useEffect(() => {
         setIsHintShown(false);
         setIsSolutionShown(false);
-        setSolutionToSubmit("");
+        setSolutionToSubmit('');
         if (props.isOpen) {
             setShouldReloadRiddleList(false);
         }
     }, [props.isOpen]);
 
     function askForHint() {
+        if(!confirm('Biztos akarsz hintet kérni?')){
+            return;
+        }
+
         callJsonEndpoint({
             conf: {
                 url: "/api/up/server/api/riddle/useHint",
@@ -95,21 +101,20 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                     solution: solutionToSubmit,
                 },
             },
-        })
-            .then((res) => {
-                if (res.data.isGivenSolutionCorrect) {
-                    if (!res.data.wasAlreadySolved) {
-                        setShouldReloadRiddleList(true);
-                    }
-                    usedEndpoint.reloadEndpoint();
-                    alert("Yaay! It's correct!");
-                } else {
-                    alert("Nah! Try again!");
+        }).then((res) => {
+            if (res.data.isGivenSolutionCorrect) {
+                if (!res.data.wasAlreadySolved) {
+                    setShouldReloadRiddleList(true);
                 }
-            })
-            .catch(() => {
-                EventBus.notifyError("Error while submitting solution");
-            });
+                usedEndpoint.reloadEndpoint();
+                alert("Yaay! It's correct!");
+            } else {
+                alert("Nah! Try again!");
+            }
+            setSolutionToSubmit('');
+        }).catch(() => {
+            EventBus.notifyError("Error while submitting solution");
+        });
     }
 
     const riddle: AccessibleRiddle = usedEndpoint.data;
@@ -118,6 +123,8 @@ const RiddleSolverDialog: FC<Props> = (props) => {
         <Dialog
             open={props.isOpen}
             onClose={() => props.onClose(shouldReloadRiddleList)}
+            fullWidth
+            maxWidth='xs'
         >
             <DialogContent>
                 {usedEndpoint.pending && <p>Fetching riddle...</p>}
@@ -135,14 +142,14 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                             justify="center"
                             direction="column"
                             spacing={2}
-                            style={{minWidth: 450}}
+                            style={{}}
                         >
                             <Grid
                                 item
                                 container
                                 justify="center"
                             >
-                                <Typography variant="h2">{riddle.title}</Typography>
+                                <Typography variant="h5">{riddle.title}</Typography>
                             </Grid>
                             {riddle.attachments?.[0] && (
 
@@ -151,7 +158,17 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     container
                                     justify="center"
                                 >
-                                    <Image fileId={riddle.attachments[0]} maxSize={300}/>
+                                    <Image fileId={riddle.attachments[0]} maxSize={250}/>
+                                </Grid>
+                            )}
+                            {isValidNumber(riddle.firstSolvingTeamId) && (
+                                <Grid
+                                    item
+                                    justify="center"
+                                >
+                                    <Typography variant="caption">
+                                        Először megoldotta: {riddle.firstSolvingTeamName} @{DateTimeFormatter.toFullBasic(riddle.firstSolvingTime)}
+                                    </Typography>
                                 </Grid>
                             )}
 
@@ -182,7 +199,7 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                         onClick={() => askForHint()}
                                         fullWidth
                                     >
-                                        Kérek hintet
+                                        Kérek hint
                                     </Button>
                                 )}
                             </Grid>
@@ -197,11 +214,16 @@ const RiddleSolverDialog: FC<Props> = (props) => {
                                     variant="outlined"
                                     color="secondary"
                                     type="text"
-                                    value={solutionToSubmit}
-                                    onChange={(e) => setSolutionToSubmit(e.target.value)}
                                     label="Tipped"
                                     fullWidth
-
+                                    autoFocus
+                                    value={solutionToSubmit}
+                                    onChange={(e) => setSolutionToSubmit(e.target.value)}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter') {
+                                            submitSolution();
+                                        }
+                                    }}
                                 />
                                 <Button
                                     className={classes.inputs}

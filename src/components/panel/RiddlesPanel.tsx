@@ -1,6 +1,4 @@
-import { makeStyles, TableContainer, Theme, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import MUIPaper from '@material-ui/core/Paper';
+import {makeStyles, TableContainer, Theme, Typography} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,12 +9,17 @@ import RiddleSolverDialog from '~/components/riddle/solver/RiddleSolverDialog';
 import useEndpoint from '~/hooks/useEndpoint';
 import {AccessibleRiddle} from '~/model/usergeneratedcontent/AccessibleRiddle';
 import Spinner from '../Spinner';
-import { getStyles } from '~/components/panel/styles/RiddlePanelStyle';
+import {getStyles} from '~/components/panel/styles/RiddlePanelStyle';
 import MyPaper from '../mui/MyPaper';
+import {RiddleCategory} from "~/enums/RiddleCategory";
 
 const useStyles = makeStyles((theme: Theme) => getStyles(theme))
 
-const RiddlesPanel: FC = () => {
+interface Props {
+    category: RiddleCategory;
+}
+
+const RiddlesPanel: FC<Props> = (props) => {
 
     const classes = useStyles()
 
@@ -26,7 +29,13 @@ const RiddlesPanel: FC = () => {
     const usedEndpoint = useEndpoint<AccessibleRiddle[]>({
         conf: {
             url: '/api/up/server/api/riddle/listAccessibleRiddles',
+            params: {
+                category: props.category,
+            }
         },
+        keepOldDataWhileFetchingNew: true,
+        customSuccessProcessor: resp => [...(resp.data)].reverse(),
+        deps: [props.category],
     });
 
     function openRiddle(id: number) {
@@ -41,21 +50,24 @@ const RiddlesPanel: FC = () => {
 
     return (
         <div>
-            {usedEndpoint.pending && <Spinner />}
+            {usedEndpoint.pending && <Spinner/>}
 
             {usedEndpoint.failed && <p>Couldn't load riddles :'(</p>}
 
-            {usedEndpoint.succeeded && (
+            {usedEndpoint.data && (
                 <TableContainer
                     component={MyPaper}
+                    style={{maxWidth: "calc(100vw - 30vw)", overflow: "auto"}}
                 >
-                    <Table 
+                    <Table
                         size="medium"
                     >
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center" ><Typography variant="h5"> <b>Cím</b></Typography></TableCell>
-                                <TableCell align="center" ><Typography variant="h5"> <b>Megoldva?</b></Typography></TableCell>
+                                <TableCell align="center"><Typography variant="h5">#</Typography></TableCell>
+                                <TableCell align="center"><Typography variant="h5"> <b>Cím</b></Typography></TableCell>
+                                <TableCell align="center"><Typography variant="h5">
+                                    <b>Megoldva?</b></Typography></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -65,9 +77,17 @@ const RiddlesPanel: FC = () => {
                                         key={riddle.id}
                                         onClick={() => openRiddle(riddle.id)}
                                         className={classes.tableRow}
-                                        >
-                                        <TableCell align="center"><Typography variant="body1">{riddle.title}</Typography></TableCell>
-                                        <TableCell align="center"><Typography variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography></TableCell>
+                                    >
+                                        <TableCell align="center">
+                                            <Typography variant="body1">{usedEndpoint.data.length - index}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Typography variant="body1">{riddle.title}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <Typography
+                                                variant="body1">{riddle.isAlreadySolved ? 'Igen' : 'Nem'}</Typography>
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

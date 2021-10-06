@@ -6,6 +6,7 @@ import {UserEmailAddress} from '~/model/UserEmailAddress';
 import Spinner from '../Spinner';
 import callJsonEndpoint from "~/utils/api/callJsonEndpoint";
 import EventBus from "~/utils/EventBus";
+import useCurrentUser from "~/hooks/useCurrentUser";
 
 interface Overrides {
     ul: CSSProperties;
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const EmailAddressesPanel: FC<Props> = (props) => {
+    const currentUser = useCurrentUser();
+
     const [isAddNewAddressDialogOpen, setAddNewAddressDialogOpen] = useState<boolean>(false);
 
     const usedCurrentEmailAddresses: UsedEndpoint<UserEmailAddress[]> = useEndpoint<UserEmailAddress[]>({
@@ -40,6 +43,7 @@ const EmailAddressesPanel: FC<Props> = (props) => {
             }
         }).then(() => {
             EventBus.notifySuccess(address.email, "Address deleted");
+            currentUser.reload();
             usedCurrentEmailAddresses.reloadEndpoint();
         });
     }

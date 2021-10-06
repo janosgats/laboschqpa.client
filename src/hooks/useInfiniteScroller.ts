@@ -11,6 +11,7 @@ export interface InfiniteScroller {
     setMaxLength: (maxLength: number) => void;
     increaseShownCount: (incrementBy: number) => void;
     setCurrentShownCount: (count: number) => void;
+    resetCurrentShownCount: () => void;
 }
 
 /**
@@ -28,13 +29,17 @@ const useInfiniteScroller = (
     function setCurrentShownCount(count: number) {
         setShownCount(count);
     }
+    function resetCurrentShownCount() {
+        setShownCount(startingShowCount);
+    }
 
     return {
         shownCount: shownCount,
         canShownCountBeIncreased: shownCount < maxLength,
         setMaxLength: setMaxLength,
         increaseShownCount: increaseShownCount,
-        setCurrentShownCount: setCurrentShownCount
+        setCurrentShownCount: setCurrentShownCount,
+        resetCurrentShownCount: resetCurrentShownCount,
     };
 };
 

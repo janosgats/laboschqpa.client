@@ -63,6 +63,7 @@ const nextPage: NextPage = () => {
                         "E-mail got from OAuth2 response is saved in the system as a different User's e-mail address",
                         'E-mail is already taken',
                         60000);
+                    router.push(LoginRedirectionService.peekRedirectionUrl('/'));
                     return;
                 }
                 if (auth_AUTH_EXTERNAL_ACCOUNT_GOT_FROM_OAUTH2_RESPONSE_BELONGS_TO_ANOTHER_ACCOUNT.is(reason.apiErrorDescriptor)) {
@@ -70,11 +71,13 @@ const nextPage: NextPage = () => {
                         "External account got from OAuth2 response is saved in the system as a different User's external account",
                         'External account is already taken',
                         60000);
+                    router.push(LoginRedirectionService.peekRedirectionUrl('/'));
                     return;
                 }
             }
             EventBus.notifyError("We cannot log you in", "Something went wrong :/");
             EventBus.publishException(reason);
+            router.push(LoginRedirectionService.peekRedirectionUrl('/'));
         }).finally(() => setLoginInProgress(false));
     }
 
@@ -109,6 +112,13 @@ const nextPage: NextPage = () => {
             <Head>
                 <title>Almost there...</title>
             </Head>
+            {isLoginInProgress || isLoginSucceeded && (
+                <div style={{alignContent: 'center'}}>
+                    <img
+                        src="https://laboschqpa-public.s3.pl-waw.scw.cloud/static/frontend/login/old_man_elevator_fall.gif"
+                        alt="please wait..."/>
+                </div>
+            )}
             {isLoginInProgress && (
                 <p>Logging you in...</p>
             )}
@@ -123,7 +133,8 @@ const nextPage: NextPage = () => {
                     <ButtonGroup size="large" color="inherit" variant="contained"
                                  aria-label="large outlined primary button group">
                         <Button color='primary' onClick={() => createNewAccount()}>Create new account</Button>
-                        <Button onClick={() => router.push(LoginRedirectionService.peekRedirectionUrl('/'))}>Try another login method</Button>
+                        <Button onClick={() => router.push(LoginRedirectionService.peekRedirectionUrl('/'))}>Try another
+                            login method</Button>
                     </ButtonGroup>
                 </>
             )}
@@ -132,6 +143,7 @@ const nextPage: NextPage = () => {
             )}
         </div>
     )
-};
+}
+;
 
 export default nextPage;

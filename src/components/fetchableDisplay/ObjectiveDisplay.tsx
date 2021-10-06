@@ -36,13 +36,16 @@ import CreatedEntityResponse from '~/model/CreatedEntityResponse';
 import {FetchableDisplay, FetchingTools} from '~/model/FetchableDisplay';
 import {Objective} from '~/model/usergeneratedcontent/Objective';
 import {ProgramPageContext} from '~/pages/programs/program/[...programTitle]';
-import UserInfoService, {Author} from '~/service/UserInfoService';
 import callJsonEndpoint from '~/utils/api/callJsonEndpoint';
 import {getSurelyDate} from '~/utils/DateHelpers';
 import EventBus from '~/utils/EventBus';
 import MuiRteUtils from '~/utils/MuiRteUtils';
 import MyPaper from '../mui/MyPaper';
 import {getStyles} from './styles/ObjectiveDisplayStyle';
+import DateTimeFormatter from "~/utils/DateTimeFormatter";
+import {isValidNonEmptyString} from "~/utils/CommonValidators";
+import Link from "next/link";
+import {prefixWordWithArticle} from "~/utils/wordPrefixingUtils";
 
 const useStyles = makeStyles((theme: Theme) => createStyles(getStyles(theme)));
 
@@ -57,6 +60,10 @@ export interface SaveObjectiveCommand {
     isHidden: boolean;
     attachments: number[];
 }
+export interface ObjectiveDisplayExtraProps {
+    hideScorerButton?: boolean;
+    hideShowSubmissionsButton?: boolean;
+}
 
 function getDefaultDeadline(): Date {
     const date = new Date();
@@ -64,7 +71,7 @@ function getDefaultDeadline(): Date {
     return date;
 }
 
-const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (props) => {
+const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand, ObjectiveDisplayExtraProps> = (props) => {
     const classes = useStyles();
     const theme = useTheme();
     const programPage = useContext(ProgramPageContext);
@@ -98,11 +105,6 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
     const [objectiveType, setObjectiveType] = useState<ObjectiveType>(defaultObjectiveType);
     const [isHidden, setIsHidden] = useState<boolean>(defaultIsHidden);
     const usedAttachments: UsedAttachments = useAttachments(defaultAttachments);
-
-    const [author, setAuthor] = useState<Author>();
-    const [isAuthorFetchingPending, setIsAuthorFetchingPending] = useState<boolean>(false);
-
-    const [showAuthor, setShowAuthor] = useState<boolean>(false);
 
     useEffect(() => {
         setDescription(defaultDescription);
@@ -160,22 +162,22 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
         }
     }
 
-    function fetchAuthor() {
-        if (showAuthor) {
-            return setShowAuthor(false);
-        }
-        setShowAuthor(true);
-        if (author) return;
-
-        setIsAuthorFetchingPending(true);
-        UserInfoService.getAuthor(props.existingEntity.creatorUserId, props.existingEntity.editorUserId, false)
-            .then((value) => setAuthor(value))
-            .catch(() => EventBus.notifyError('Error while loading Author'))
-            .finally(() => setIsAuthorFetchingPending(false));
-    }
-
     function isBeforeSubmissionDeadline(): boolean {
         return getSurelyDate(props.existingEntity.deadline).getTime() > new Date().getTime();
+    }
+
+    let iconClassName: string = null;
+    let titleClassName: string = classes.title;
+    let subtitleClassName: string = classes.subtitle;
+
+    if (props.existingEntity?.isAccepted) {
+        iconClassName = classes.acceptedIcon;
+        titleClassName = classes.acceptedTitle;
+        subtitleClassName = classes.acceptedSubtitle;
+    } else if (props.existingEntity?.hasSubmission) {
+        iconClassName = classes.hasSubmissionIcon;
+        titleClassName = classes.hasSubmissionTitle;
+        subtitleClassName = classes.hasSubmissionSubtitle;
     }
 
     return (
@@ -254,11 +256,12 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                             {objectiveTypeData[props.existingEntity.objectiveType] && (
                                 <>
                                     {React.createElement(objectiveTypeData[props.existingEntity.objectiveType].icon, {
-                                        style: {width: 50, height: 50},
+                                        style: {width: 50, height: 50,},
+                                        className: iconClassName,
                                     })}
                                 </>
                             )}
-                            <Typography variant="h4" className={classes.title}>
+                            <Typography variant="h4" className={titleClassName}>
                                 {title}
                             </Typography>
                         </Grid>
@@ -274,11 +277,41 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                 </Grid>
             )}
 
-            {props.existingEntity?.observerTeamHasScore && (
-                <Typography variant="subtitle1" className={classes.subtitle}>
-                    - A csapatod már teljesítette e feladatot.
+            {isValidNonEmptyString(props.existingEntity?.programTitle) && (
+                <Grid item>
+                    <Typography variant="h5" className={titleClassName}>
+                        {props.existingEntity.programTitle}
+                    </Typography>
+                </Grid>
+            )}
+            {!props.hideShowSubmissionsButton && (
+                <>
+                    {props.existingEntity?.hasSubmission && currentUser.isMemberOrLeaderOrApplicantOfAnyTeam() ? (
+                        <Link
+                            href={`/submissions?objectiveId=${props.existingEntity.id}&teamId=${currentUser.getUserInfo()?.teamId}`}>
+                            <Button size="small" variant="text" fullWidth color="secondary">
+                                Mutasd {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadásait
+                            </Button>
+                        </Link>
+                    ) : (
+                        <>
+                            {props.existingEntity?.submittable && (
+                                <Link href={`/submissions?objectiveId=${props.existingEntity.id}`}>
+                                    <Button size="small" variant="text" fullWidth color="secondary">
+                                        Mutasd a beadásokat
+                                    </Button>
+                                </Link>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
+            {props.existingEntity?.isAccepted && (
+                <Typography variant="subtitle1" className={subtitleClassName}>
+                    - {prefixWordWithArticle(currentUser.getUserInfo()?.teamName)} beadását elfogadtuk.
                 </Typography>
             )}
+
             <Box className={classes.richTextEditor}>
                 <RichTextEditor
                     isEdited={isEdited}
@@ -348,13 +381,29 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
             {!isEdited && (
                 <>
+                    {submittable && (
+                        <>
+                            {!!hideSubmissionsBefore ? (
+                                <Typography variant="caption">
+                                    A
+                                    beadások <i><b>{DateTimeFormatter.toDayMinutes(hideSubmissionsBefore)}</b></i> után
+                                    nyilvánosak a
+                                    többi Qpázó számára.
+                                </Typography>
+                            ) : (
+                                <Typography variant="caption">
+                                    A beadások <i><b>azonnal nyilvánosak</b></i> a többi Qpázó számára.
+                                </Typography>
+                            )}
+                        </>
+                    )}
                     <Grid container direction="row" justify="space-between" alignItems="center">
                         {submittable && isBeforeSubmissionDeadline() && currentUser.isMemberOrLeaderOfAnyTeam() && (
                             <Button size="large" variant="contained" onClick={() => setIsSubmissionDisplayOpen(true)} color="primary">
                                 Beadás
                             </Button>
                         )}
-                        {currentUser.hasAuthority(Authority.TeamScorer) && (
+                        {currentUser.hasAuthority(Authority.TeamScorer)  && !props.hideScorerButton && (
                             <Button size="large" variant="contained" onClick={() => setIsScorerOpen(true)} color="secondary">
                                 Pontozás
                             </Button>
@@ -363,7 +412,7 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
 
                     {isSubmissionDisplayOpen && (
                         <div>
-                            <Dialog open={isSubmissionDisplayOpen} fullWidth maxWidth="lg">
+                            <Dialog open={isSubmissionDisplayOpen} fullWidth >
                                 <DialogTitle>
                                     <Grid container alignItems="center" justify="space-between" direction="row">
                                         <Typography variant="h3">{props.existingEntity.title}</Typography>
@@ -373,16 +422,19 @@ const ObjectiveDisplay: FetchableDisplay<Objective, SaveObjectiveCommand> = (pro
                                     </Grid>
                                 </DialogTitle>
                                 <DialogContent>
-                                    <SubmissionDisplayContainer
-                                        shouldCreateNew={true}
-                                        displayExtraProps={{
-                                            creationObjectiveId: props.existingEntity.id,
-                                            creationObjectiveTitle: props.existingEntity.title,
-                                            creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
-                                            showObjectiveTitle: true,
-                                            showTeamName: !!currentUser.getUserInfo(),
-                                        }}
-                                    />
+                                    <Grid container alignItems="center" direction="row" >
+                                            <SubmissionDisplayContainer
+                                                shouldCreateNew={true}
+                                                onCreatedNew={() => props.requestEntityReload()}
+                                                displayExtraProps={{
+                                                    creationObjectiveId: props.existingEntity.id,
+                                                    creationObjectiveTitle: props.existingEntity.title,
+                                                    creationTeamName: currentUser.getUserInfo() && currentUser.getUserInfo().teamName,
+                                                    showObjectiveTitle: true,
+                                                    showTeamName: !!currentUser.getUserInfo(),
+                                                }}
+                                            />
+                                    </Grid>
                                 </DialogContent>
                             </Dialog>
                         </div>

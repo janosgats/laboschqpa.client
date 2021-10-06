@@ -64,3 +64,4 @@ export const qrFight_YOUR_TEAM_ALREADY_SUBMITTED_THIS_TAG = new ApiError(ApiErro
 export const qrFight_TAG_DOES_NOT_EXIST = new ApiError(ApiErrorCategory.qrFight, 2);
 export const qrFight_TAG_SECRET_MISMATCH = new ApiError(ApiErrorCategory.qrFight, 3);
 export const qrFight_TEAM_RATE_LIMIT_HIT_FOR_QR_FIGHT_SUBMISSIONS = new ApiError(ApiErrorCategory.qrFight, 4);
+export const qrFight_FIGHT_AREA_IS_NOT_ENABLED = new ApiError(ApiErrorCategory.qrFight, 5);

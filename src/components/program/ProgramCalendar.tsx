@@ -11,9 +11,17 @@ interface ProgramCalendarProps {
     startDate: Date;
     count: number;
     reloaderRef?: React.MutableRefObject<() => void>;
+    shouldScrollToToday?: boolean;
 }
 
-const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, reloaderRef}) => {
+function isToday(dateToCheck: Date): boolean {
+    const today = new Date()
+    return dateToCheck.getDate() == today.getDate() &&
+        dateToCheck.getMonth() == today.getMonth() &&
+        dateToCheck.getFullYear() == today.getFullYear();
+}
+
+const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, reloaderRef, shouldScrollToToday}) => {
     const usedEndpoint = useEndpoint<Program[]>({
         conf: {
             url: '/api/up/server/api/program/listAll',
@@ -22,12 +30,13 @@ const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, relo
 
     if (reloaderRef) reloaderRef.current = () => usedEndpoint.reloadEndpoint();
 
+
     return (
         <Grid container spacing={4} direction="column" justify="flex-end" wrap="nowrap">
             {usedEndpoint.pending && (
                 <Grid item>
                     <MyPaper>
-                        <Spinner />
+                        <Spinner/>
                     </MyPaper>
                 </Grid>
             )}
@@ -47,11 +56,10 @@ const ProgramCalendar: React.FC<ProgramCalendarProps> = ({startDate, count, relo
                 </Grid>
             )}
             {usedEndpoint.succeeded &&
-                TimeSpan.asDate(TimeSpan.range(startDate, count, TimeSpan.day)).map((date, i) => (
-                    <Grid key={i} item>
-                        <DayProgramsDisplay programs={usedEndpoint.data} date={date} />
-                    </Grid>
-                ))}
+            TimeSpan.asDate(TimeSpan.range(startDate, count, TimeSpan.day)).map((date, i) => (
+                <DayProgramsDisplay key={i} allPrograms={usedEndpoint.data} date={date}
+                                    shouldScrollIntoView={shouldScrollToToday && isToday(date)}/>
+            ))}
         </Grid>
     );
 };

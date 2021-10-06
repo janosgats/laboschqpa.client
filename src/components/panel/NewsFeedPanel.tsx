@@ -14,7 +14,7 @@ const NewsFeedPanel: FC = ({children}) => {
     const currentUser = useContext(CurrentUserContext);
 
     const infiniteScroller: InfiniteScroller = useInfiniteScroller({
-        startingShowCount: 5,
+        startingShowCount: 10,
     });
 
     const [wasCreateNewPostClicked, setWasCreateNewPostClicked] = useState<boolean>(false);
@@ -88,7 +88,7 @@ const NewsFeedPanel: FC = ({children}) => {
                                 onClick={() => infiniteScroller.increaseShownCount(5)}
                                 style={{margin: '8px'}}
                             >
-                                &darr; Show more &darr;
+                                &darr; Show more News &darr;
                             </Button>
                         </Grid>
                     </MyPaper>

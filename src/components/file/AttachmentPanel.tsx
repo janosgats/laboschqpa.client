@@ -46,6 +46,7 @@ interface Props {
      * Set this if you want to limit allowed file types
      */
     onlyAllowUploadedFileType?: UploadedFileType;
+    displayConsiderEmbeddingFileAsImageAlert?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles(styles));
@@ -130,7 +131,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                                 <List component="div" disablePadding>
                                     {usedEndpoint.data.map((attachmentInfo) => {
                                         return (
-                                            <ListItem button onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>
+                                            <ListItem key={attachmentInfo.fileId} button onClick={() => setFileIdToShowInInfoModal(attachmentInfo.fileId)}>
                                                 <ListItemAvatar>
                                                     <AttachFileOutlinedIcon />
                                                 </ListItemAvatar>
@@ -167,7 +168,7 @@ const AttachmentPanel: FC<Props> = (props) => {
                             fullWidth
                             size="medium"
                         >
-                            Fájl feltöltés
+                            Csatolmány hozzáadása
                         </Button>
                     </Grid>
 
@@ -176,13 +177,14 @@ const AttachmentPanel: FC<Props> = (props) => {
                         onUploadInitiation={handleUploadInitiation}
                         isOpen={isFileUploaderShown}
                         onClose={() => setIsFileUploaderShown(false)}
+                        displayConsiderEmbeddingFileAsImageAlert={props.displayConsiderEmbeddingFileAsImageAlert}
                     />
                 </>
             )}
 
             {props.usedAttachments.attachmentsUnderUpload.map((fileUnderUpload) => {
                 return (
-                    <Grid container alignItems="center" spacing={1}>
+                    <Grid key={fileUnderUpload.key} container alignItems="center" spacing={1}>
                         <Typography variant="body1">{fileUnderUpload.getFileName()}</Typography>
                         <CircularProgress />
                         <Tooltip title="Cancel upload">

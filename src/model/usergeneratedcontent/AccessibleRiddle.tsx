@@ -10,5 +10,5 @@ export interface AccessibleRiddle extends UserGeneratedContent {
 
     firstSolvingTeamId: number;
     firstSolvingTeamName: string;
-    firstSolvingTimestamp: Date | string;
+    firstSolvingTime: Date | string;
 }

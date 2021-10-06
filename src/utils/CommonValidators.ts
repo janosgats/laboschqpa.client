@@ -38,5 +38,5 @@ export function isValidNumber(toValidate: number | string): boolean {
 
 
 export function isValidNonEmptyString(toValidate: string): boolean {
-    return typeof toValidate === "string" && toValidate.length > 0;
+    return toValidate && typeof toValidate === "string" && toValidate.length > 0;
 }

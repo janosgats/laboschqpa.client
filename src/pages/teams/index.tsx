@@ -19,6 +19,7 @@ import MyPaper from '~/components/mui/MyPaper';
 import Spinner from '~/components/Spinner';
 import {getStyles} from '~/components/team/styles/TeamStyle';
 import useEndpoint from '~/hooks/useEndpoint';
+import getUrlFriendlyString from "~/utils/getUrlFriendlyString";
 
 interface TeamWithScore {
     id: number;
@@ -56,7 +57,10 @@ const Index: NextPage = () => {
             {usedEndpoint.failed && <p>Couldn't load teams :'(</p>}
             {usedEndpoint.data && (
                 <MyPaper>
-                    <TableContainer>
+                    <TableContainer
+                    component={MyPaper}
+                    style={{maxWidth:"calc(100vw - 30vw)", overflow:"auto"}}
+                    >
                         <Table size="medium">
                             <TableHead>
                                 <TableRow>
@@ -74,7 +78,7 @@ const Index: NextPage = () => {
                             <TableBody>
                                 {usedEndpoint.data.map((team, index) => {
                                     return (
-                                        <Link href={`/teams/team/${team.name}?id=${team.id}`}>
+                                        <Link href={`/teams/team/${getUrlFriendlyString(team.name)}?id=${team.id}`}>
                                             <TableRow key={index} hover className={classes.tableRow}>
                                                 <TableCell align="center">
                                                     {index < 3 ? loadQpaIcon(index) : <Typography variant="h5">{index + 1}.</Typography>}

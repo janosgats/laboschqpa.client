@@ -6,10 +6,9 @@ import EventBus from '~/utils/EventBus';
 import {useRouter} from 'next/router';
 import {
     AppBar,
-    Button,
     createStyles,
-    Divider,
     Drawer,
+    Grid,
     Hidden,
     Icon,
     IconButton,
@@ -20,11 +19,14 @@ import {
     makeStyles,
     Theme,
     Toolbar,
-    Typography,
     useTheme,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Link from 'next/link';
+import ThemeSelector from '~/components/nav/ThemeSelector';
+import QpaRadio from "~/components/QpaRadio";
+import ClientRender from "~/components/ClientRender";
+import SponsorContainer from "~/components/nav/Sponsors";
 
 interface LinkParams {
     href: string;
@@ -70,9 +72,8 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             padding: theme.spacing(3),
         },
-        darkModeSwithcer: {
+        darkModeSwitcher: {
             cursor: 'pointer',
-            marginRight: '1rem',
         },
     })
 );
@@ -109,19 +110,18 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
             });
     }
 
-
     const links: LinkParams[] = [];
     links.push({href: '/', displayName: 'HQ', authority: Authority.User, icon: 'home'});
     const myProfileUrl = `/users/user/Me/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().userId : ''}`;
-    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person',});
+    links.push({href: myProfileUrl, displayName: 'Profilom', authority: Authority.User, icon: 'person'});
     if (currentUser.isMemberOrLeaderOrApplicantOfAnyTeam()) {
         const myTeamUrl = `/teams/team/MyTeam/?id=${currentUser.getUserInfo() ? currentUser.getUserInfo().teamId : ''}`;
-        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups',});
+        links.push({href: myTeamUrl, displayName: 'Csapatom', authority: Authority.User, icon: 'groups'});
     }
     links.push({href: '/programs', displayName: 'Programok', authority: Authority.User, icon: 'emoji_events'});
     links.push({href: '/events', displayName: 'Események', authority: Authority.User, icon: 'book_online'});
-    links.push({hidden: true, href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
-    links.push({hidden: true, href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
+    links.push({href: '/qrFight', displayName: 'QR Fight', authority: Authority.User, icon: 'qr_code'});
+    links.push({href: '/riddles', displayName: 'Riddle', authority: Authority.User, icon: 'quiz'});
     links.push({href: '/speedDrinking', displayName: 'Sörmérés', authority: Authority.User, icon: 'sports_bar'});
     links.push({href: '/news', displayName: 'Hírek', authority: Authority.User, icon: 'feed'});
     links.push({href: '/submissions', displayName: 'Beadások', authority: Authority.User, icon: 'assignment_turned_in'});
@@ -135,24 +135,43 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
 
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
-            <Divider />
+            <div/>
             <List>
+                <a target="_blank" href="https://github.com/janosgats/laboschqpa/issues" rel="noopener noreferrer"
+                   style={{textDecoration: 'none', color: 'red'}}>
+                    <ListItem button>
+                        <ListItemIcon>
+                            {' '}<Icon fontSize="small" style={{color: 'red'}}>bug_report</Icon>{' '}
+                        </ListItemIcon>
+                        <ListItemText primary="Javaslat / Hiba"/>
+                    </ListItem>
+                </a>
+                <ListItem>
+                    <ThemeSelector darkMode={darkMode} setDarkMode={setDarkMode}/>
+                </ListItem>
+
                 {links
-                    .filter(link => !link.hidden)
+                    .filter((link) => !link.hidden)
                     .map((link: LinkParams, index: number) => {
-                    return currentUser.hasAuthority(link.authority) ? (
-                        <Link key={'link' + link.displayName + index} href={link.href}>
-                            <ListItem button key={link.displayName + index}>
-                                <ListItemIcon>
-                                    {' '}
-                                    <Icon fontSize="small">{link.icon}</Icon>{' '}
-                                </ListItemIcon>
-                                <ListItemText primary={link.displayName} />
-                            </ListItem>
-                        </Link>
-                    ) : null;
-                })}
+                        return currentUser.hasAuthority(link.authority) ? (
+                            <Link key={'link' + link.displayName + index} href={link.href}>
+                                <ListItem button key={link.displayName + index} onClick={() => setIsDrawerOpen(false)}>
+                                    <ListItemIcon>
+                                        {' '}
+                                        <Icon fontSize="small">{link.icon}</Icon>{' '}
+                                    </ListItemIcon>
+                                    <ListItemText primary={link.displayName}/>
+                                </ListItem>
+                            </Link>
+                        ) : null;
+                    })}
+
+                <ListItem button onClick={() => doLogout()}>
+                    <ListItemIcon>
+                        {' '}<Icon fontSize="small">logout</Icon>{' '}
+                    </ListItemIcon>
+                    <ListItemText primary="Kijelentkezés"/>
+                </ListItem>
             </List>
         </div>
     );
@@ -168,52 +187,19 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
     return (
         <div className={classes.root}>
             <AppBar position="fixed" color="inherit" className={classes.appBar}>
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h5" noWrap className={classes.title}>
-                        49. Aki másnak vermet ás SCH QPA
-                    </Typography>
-                    {darkMode && (
-                        <Icon
-                            className={classes.darkModeSwithcer}
-                            fontSize="small"
-                            onClick={() => {
-                                setDarkMode(!darkMode);
-                            }}
+                <Hidden smUp implementation="css">
+                    <Toolbar>
+                        <IconButton
+                            color="inherit"
+                            aria-label="open drawer"
+                            edge="start"
+                            onClick={handleDrawerToggle}
+                            className={classes.menuButton}
                         >
-                            {'wb_sunny'}
-                        </Icon>
-                    )}
-                    {!darkMode && (
-                        <Icon
-                            className={classes.darkModeSwithcer}
-                            fontSize="small"
-                            onClick={() => {
-                                setDarkMode(!darkMode);
-                            }}
-                        >
-                            {'nights_stay'}
-                        </Icon>
-                    )}
-
-                    {/* <Switch
-                        checked={darkMode}
-                        onChange={() => {
-                            setDarkMode(!darkMode);
-                        }}
-                    /> */}
-                    <Button color="inherit" onClick={() => doLogout()}>
-                        Kijelentkezés
-                    </Button>
-                </Toolbar>
+                            <MenuIcon/>
+                        </IconButton>
+                    </Toolbar>
+                </Hidden>
             </AppBar>
             <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">
@@ -245,10 +231,24 @@ const NavBar: FC<NavBarInterFaceProps> = (props) => {
                     </Drawer>
                 </Hidden>
             </nav>
-            <main className={classes.content}>
-                <div className={classes.toolbar} />
-                <div>{props.children}</div>
-            </main>
+            <Grid container direction="column">
+                <Grid item style={{minHeight: '68vw'}}>
+
+                    <main className={classes.content}>
+                        <Hidden smUp implementation="css">
+                            <div className={classes.toolbar}/>
+                        </Hidden>
+                        <div>
+                            <ClientRender>{() => <QpaRadio/>}</ClientRender>
+                            {props.children}
+                        </div>
+                    </main>
+                </Grid>
+                <Grid item>
+                    <ClientRender>{() => <SponsorContainer darkMode={darkMode}/>}</ClientRender>
+                </Grid>
+
+            </Grid>
         </div>
     );
 };
